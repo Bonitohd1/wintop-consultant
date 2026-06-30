@@ -1,0 +1,20 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linh vật sư tử áo blouse trắng">
+ <defs>
+   <radialGradient id="face" cx="42%" cy="36%" r="70%"><stop offset="0%" stop-color="#FBD08A"/><stop offset="100%" stop-color="#E68A2E"/></radialGradient>
+   <linearGradient id="mane" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E07B22"/><stop offset="100%" stop-color="#C25E14"/></linearGradient>
+ </defs>
+ <path d="M52 232 Q120 176 188 232 L188 240 L52 240 Z" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+ <path d="M120 196 L150 232 L120 240 L90 232 Z" fill="#F1F5F9"/>
+ <path d="M104 198 L120 222 L98 224 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+ <path d="M136 198 L120 222 L142 224 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+ <path d="M108 206 C100 226 132 230 132 212" fill="none" stroke="#0F9A6A" stroke-width="4" stroke-linecap="round"/>
+ <circle cx="132" cy="210" r="6" fill="#0F9A6A"/><circle cx="132" cy="210" r="2.5" fill="#0B7350"/>
+ <g fill="url(#mane)"><circle cx="120" cy="44" r="22"/><circle cx="86" cy="54" r="22"/><circle cx="154" cy="54" r="22"/><circle cx="64" cy="84" r="22"/><circle cx="176" cy="84" r="22"/><circle cx="54" cy="120" r="22"/><circle cx="186" cy="120" r="22"/><circle cx="64" cy="156" r="22"/><circle cx="176" cy="156" r="22"/><circle cx="92" cy="178" r="20"/><circle cx="148" cy="178" r="20"/><circle cx="120" cy="186" r="20"/></g>
+ <circle cx="78" cy="74" r="15" fill="#E68A2E"/><circle cx="162" cy="74" r="15" fill="#E68A2E"/><circle cx="78" cy="74" r="7" fill="#C25E14"/><circle cx="162" cy="74" r="7" fill="#C25E14"/>
+ <circle cx="120" cy="116" r="66" fill="url(#face)"/>
+ <ellipse cx="120" cy="140" rx="34" ry="26" fill="#FFF1DC"/>
+ <ellipse cx="98" cy="108" rx="8" ry="10" fill="#2B2118"/><ellipse cx="142" cy="108" rx="8" ry="10" fill="#2B2118"/><circle cx="100.5" cy="104" r="2.6" fill="#fff"/><circle cx="144.5" cy="104" r="2.6" fill="#fff"/>
+ <path d="M112 130 L128 130 L120 139 Z" fill="#5A3A1E"/>
+ <path d="M120 139 L120 148 M120 148 Q108 156 100 148 M120 148 Q132 156 140 148" fill="none" stroke="#5A3A1E" stroke-width="3" stroke-linecap="round"/>
+ <circle cx="92" cy="138" r="5" fill="#F6B98E" opacity=".6"/><circle cx="148" cy="138" r="5" fill="#F6B98E" opacity=".6"/>
+</svg>

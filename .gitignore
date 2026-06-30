@@ -1,0 +1,14 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Bản nháp / backup (không deploy)
+index_*.bak
+index_*backup*.html
+index_recovered.html
+*_BROKEN_*.html
+_*.tmp
+
+# Vercel
+.vercel
