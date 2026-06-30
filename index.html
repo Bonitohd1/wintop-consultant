@@ -187,6 +187,13 @@
  .hcard-img{ height:86px; display:flex; align-items:flex-end; padding:8px; color:#fff; font-weight:700; font-size:12px; text-shadow:0 1px 3px rgba(0,0,0,.25); background-size:cover; background-position:center; }
  .hcard-t{ font-weight:600; font-size:12.5px; padding:8px 10px 2px; font-family:var(--fh); line-height:1.3; }
  .hcard .faint{ padding:0 10px 10px; }
+ .hcard.pop{ animation:cardin .42s ease both; }
+ .hcard .himg{ position:relative; overflow:hidden; background:#fff; height:118px; }
+ .hcard .himg .ph{ position:absolute; inset:0; background-size:cover; background-position:center; }
+ .hcard .himg .vg{ position:absolute; inset:0; background:radial-gradient(circle at 50% 42%, rgba(255,255,255,0) 44%, rgba(255,255,255,.92) 86%); }
+ .hcard .himg .shine{ position:absolute; top:0; left:-65%; width:55%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent); transform:skewX(-18deg); animation:shine 3.4s ease-in-out infinite; }
+ @keyframes shine{ 0%,55%{ left:-65%; } 100%{ left:135%; } }
+ .hcard .hot{ position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#FF8B6E,#E0533D); color:#fff; font-size:9px; font-weight:800; padding:3px 8px; border-radius:8px; letter-spacing:.4px; box-shadow:0 3px 8px rgba(224,83,61,.35); }
  .rank-teaser{ border-radius:22px; padding:16px; color:#fff; background:linear-gradient(135deg,#0F9A6A,#0b6e4d); display:flex; align-items:center; gap:13px; cursor:pointer; box-shadow:0 8px 20px rgba(15,154,106,.30); margin-bottom:14px; }
  .rank-teaser .rt-ic{ width:46px; height:46px; border-radius:14px; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
  .lv-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; } .lv-row::-webkit-scrollbar{display:none}
@@ -919,7 +926,7 @@ function renderAsst(){ if(!asstOpen){ return; } var chips=['Mẹo hôm nay','Tra
 }
 
 /* ===== TRANG CHỦ (rút gọn, dịu mắt) ===== */
-function hProducts(){ return '<div class="hscroll">'+PRODUCTS.slice(0,6).map(function(p){return '<div class="hcard" onclick="S.openProd=\''+p.id+'\';setTab(\'sanpham\')"><div style="height:6px;background:'+p.grad+'"></div><div class="hcard-t">'+esc(p.name)+'</div><div class="faint" style="padding:2px 12px 12px">'+esc(p.tag.length>30?p.tag.slice(0,30)+"…":p.tag)+'</div></div>';}).join("")+'</div>'; }
+function hProducts(){ return '<div class="hscroll">'+PRODUCTS.slice(0,6).map(function(p,i){return '<div class="hcard pop" style="animation-delay:'+(i*0.06).toFixed(2)+'s" onclick="S.openProd=\''+p.id+'\';setTab(\'sanpham\')"><div class="himg">'+(i<3?'<span class="hot">HOT</span>':'')+'<div class="ph" style="background-image:url('+pimg(p.id)+')"></div><div class="vg"></div><span class="shine"></span></div><div class="hcard-t">'+esc(p.name)+'</div><div class="faint" style="padding:0 12px 12px;line-height:1.35">'+esc(p.tag.length>32?p.tag.slice(0,32)+"…":p.tag)+'</div></div>';}).join("")+'</div>'; }
 function renderHome(){ var hr=new Date().getHours(); var greet=hr<11?'Chào buổi sáng':hr<14?'Chào buổi trưa':hr<18?'Chào buổi chiều':'Chào buổi tối';
  var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
  return '<div class="home-greet"><div class="home-av">'+MASCOT+'</div><div style="flex:1"><div class="muted">'+greet+' 👋</div><div style="font-size:16px;font-weight:600;font-family:var(--fh)">Tư vấn viên Wintop</div></div>'+topActions(false)+'</div>'+
