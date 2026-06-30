@@ -132,6 +132,8 @@
 
  #fab{ position:fixed; right:16px; bottom:90px; width:58px; height:58px; border-radius:50%; background:linear-gradient(145deg,#FBD08A,#E68A2E); box-shadow:0 8px 18px rgba(230,138,46,.45); display:flex; align-items:center; justify-content:center; z-index:35; cursor:pointer; padding:5px; animation:bob 2.6s ease-in-out infinite; }
  #fab svg{ width:46px; height:46px; } #fab .dot{ position:absolute; top:1px; right:1px; width:14px; height:14px; border-radius:50%; background:#16a34a; border:2px solid #fff; }
+ #gamefab{ position:fixed; right:18px; bottom:156px; width:54px; height:54px; border-radius:50%; background:linear-gradient(145deg,#C9A0FF,#7C5CE0); box-shadow:0 8px 18px rgba(124,92,224,.5); display:flex; align-items:center; justify-content:center; z-index:35; cursor:pointer; color:#fff; animation:bob 2.6s ease-in-out infinite .4s; }
+ #gamefab svg{ width:27px; height:27px; } #gamefab .gbadge{ position:absolute; top:-5px; right:-6px; background:#E0533D; color:#fff; font-size:8.5px; font-weight:800; padding:2px 6px; border-radius:8px; border:2px solid #fff; }
  @keyframes bob{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
  .sheet{ position:fixed; inset:0; background:rgba(15,27,45,.45); z-index:40; display:flex; align-items:flex-end; justify-content:center; }
  .sheet-c{ background:#fff; width:100%; max-width:560px; border-radius:26px 26px 0 0; padding:16px 16px 22px; max-height:88vh; display:flex; flex-direction:column; }
@@ -307,6 +309,7 @@
  <div class="wrap"><div id="view"></div></div>
  <div class="tabbar" id="tabbar"></div>
  <div id="fab" onclick="openAsst()"></div>
+ <div id="gamefab" onclick="openGame()"></div>
  <div id="asst"></div>
  <div id="ovl"></div>
  <div id="drawer"></div>
@@ -896,7 +899,8 @@ function renderOvl(){ var o=el("ovl");
 var TIPS=["Nhớ đo Z-score/BMI trước khi gợi ý sản phẩm nhé!","Giai đoạn 'Nhận biết' đừng bán vội — kể chuyện, khơi gợi trước.","Khách hay ốm vặt → ưu tiên Colostrum Gain (Lactoferrin).","Mẹ bầu nghi tiểu đường → ngưng tư vấn, mời đi khám bác sĩ.","Chốt nhanh: cho khách xem số lon/tháng + thành tiền.","Trẻ nhẹ cân là ưu tiên số 1 — dùng dòng đậm độ cao Wintop BA."];
 var asstOpen=false, asstLog=[];
 function curMascot(){ return MASCOTS[S.mascotId]||MASCOTS.lion; }
-function renderFab(){ var f=el('fab'); if(f) f.innerHTML=curMascot()+'<span class="dot"></span>'; }
+function renderFab(){ var f=el('fab'); if(f) f.innerHTML=curMascot()+'<span class="dot"></span>'; var g=el('gamefab'); if(g) g.innerHTML=ic('gift',27)+'<span class="gbadge">MỚI</span>'; }
+function openGame(){ var o=el('ovl'); if(!o)return; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="text-align:center;padding:26px 20px"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#C9A0FF,#7C5CE0);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;box-shadow:0 10px 22px rgba(124,92,224,.4)">'+ic("gift",38)+'</div><div style="font-weight:800;font-family:var(--fh);font-size:19px;color:#10357A">Vòng quay may mắn</div><div style="display:inline-block;background:#F1ECFF;color:#7C5CE0;font-weight:800;font-size:11px;letter-spacing:.5px;padding:5px 14px;border-radius:999px;margin-top:9px">SẮP RA MẮT</div><div class="muted" style="margin-top:13px;line-height:1.65;font-size:13.5px">Tích điểm mỗi đơn · quay thưởng · đổi quà cho khách hàng thân thiết. Tính năng đang được phát triển — hãy đón chờ! 🎁</div><button class="btn" style="margin-top:18px" onclick="closeOvl()">Đã hiểu</button></div></div>'; }
 function setMascot(id){ S.mascotId=id; MASCOT=MASCOTS[id]||MASCOTS.lion; renderFab(); render(); renderAsst(); }
 function openAsst(){ asstOpen=true; if(!asstLog.length) asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
 function closeAsst(){ asstOpen=false; el('asst').innerHTML=''; }
