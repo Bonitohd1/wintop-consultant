@@ -599,6 +599,7 @@ CSR.push(
 
 /* ===== TRẠNG THÁI (RAM-only) ===== */
 var S={ tab:"home", step:1, buyer:{name:"",phone:"",addr:"",rel:""}, user:{name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""}, m:{}, cls:null, needs:[], rec:null, quiz:null, promoYear:"2026", qaTerm:"", qaOpen:-1, openProd:null, mascotId:"lion", acc:{name:"Tư vấn viên Wintop",area:"Điểm bán Wintop"}, scanState:"done", notiOpen:false, accOpen:false, consent:true, curSessionId:null, _saved:false, adminOpen:false, adminAuthed:false, adminData:null, stockOpen:false, cart:{}, orderBuyer:{name:"",phone:""} };
+try{ var _pgn=localStorage.getItem("wt_pg"); if(_pgn) S.acc.name=JSON.parse(_pgn); var _pga=localStorage.getItem("wt_area"); if(_pga) S.acc.area=JSON.parse(_pga); }catch(e){}
 function esc(s){ return (s==null?"":(""+s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 function deburr(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/g,"d"); }
 function el(id){ return document.getElementById(id); }
@@ -1627,6 +1628,12 @@ function adminDoChangePass(){
 }
 function adminWipe(){ if(confirm("XOÁ toàn bộ dữ liệu khách đã lưu mã hoá trên máy này?\nChỉ nên làm sau khi đã đồng bộ/lưu file an toàn.")){ localStorage.removeItem(SS_KEY); S.adminData=[]; renderAdmin(); } }
 var ZALO_OA_KEY="wt_zalo_oa";
+function makePgLink(){ if(!wtTenant()){ toast("Chưa có Mã NPP."); return; }
+  var pg=prompt("Nhập tên/mã PG (vd: Lan, PG01):",""); if(!pg||!pg.trim())return; pg=pg.trim();
+  var link="https://tuvan.wintop.vn/?npp="+encodeURIComponent(wtTenant())+"&pg="+encodeURIComponent(pg);
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(link).then(function(){ toast("Đã copy link cho PG "+pg); }).catch(function(){ prompt("Copy link cho PG "+pg+":",link); }); }
+  else { prompt("Copy link cho PG "+pg+":",link); }
+}
 function openZaloOA(){ var link=lsGet(ZALO_OA_KEY,"")||""; if(!link){ var v=prompt("Dán link Zalo OA doanh nghiệp (vd: https://zalo.me/xxxxxxxxx):",""); if(v&&v.trim()){ lsSet(ZALO_OA_KEY,v.trim()); link=v.trim(); } else return; } window.open(link,"_blank","noopener"); }
 function restockAdd(sku,delta){ if(!S.rcart)S.rcart={}; var nv=(S.rcart[sku]||0)+delta; if(nv<0)nv=0; S.rcart[sku]=nv; var qs=el("rq_"+sku); if(!qs){ renderRestock(); return; } qs.textContent=nv; var row=qs.parentNode&&qs.parentNode.parentNode; if(row&&row.classList&&row.classList.contains("card")){ row.style.border=nv>0?"1px solid #cfe0fb":""; row.style.background=nv>0?"#F7FBFF":""; } var tot=0; Object.keys(S.rcart).forEach(function(k){tot+=S.rcart[k]||0;}); var b=el("rsbtn"); if(b){ b.innerHTML=ic("check",17)+"Gửi đơn ("+tot+" lon)"; b.disabled=(tot<=0); b.style.opacity=tot>0?"1":".5"; } }
 function openRestock(){ if(!wtTenant()){ toast("Chưa có Mã NPP — mở Tồn kho đặt Mã NPP trước khi đặt hàng."); return; } S.rcart=S.rcart||{}; renderRestock(); }
@@ -1698,6 +1705,7 @@ function renderAdmin(){
   '<div style="border-top:1px solid var(--line);margin:12px 0;padding-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#0E3D2E;color:#12B981">'+ic("cart",16)+'</span>Quản trị Nhà Phân Phối</div>'+
   '<div style="display:flex;gap:9px"><button class="btn sec" style="flex:1" onclick="openStock()">'+ic("box",16)+'Tồn kho</button><button class="btn ok" style="flex:1" onclick="openRestock()">'+ic("cart",16)+'Đặt hàng công ty</button></div>'+
   '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openRestockOrders()">'+ic("box",16)+'Đơn đã đặt & trạng thái duyệt</button>'+
+  '<button class="btn ghost" style="margin-top:9px" onclick="makePgLink()">'+ic("user",16)+'Tạo link cho PG (cấp mã tư vấn viên)</button>'+
   '<button class="btn ghost" style="margin-top:9px" onclick="openZaloOA()">'+ic("spark",16)+'Chat Zalo OA doanh nghiệp</button></div>'+
   '<button class="btn ghost" style="margin-top:10px" onclick="closeAdmin()">Đóng</button>'+
  '</div></div>';
@@ -1707,10 +1715,11 @@ function renderAdmin(){
 /* Tự đồng bộ đơn về hệ thống NPP: khi mở app, khi có mạng lại, và mỗi 60s */
 (function(){
   // Cap san Ma NPP qua link ?npp=<ma> (ban giao NPP khong phai go tay)
-  try{ var usp=new URLSearchParams(location.search); var np=usp.get("npp");
-    if(np){ np=np.trim(); localStorage.setItem("wt_tenant", JSON.stringify(np)); localStorage.setItem("wt_tenant_locked","1");
-      // xoa ?npp khoi URL cho gon (giu lai da luu)
-      try{ history.replaceState(null,"",location.pathname+location.hash); }catch(e){} }
+  try{ var usp=new URLSearchParams(location.search); var np=usp.get("npp"); var pgc=usp.get("pg"); var arc=usp.get("area");
+    if(np){ np=np.trim(); localStorage.setItem("wt_tenant", JSON.stringify(np)); localStorage.setItem("wt_tenant_locked","1"); }
+    if(pgc){ pgc=pgc.trim(); localStorage.setItem("wt_pg", JSON.stringify(pgc)); try{ if(window.S&&S.acc){ S.acc.name=pgc; } }catch(e){} }
+    if(arc){ arc=arc.trim(); localStorage.setItem("wt_area", JSON.stringify(arc)); try{ if(window.S&&S.acc){ S.acc.area=arc; } }catch(e){} }
+    if((np||pgc||arc)){ try{ history.replaceState(null,"",location.pathname+location.hash); if(typeof render==="function") render(); }catch(e){} }
   }catch(e){}
   function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){} }
   function autoStock(){ try{ if(typeof pullStockAuto==="function") pullStockAuto(); }catch(e){} }
