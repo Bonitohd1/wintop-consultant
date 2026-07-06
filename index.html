@@ -127,6 +127,16 @@
 .pshine-box{ position:relative; }
 .pshine-box::after{ content:""; position:absolute; top:0; left:-60%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent); transform:skewX(-18deg); animation:pshine 3.2s ease-in-out infinite; pointer-events:none; }
 @keyframes pshine{ 0%{left:-60%} 60%{left:130%} 100%{left:130%} }
+
+/* ---- Toast thông báo ---- */
+#toastwrap{position:fixed;left:0;right:0;bottom:calc(70px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:9999;pointer-events:none;padding:0 14px}
+.toast{pointer-events:auto;max-width:440px;width:100%;display:flex;align-items:flex-start;gap:10px;background:#122033;color:#fff;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.45;box-shadow:0 10px 30px rgba(10,20,40,.28);transform:translateY(18px);opacity:0;transition:transform .32s cubic-bezier(.22,1,.36,1),opacity .28s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast .ti{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
+.toast.ok{background:#0E3D2E}.toast.ok .ti{background:#12B981;color:#fff}
+.toast.err{background:#3F1620}.toast.err .ti{background:#F0466B;color:#fff}
+.toast.info{background:#122033}.toast.info .ti{background:#3B82F6;color:#fff}
+.toast .tt{flex:1;min-width:0;white-space:pre-line}
 </style>
 <style>
  body{ background:linear-gradient(180deg,#EAF4FF,#F4FBFF 26%,#F6FAFC); background-attachment:fixed; padding-bottom:98px; }
@@ -642,7 +652,7 @@ function step1(){ var u=S.user, dyn="";
  '<label>Tên người dùng</label><input value="'+esc(S.user.name)+'" oninput="S.user.name=this.value" placeholder="Họ tên người dùng"/>'+
  '<label>Đối tượng sử dụng *</label><div class="chips">'+OBJS.map(function(o){return '<div class="chip '+(u.obj===o.v?"on":"")+'" onclick="S.user.obj=\''+o.v+'\';render()">'+o.l+'</div>';}).join("")+'</div>'+dyn+'</div>'+
  '<button class="btn" onclick="next1()">Tiếp tục '+ic("arrow",18)+'</button>'; }
-function next1(){ if(!S.buyer.name||!S.buyer.phone){alert("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){alert("Chọn đối tượng sử dụng.");return;} if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
+function next1(){ if(!S.buyer.name||!S.buyer.phone){toast("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){toast("Chọn đối tượng sử dụng.");return;} if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
 
 function numIn(k,ph){ return '<input type="number" inputmode="decimal" value="'+(S.m[k]!=null?S.m[k]:"")+'" oninput="setM(\''+k+'\',this.value)" placeholder="'+ph+'"/>'; }
 function step2(){ var o=S.user.obj,f="";
@@ -651,7 +661,7 @@ function step2(){ var o=S.user.obj,f="";
  else if(o==="adult")f='<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
  else f='<label>Tuổi</label>'+numIn("age","tuổi")+'<div class="row"><div><label>CN trước thai (kg)</label>'+numIn("pw","kg")+'</div><div><label>CN hiện tại (kg)</label>'+numIn("w","kg")+'</div></div><div class="row"><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div><div><label>Tuần thai</label>'+numIn("week","tuần")+'</div></div>';
  return stepBar()+'<div class="card"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:var(--pri-soft);color:var(--pri)">'+ic("calc",16)+'</span>Đo chỉ số dinh dưỡng</div><div class="muted" style="margin-bottom:4px">Bộ tính toán chạy ngoại tuyến tại máy.</div>'+f+'</div><div class="btnrow"><button class="btn ghost" onclick="S.step=1;render()">Quay lại</button><button class="btn" onclick="next2()">Tính & tiếp '+ic("arrow",18)+'</button></div>'; }
-function next2(){ var c=classify(); if(!c){alert("Nhập đủ số liệu hợp lệ.");return;} S.cls=c; S.step=3; window.scrollTo(0,0); render(); }
+function next2(){ var c=classify(); if(!c){toast("Nhập đủ số liệu hợp lệ.");return;} S.cls=c; S.step=3; window.scrollTo(0,0); render(); }
 
 /* ENGINE */
 function interp(t,x){ var ks=Object.keys(t).map(Number).sort(function(a,b){return a-b;}); if(x<=ks[0])return t[ks[0]]; if(x>=ks[ks.length-1])return t[ks[ks.length-1]]; for(var i=0;i<ks.length-1;i++){ if(x>=ks[i]&&x<=ks[i+1]){var r=(x-ks[i])/(ks[i+1]-ks[i]);return t[ks[i]]+r*(t[ks[i+1]]-t[ks[i]]);} } return t[ks[0]]; }
@@ -796,13 +806,27 @@ function heroCard(c,nm){ var grad=c.status==="low"?"linear-gradient(135deg,#F266
 }
 /* Video tư vấn theo sản phẩm/nhu cầu — nhúng link YouTube, gắn vào kết quả tư vấn. Thêm mới: chỉ cần thêm 1 dòng vào TUVAN_VIDEO. */
 var TUVAN_VIDEO={
-  canxinano:{ id:"oYGBRX94MIY", title:"Giải mã nỗi lo xương khớp — Bảo vệ xương khớp tuổi xế chiều", need:"Xương khớp" }
+  colostrum:[ {id:"KY4IL1Drjoo", title:"Vì sao con cứ hở tí là ốm?", need:"Miễn dịch"},
+              {id:"pbXhTLmUokc", title:"Vì sao con ăn nhiều vẫn gầy?", need:"Tăng cân"} ],
+  ba:[ {id:"pbXhTLmUokc", title:"Vì sao con ăn nhiều vẫn gầy?", need:"Tăng cân"},
+       {id:"GDn_nL6ht7I", title:"Tiêu hoá khoẻ — chìa khoá giúp con hấp thu tốt", need:"Tiêu hoá"} ],
+  baby:[ {id:"KY4IL1Drjoo", title:"Vì sao con cứ hở tí là ốm?", need:"Miễn dịch"},
+         {id:"GDn_nL6ht7I", title:"Tiêu hoá khoẻ — chìa khoá giúp con hấp thu tốt", need:"Tiêu hoá"} ],
+  kaoiq:[ {id:"ZavyvWW_9E0", title:"Vì sao con mãi chẳng cao lên?", need:"Chiều cao"} ],
+  mama:[ {id:"-6ujkcNXCtA", title:"Dinh dưỡng thai kỳ cho mẹ và bé", need:"Thai kỳ"},
+         {id:"vKNl372BYIo", title:"Bí quyết giúp mẹ bầu ngủ ngon", need:"Thai kỳ"} ],
+  diabet:[ {id:"08hlr290HAI", title:"Kiêng đủ đường mà chỉ số vẫn cao?", need:"Tiểu đường"},
+           {id:"Pc5dsJg2BjI", title:"Đường huyết bất ổn không đến đột ngột!", need:"Tiểu đường"} ],
+  canxinano:[ {id:"oYGBRX94MIY", title:"Bảo vệ xương khớp tuổi xế chiều", need:"Xương khớp"},
+              {id:"sT5izXRCiCE", title:"Dinh dưỡng vững vàng cho hệ vận động", need:"Xương khớp"} ]
 };
 function ytThumb(id){ return "https://img.youtube.com/vi/"+id+"/hqdefault.jpg"; }
 function ytLink(id){ return "https://www.youtube.com/shorts/"+id; }
 function tuvanVideoCard(r){
-  var prods=(r&&r.prods)||[]; var seen={}; var cards="";
-  for(var i=0;i<prods.length;i++){ var v=TUVAN_VIDEO[prods[i]]; if(!v||seen[v.id])continue; seen[v.id]=1;
+  var prods=(r&&r.prods)||[]; var seen={}; var cards=""; var list=[];
+  for(var pi=0;pi<prods.length;pi++){ var arr=TUVAN_VIDEO[prods[pi]]; if(!arr)continue; for(var k=0;k<arr.length;k++){ if(!seen[arr[k].id]){ seen[arr[k].id]=1; list.push(arr[k]); } } }
+  list=list.slice(0,3);
+  for(var i=0;i<list.length;i++){ var v=list[i];
     cards+='<a href="'+ytLink(v.id)+'" target="_blank" rel="noreferrer" style="display:flex;gap:12px;align-items:center;text-decoration:none;background:#fff;border:1px solid #DCE7FF;border-radius:14px;padding:10px;margin-bottom:10px;box-shadow:var(--she)">'+
       '<span style="position:relative;flex-shrink:0;width:120px;height:72px;border-radius:10px;overflow:hidden;display:block;background:#E3EEFF">'+
         '<img loading="lazy" src="'+ytThumb(v.id)+'" alt="Video tư vấn" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.opacity=0"/>'+
@@ -988,7 +1012,7 @@ var DMENU=[ {t:"Thông báo",ic:"bell",g:"linear-gradient(135deg,#FF9D7A,#E0533D
 function renderDrawer(){ return '<div class="dwrap" onclick="if(event.target===this)closeDrawer()"><div class="dpanel"><div class="dhead"><div class="da">'+curMascot()+'</div><div><div style="font-weight:700;font-family:var(--fh);font-size:15px">'+esc(S.acc.name)+'</div><div style="font-size:12px;opacity:.85">'+esc(S.acc.area)+'</div></div></div><div style="flex:1;overflow-y:auto;padding:6px 0">'+DMENU.map(function(m){return '<div class="ditem" onclick="closeDrawer();setTimeout('+m.fn+',180)"><span class="di" style="background:'+m.g+'">'+ic(m.ic,18)+'</span>'+m.t+'</div>';}).join("")+'</div><div class="faint" style="padding:14px 18px" onclick="adminTap()">Wintop Consultant · v3.2 · Offline-first</div></div></div>'; }
 function openDrawer(){ var d=el("drawer"); d.innerHTML=renderDrawer(); requestAnimationFrame(function(){ var w=d.firstChild; if(w)w.classList.add("open"); }); }
 function closeDrawer(){ var d=el("drawer"); var w=d.firstChild; if(w){w.classList.remove("open"); setTimeout(function(){d.innerHTML="";},300);} }
-function shareApp(){ var t="Wintop Consultant — app tư vấn dinh dưỡng cho tư vấn viên."; if(navigator.share){navigator.share({text:t}).catch(function(){});} else if(navigator.clipboard){navigator.clipboard.writeText(t); alert("Đã sao chép lời giới thiệu app.");} }
+function shareApp(){ var t="Wintop Consultant — app tư vấn dinh dưỡng cho tư vấn viên."; if(navigator.share){navigator.share({text:t}).catch(function(){});} else if(navigator.clipboard){navigator.clipboard.writeText(t); toast("Đã sao chép lời giới thiệu app.");} }
 function logoutApp(){ if(confirm("Đăng xuất khỏi ứng dụng?")){ resetTV(); S.tab="home"; render(); } }
 function goRank(){ setTab("rank"); }
 function pageFade(){ var v=el("view"); if(!v)return; v.style.animation="none"; void v.offsetWidth; v.style.animation="vfade .34s cubic-bezier(.2,.7,.2,1)"; }
@@ -1000,6 +1024,17 @@ var NOTIFS=[ {ic:"gift",t:"Ưu đãi 2026 đang chạy",d:"Tỷ lệ trúng quà
  {ic:"heart",t:"Hoạt động thiện nguyện mới",d:"Wintop tài trợ phẫu thuật tim cho bé Ngô Minh Khôi.",read:true} ];
 var NOTIF_KEY="wt_notifs";
 function dynNotifs(){ try{ return JSON.parse(localStorage.getItem(NOTIF_KEY)||"[]"); }catch(e){ return []; } }
+function toast(msg,type){ msg=(msg==null?"":String(msg)); if(!type){ var low=msg.toLowerCase(); type = /✅|thành công|đã lưu|đã gửi|đã đồng bộ|đã kéo|đã thêm/.test(low)?"ok" : /lỗi|không |thất bại|chưa |sai |không kết nối/.test(low)?"err":"info"; }
+  var w=document.getElementById("toastwrap"); if(!w){ w=document.createElement("div"); w.id="toastwrap"; document.body.appendChild(w); }
+  var clean=msg.replace(/^✅\s*/,"").replace(/^❌\s*/,"");
+  var sym=type==="ok"?"✓":type==="err"?"!":"i";
+  var t=document.createElement("div"); t.className="toast "+type;
+  t.innerHTML='<span class="ti">'+sym+'</span><span class="tt"></span>';
+  t.querySelector(".tt").textContent=clean;
+  w.appendChild(t); requestAnimationFrame(function(){ t.classList.add("show"); });
+  var ms=Math.min(6500, Math.max(2600, clean.length*55));
+  setTimeout(function(){ t.classList.remove("show"); setTimeout(function(){ if(t.parentNode)t.parentNode.removeChild(t); }, 360); }, ms);
+}
 function pushNotif(icn,t,dd){ var a=dynNotifs(); a.unshift({ic:icn,t:t,d:dd,at:Date.now(),read:false}); if(a.length>40)a=a.slice(0,40); try{ localStorage.setItem(NOTIF_KEY,JSON.stringify(a)); }catch(e){} }
 function relTime(ts){ if(!ts)return ""; var s=Math.floor((Date.now()-ts)/1000); if(s<60)return "vừa xong"; if(s<3600)return Math.floor(s/60)+" phút trước"; if(s<86400)return Math.floor(s/3600)+" giờ trước"; var d=new Date(ts); return ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2); }
 function allNotifs(){ var dyn=dynNotifs(); var sta=NOTIFS.map(function(n){return {ic:n.ic,t:n.t,d:n.d,read:n.read,at:0};}); return dyn.concat(sta); }
@@ -1314,7 +1349,7 @@ function renderStats(){
 }
 function markOrdered(){
  var prods=(S.rec&&S.rec.prods)?S.rec.prods:[];
- if(!prods.length){ alert("Chưa có sản phẩm đề xuất để lên đơn."); return; }
+ if(!prods.length){ toast("Chưa có sản phẩm đề xuất để lên đơn."); return; }
  if(!S.cart)S.cart={};
  prods.forEach(function(id,i){ var ex=EXTRA[id]||{pm:1}; S.cart[id]=(S.cart[id]||0)+(i===0?(ex.pm||1):1); });
  if(!S.orderBuyer)S.orderBuyer={name:"",phone:""};
@@ -1414,12 +1449,12 @@ function syncCfg(){ return lsGet(SYNC_KEY,{url:""}); }
 function adminSaveSyncUrl(u){ var c=syncCfg(); c.url=(u||"").trim(); lsSet(SYNC_KEY,c); }
 function adminSync(){
  var c=syncCfg();
- if(!c.url){ alert("Chưa cấu hình endpoint hệ thống Isopharma.\nNhập URL đồng bộ ở ô bên dưới rồi bấm Lưu, sau đó thử lại.\n(Có thể trỏ vào Odoo / Studio / CDP tuỳ hệ chọn sau.)"); return; }
- if(!S.adminData||!S.adminData.length){ alert("Chưa có dữ liệu để đồng bộ."); return; }
+ if(!c.url){ toast("Chưa cấu hình endpoint hệ thống Isopharma.\nNhập URL đồng bộ ở ô bên dưới rồi bấm Lưu, sau đó thử lại.\n(Có thể trỏ vào Odoo / Studio / CDP tuỳ hệ chọn sau.)"); return; }
+ if(!S.adminData||!S.adminData.length){ toast("Chưa có dữ liệu để đồng bộ."); return; }
  var btn=el("syncbtn"); if(btn){btn.textContent="Đang đồng bộ...";btn.disabled=true;}
  fetch(c.url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source:"wintop-consultant",count:S.adminData.length,sessions:S.adminData})})
-  .then(function(r){ if(r.ok) alert("✅ Đồng bộ thành công "+S.adminData.length+" phiên về hệ thống Isopharma."); else alert("Đồng bộ lỗi: HTTP "+r.status+". Kiểm tra lại endpoint."); })
-  .catch(function(e){ alert("Không kết nối được hệ thống: "+e.message+"\n(App vẫn giữ dữ liệu mã hoá cục bộ — thử lại khi có mạng.)"); })
+  .then(function(r){ if(r.ok) toast("✅ Đồng bộ thành công "+S.adminData.length+" phiên về hệ thống Isopharma."); else toast("Đồng bộ lỗi: HTTP "+r.status+". Kiểm tra lại endpoint."); })
+  .catch(function(e){ toast("Không kết nối được hệ thống: "+e.message+"\n(App vẫn giữ dữ liệu mã hoá cục bộ — thử lại khi có mạng.)"); })
   .then(function(){ var b=el("syncbtn"); if(b){b.textContent="Đồng bộ về hệ thống";b.disabled=false;} });
 }
 
@@ -1433,21 +1468,21 @@ function saveStock(){
  PRODUCTS.forEach(function(p){ var inp=el("stk_"+p.id); if(inp){ var v=parseInt(inp.value,10); s.items[p.id]=(isFinite(v)&&v>=0)?v:0; } });
  var area=el("stk_area"); s.area=area?area.value:(s.area||""); s.at=Date.now();
  if(el("stk_tenant")) lsSet(TENANT_KEY,el("stk_tenant").value.trim());
- lsSet(STOCK_KEY,s); alert("✅ Đã lưu tồn kho điểm bán."); closeStock();
+ lsSet(STOCK_KEY,s); toast("✅ Đã lưu tồn kho điểm bán."); closeStock();
 }
 function pullStock(){
  var url=(el("stk_url")?el("stk_url").value:"").trim(); lsSet(STOCK_URL_KEY,url);
  if(el("stk_tenant")) lsSet(TENANT_KEY,el("stk_tenant").value.trim());
  if(el("ord_key")) lsSet(BRIDGE_KEY_KEY,el("ord_key").value.trim());
- if(!url){ alert("Nhập URL endpoint tồn kho (cầu nối KiotViet · /api/stock) rồi thử lại."); return; }
+ if(!url){ toast("Nhập URL endpoint tồn kho (cầu nối KiotViet · /api/stock) rồi thử lại."); return; }
  var b=el("stkpullbtn"); if(b){b.textContent="Đang kéo...";b.disabled=true;}
  var headers={}, bk=lsGet(BRIDGE_KEY_KEY,""), tn=lsGet(TENANT_KEY,""); if(bk)headers["X-Bridge-Key"]=bk; if(tn)headers["X-Tenant"]=tn;
  fetch(url,{headers:headers}).then(function(r){ return r.json(); }).then(function(d){
   var items=d.items||d; var s=stockData()||{items:{}}; if(!s.items)s.items={};
   PRODUCTS.forEach(function(p){ if(items[p.id]!=null){ var v=parseInt(items[p.id],10); s.items[p.id]=isFinite(v)?v:0; } });
   if(d.area)s.area=d.area; s.at=Date.now(); lsSet(STOCK_KEY,s);
-  alert("✅ Đã kéo tồn kho từ KiotViet."); renderStock();
- }).catch(function(e){ alert("Không kéo được tồn kho: "+e.message); var b2=el("stkpullbtn"); if(b2){b2.textContent="Kéo tồn kho (KiotViet)";b2.disabled=false;} });
+  toast("✅ Đã kéo tồn kho từ KiotViet."); renderStock();
+ }).catch(function(e){ toast("Không kéo được tồn kho: "+e.message); var b2=el("stkpullbtn"); if(b2){b2.textContent="Kéo tồn kho (KiotViet)";b2.disabled=false;} });
 }
 function renderStock(){
  var o=el("ovl"); if(!o)return; var s=stockData()||{items:{}}; var items=s.items||{}; var url=stockUrlCfg();
@@ -1472,14 +1507,14 @@ function orderQueue(){ return lsGet(OQ_KEY,[]); }
 function pendingOrders(){ return orderQueue().filter(function(o){return !o.sent;}); }
 function queueOrder(o){ var q=orderQueue(); q.push(o); lsSet(OQ_KEY,q); }
 function flushOrders(){
- var url=lsGet(ORDER_URL_KEY,""); if(!url){ alert("Chưa cấu hình endpoint đẩy đơn KiotViet (cầu nối)."); return; }
+ var url=lsGet(ORDER_URL_KEY,""); if(!url){ toast("Chưa cấu hình endpoint đẩy đơn KiotViet (cầu nối)."); return; }
  var q=orderQueue(), pend=q.filter(function(o){return !o.sent;});
- if(!pend.length){ alert("Không có đơn nào chờ đẩy."); return; }
+ if(!pend.length){ toast("Không có đơn nào chờ đẩy."); return; }
  var key=lsGet(BRIDGE_KEY_KEY,""), tn=lsGet(TENANT_KEY,""), headers={"Content-Type":"application/json"}; if(key)headers["X-Bridge-Key"]=key; if(tn)headers["X-Tenant"]=tn;
  var btn=el("ordpushbtn"); if(btn){btn.textContent="Đang đẩy...";btn.disabled=true;}
  var i=0, ok=0;
  function next(){
-  if(i>=pend.length){ lsSet(OQ_KEY,q); var b=el("ordpushbtn"); if(b){b.textContent="Đẩy đơn chờ";b.disabled=false;} if(ok>0)pushNotif("check","Đơn đã gửi KiotViet",ok+" đơn đã đẩy về nhà phân phối thành công."); alert("Đã đẩy "+ok+"/"+pend.length+" đơn về KiotViet."+(ok<pend.length?" Các đơn lỗi vẫn giữ trong hàng đợi để thử lại.":"")); if(S.stockOpen)renderStock(); return; }
+  if(i>=pend.length){ lsSet(OQ_KEY,q); var b=el("ordpushbtn"); if(b){b.textContent="Đẩy đơn chờ";b.disabled=false;} if(ok>0)pushNotif("check","Đơn đã gửi KiotViet",ok+" đơn đã đẩy về nhà phân phối thành công."); toast("Đã đẩy "+ok+"/"+pend.length+" đơn về KiotViet."+(ok<pend.length?" Các đơn lỗi vẫn giữ trong hàng đợi để thử lại.":"")); if(S.stockOpen)renderStock(); return; }
   var o=pend[i];
   fetch(url,{method:"POST",headers:headers,body:JSON.stringify(o)}).then(function(r){ if(r.ok){o.sent=true;o.sentAt=Date.now();ok++;} }).catch(function(){}).then(function(){ i++; next(); });
  }
@@ -1499,7 +1534,7 @@ function renderOrders(){
 
 
 /* ---------- LÊN ĐƠN MỚI (chọn SKU + số lượng) ---------- */
-function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ alert("Chỉ còn "+lvl+" lon "+P(sku).name+" tại điểm bán."); nv=lvl; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
+function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ toast("Chỉ còn "+lvl+" lon "+P(sku).name+" tại điểm bán."); nv=lvl; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
 function renderMakeOrder(){
  var cart=S.cart||{}; var items=Object.keys(cart).filter(function(k){return cart[k]>0;});
  var totQty=0,totAmt=0; items.forEach(function(k){var e=EXTRA[k]||{price:0};totQty+=cart[k];totAmt+=(e.price||0)*cart[k];});
@@ -1512,13 +1547,13 @@ function renderMakeOrder(){
 }
 function submitOrder(){
  var cart=S.cart||{}; var items=Object.keys(cart).filter(function(k){return cart[k]>0;});
- if(!items.length){ alert("Chưa chọn sản phẩm nào."); return; }
- for(var i=0;i<items.length;i++){ var lvl=stockLevel(items[i]); if(lvl!=null&&cart[items[i]]>lvl){ alert("⚠ "+P(items[i]).name+" chỉ còn "+lvl+" lon — điều chỉnh lại."); return; } }
+ if(!items.length){ toast("Chưa chọn sản phẩm nào."); return; }
+ for(var i=0;i<items.length;i++){ var lvl=stockLevel(items[i]); if(lvl!=null&&cart[items[i]]>lvl){ toast("⚠ "+P(items[i]).name+" chỉ còn "+lvl+" lon — điều chỉnh lại."); return; } }
  var names=[],totQty=0,totAmt=0,b=S.orderBuyer||{name:"",phone:""};
  items.forEach(function(k){ var e=EXTRA[k]||{price:0}, qty=cart[k]; if(stockLevel(k)!=null)stockDec(k,qty); bumpOrder(); queueOrder({sku:k,name:P(k).name,qty:qty,price:e.price,amount:(e.price||0)*qty,buyer:b.name,phone:b.phone,area:S.acc.area,pg:S.acc.name,at:Date.now(),sent:false}); names.push(qty+" "+P(k).name); totQty+=qty; totAmt+=(e.price||0)*qty; });
  pushNotif("cart","Đã tạo đơn hàng",totQty+" lon · "+items.length+" SP"+(b.name?(" · "+b.name):"")+" · Chờ đẩy về NPP");
  S.cart={}; S.orderBuyer={name:"",phone:""};
- alert("✅ Đã tạo đơn: "+names.join(", ")+".\nTổng "+totQty+" lon"+(totAmt?(" · "+fmtk(totAmt)):"")+".\nĐã ghi nhận (mã hoá) & chờ đẩy về NPP.");
+ toast("✅ Đã tạo đơn: "+names.join(", ")+".\nTổng "+totQty+" lon"+(totAmt?(" · "+fmtk(totAmt)):"")+".\nĐã ghi nhận (mã hoá) & chờ đẩy về NPP.");
  setTab("orders");
 }
 
@@ -1542,8 +1577,8 @@ function adminLogin(){
 }
 function adminDoChangePass(){
  var o=prompt("Nhập MẬT KHẨU HIỆN TẠI:"); if(o==null)return;
- var n=prompt("Nhập MẬT KHẨU MỚI (tối thiểu 6 ký tự):"); if(n==null)return; if(n.length<6){alert("Mật khẩu mới quá ngắn.");return;}
- adminChangePass(o,n).then(function(){ alert("✅ Đã đổi mật khẩu quản trị (lưu trên thiết bị này)."); }).catch(function(){ alert("Đổi mật khẩu thất bại — sai mật khẩu hiện tại?"); });
+ var n=prompt("Nhập MẬT KHẨU MỚI (tối thiểu 6 ký tự):"); if(n==null)return; if(n.length<6){toast("Mật khẩu mới quá ngắn.");return;}
+ adminChangePass(o,n).then(function(){ toast("✅ Đã đổi mật khẩu quản trị (lưu trên thiết bị này)."); }).catch(function(){ toast("Đổi mật khẩu thất bại — sai mật khẩu hiện tại?"); });
 }
 function adminWipe(){ if(confirm("XOÁ toàn bộ dữ liệu khách đã lưu mã hoá trên máy này?\nChỉ nên làm sau khi đã đồng bộ/lưu file an toàn.")){ localStorage.removeItem(SS_KEY); S.adminData=[]; renderAdmin(); } }
 function renderAdmin(){
