@@ -950,7 +950,7 @@ function renderProducts(){
   }
   var p=PRODUCTS.filter(function(x){return x.id===S.openProd;})[0]; if(!p){ S.openProd=null; return renderProducts(); }
   var hasLf=(p.id==="ba"||p.id==="baby"||p.id==="diabet");
-  return '<button class="backbtn" onclick="S.openProd=null;render();window.scrollTo(0,0)">'+ic("back",18)+'Quay lại danh mục</button>'+stockInfo(p.id)+
+  return '<button class="backbtn" onclick="S.openProd=null;render();window.scrollTo(0,0)">'+ic("back",18)+'Quay lại danh mục</button>'+
    pdoc(pimg(p.id),"")+
    '<h2 style="margin:8px 2px 2px">'+esc(p.name)+'</h2><div class="muted" style="margin:0 2px 6px">'+esc(p.tag)+'</div>'+(stockBadge(p.id,true)?'<div style="margin:2px 2px 8px">'+stockBadge(p.id,true)+'</div>':"")+
    secT("info","var(--pri-soft)","var(--pri)","Đối tượng & lợi ích sức khỏe")+'<div class="facts">'+esc(p.audience)+'</div><ul class="facts" style="margin:6px 0 0;padding-left:18px">'+p.claims.map(function(c){return "<li>"+esc(c)+"</li>";}).join("")+'</ul>'+
