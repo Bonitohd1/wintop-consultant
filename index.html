@@ -137,6 +137,16 @@
 .toast.err{background:#3F1620}.toast.err .ti{background:#F0466B;color:#fff}
 .toast.info{background:#122033}.toast.info .ti{background:#3B82F6;color:#fff}
 .toast .tt{flex:1;min-width:0;white-space:pre-line}
+
+/* Thẻ sản phẩm trong trợ lý */
+.asst-prods{margin-top:8px;display:flex;flex-direction:column;gap:7px}
+.asst-prod{display:flex;gap:10px;background:#fff;border:1px solid #E3EAF3;border-radius:12px;padding:8px;align-items:center}
+.asst-prod .ap-img{width:48px;height:48px;border-radius:10px;background-position:center;background-size:cover;background-repeat:no-repeat;border:1px solid #eef2f7;flex-shrink:0;background-color:#fff}
+.asst-prod .ap-name{font-weight:700;font-size:12.5px;color:#152238}
+.asst-prod .ap-btns{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.asst-prod .ap-btns button,.asst-prod .ap-btns a{font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid #cfe0fb;background:#EAF2FF;color:#1D4ED8;text-decoration:none;font-weight:700;cursor:pointer;line-height:1}
+.asst-prod .ap-btns .ap-ord{background:#0F9A6A;border-color:#0F9A6A;color:#fff}
+.bub.a b{color:#0b3d91}
 </style>
 <style>
  body{ background:linear-gradient(180deg,#EAF4FF,#F4FBFF 26%,#F6FAFC); background-attachment:fixed; padding-bottom:98px; }
@@ -1081,7 +1091,26 @@ function setMascot(id){ S.mascotId=id; MASCOT=MASCOTS[id]||MASCOTS.lion; renderF
 function openAsst(){ asstOpen=true; if(!asstLog.length) asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
 function closeAsst(){ asstOpen=false; el('asst').innerHTML=''; }
 function asstGreet(){ var hr=new Date().getHours(), g=hr<11?'Chào buổi sáng':hr<18?'Chào buổi chiều':'Chào buổi tối'; return g+'! Mình là trợ lý Wintop. Mình giúp bạn tra cứu nhanh, gợi ý sản phẩm và tiếp thêm tinh thần bán hàng. Bạn cần gì nào?'; }
-function asstAppend(r,t,fade){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub '+r+(fade&&r==='a'?' fadein':''); d.innerHTML=esc(t).replace(/\n/g,'<br>'); l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
+function mdToHtml(t){ var h=esc(t);
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+  h=h.replace(/(^|\n)\s*[-•]\s+/g,'$1• ');
+  h=h.replace(/\n/g,'<br>');
+  return h; }
+function asstProdCards(text){ if(typeof PRODUCTS==='undefined')return '';
+  var dt=deburr(text).toLowerCase(), out=[], seen={};
+  PRODUCTS.forEach(function(p){ if(seen[p.id])return; var sh=deburr(p.name.replace(/wintop/ig,'')).trim().toLowerCase();
+    if(sh && sh.length>=2 && dt.indexOf(sh)>=0){ seen[p.id]=1; out.push(p); } });
+  if(!out.length)return '';
+  return '<div class="asst-prods">'+out.slice(0,3).map(function(p){
+    var vid=(typeof TUVAN_VIDEO!=='undefined'&&TUVAN_VIDEO[p.id]&&TUVAN_VIDEO[p.id][0])?TUVAN_VIDEO[p.id][0].id:null;
+    var sb=(typeof stockBadge==='function')?stockBadge(p.id):'';
+    return '<div class="asst-prod"><div class="ap-img" style="background-image:url('+pimg(p.id)+')"></div>'
+      +'<div style="flex:1;min-width:0"><div class="ap-name">'+esc(p.name)+'</div>'+(sb?'<div style="margin:3px 0">'+sb+'</div>':'')
+      +'<div class="ap-btns"><button onclick="S.openProd=\''+p.id+'\';setTab(\'sanpham\');closeAsst()">Chi tiết</button>'
+      +(vid?'<a href="https://www.youtube.com/shorts/'+vid+'" target="_blank" rel="noreferrer">▶ Video</a>':'')
+      +'<button class="ap-ord" onclick="cartAdd(\''+p.id+'\',1);setTab(\'makeorder\');closeAsst()">+ Lên đơn</button></div></div></div>';
+  }).join('')+'</div>'; }
+function asstAppend(r,t,fade){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub '+r+(fade&&r==='a'?' fadein':''); d.innerHTML=(r==='a')?(mdToHtml(t)+asstProdCards(t)):(esc(t).replace(/\n/g,'<br>')); l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
 function asstTyping(){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub a'; d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>'; l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
 function asstReply(ans){ var typ=asstTyping(); var delay=550+Math.min(1100,(ans.length||0)*7); setTimeout(function(){ if(typ&&typ.parentNode) typ.parentNode.removeChild(typ); asstAppend('a',ans,true); },delay); }
 function buildAsstContext(){ var ctx={ pg:(S.acc&&S.acc.name)||'', tab:S.tab, npp:(typeof wtTenant==='function'?wtTenant():'') };
@@ -1120,7 +1149,7 @@ function toggleMascot(){ var ks=Object.keys(MASCOTS),i=ks.indexOf(S.mascotId); s
 function renderAsst(){ if(!asstOpen) return; var sugg=[{t:'💡 Mẹo',c:'tip'},{t:'📦 Đơn hàng',c:'orders'},{t:'📊 Tồn kho',c:'stock'},{t:'❓ Hỏi-Đáp',c:'qa'},{t:'✂️ Chia sẻ',c:'share'}];
  el('asst').innerHTML='<div class="sheet" onclick="if(event.target===this)closeAsst()"><div class="sheet-c" style="display:flex;flex-direction:column;max-height:84vh">'
   +'<div style="display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:6px"><div class="asst-av" id="asstav" onclick="toggleMascot()" style="cursor:pointer" title="Chạm để đổi linh vật">'+curMascot()+'</div><div style="flex:1"><div style="font-weight:700;font-family:var(--fh)">Trợ lý Wintop</div><div class="faint" style="font-size:11.5px">Hỏi về sản phẩm · đơn hàng · tồn kho · dinh dưỡng</div></div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeAsst()">'+ic("x",18)+'</button></div>'
-  +'<div class="asst-log" id="asstlog" style="flex:1;min-height:200px;overflow-y:auto;padding:4px 2px 8px">'+asstLog.map(function(m){return '<div class="bub '+m.r+'">'+esc(m.t).replace(/\n/g,'<br>')+'</div>';}).join('')+'</div>'
+  +'<div class="asst-log" id="asstlog" style="flex:1;min-height:200px;overflow-y:auto;padding:4px 2px 8px">'+asstLog.map(function(m){return '<div class="bub '+m.r+'">'+((m.r==='a')?(mdToHtml(m.t)+asstProdCards(m.t)):esc(m.t).replace(/\n/g,'<br>'))+'</div>';}).join('')+'</div>'
   +'<div style="display:flex;gap:7px;overflow-x:auto;padding:8px 0">'+sugg.map(function(s){return '<button class="chip" style="white-space:nowrap;flex:0 0 auto" onclick="asstChip(\''+s.c+'\')">'+s.t+'</button>';}).join('')+'</div>'
   +'<div class="searchbox"><input id="asstin" placeholder="Nhập câu hỏi..." onkeydown="if(event.key===\'Enter\'){asstSend(this.value);this.value=\'\';}"/><button class="btn" style="width:auto;padding:10px 15px" onclick="var i=el(\'asstin\');asstSend(i.value);i.value=\'\'">'+ic('arrow',18)+'</button></div>'
   +'</div></div>';
