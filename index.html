@@ -1872,7 +1872,7 @@ function doSubmitOrder(){
  pushNotif("cart","Đã tạo đơn hàng",totQty+" "+aggUnit(items)+" · "+items.length+" SP"+(b.name?(" · "+b.name):"")+" · Chờ đẩy về NPP");
  S.cart={}; S.orderBuyer={name:"",phone:""}; S.moMore=false;
  closeOvl();
- toast("✅ Đã tạo đơn: "+names.join(", ")+". Tổng "+totQty+" "+aggUnit(items)+" · đang đồng bộ về hệ thống.");
+ toast("✅ Đã tạo đơn: "+names.join(", ")+". Tổng "+totQty+" "+aggUnit(items)+" · đang đồng bộ về hệ thống."); setTimeout(function(){try{if(navigator.onLine)flushOrders(true);}catch(e){}},400);
  setTab("orders");
 }
 
