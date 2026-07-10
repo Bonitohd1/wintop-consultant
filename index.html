@@ -1894,7 +1894,7 @@ function doSubmitOrder(){
 /* ---------- TRIGGER ẨN: #qtri hoặc gõ 7 lần dòng phiên bản ---------- */
 var _adminTap=0,_adminTapT=0;
 function adminTap(){ var now=Date.now(); if(now-_adminTapT>1500)_adminTap=0; _adminTapT=now; _adminTap++; if(_adminTap>=7){ _adminTap=0; if(typeof closeDrawer==="function")closeDrawer(); setTimeout(openAdmin,200); } }
-function checkAdminHash(){ if(location.hash==="#qtri"||location.hash==="#admin"){ try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} openAdmin(); } }
+function checkAdminHash(){ if(location.hash==="#qtri"||location.hash==="#admin"||location.hash==="#quantri"){ try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} openAdmin(); } }
 function checkDeepLink(){ var h=location.hash||""; if(h.indexOf("#sp=")===0){ var id=h.slice(4); if(typeof P==="function"&&P(id)){ S.openProd=id; S.tab="sanpham"; try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} render(); window.scrollTo(0,0); } } }
 
 /* ---------- CỔNG QUẢN TRỊ (UI) ---------- */
@@ -1989,7 +1989,7 @@ function submitRestock(){ var cart=S.rcart||{}; var items=Object.keys(cart).filt
 function renderAdmin(){
  var o=el("ovl"); if(!o)return;
  if(!S.adminOpen){o.innerHTML="";return;}
- var head='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span class="ico" style="background:#10357A;color:#fff;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center">'+ic("lock",18)+'</span><div style="flex:1"><div style="font-weight:700;font-family:var(--fh);font-size:16px">Cổng Quản trị Isopharma</div><div class="faint" style="font-size:11.5px">Chỉ dành cho tài khoản quản trị</div></div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeAdmin()">'+ic("x",18)+'</button></div>';
+ var head='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span class="ico" style="background:#10357A;color:#fff;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center">'+ic("lock",18)+'</span><div style="flex:1"><div style="font-weight:700;font-family:var(--fh);font-size:16px">Cổng Quản trị</div><div class="faint" style="font-size:11.5px">Chỉ dành cho tài khoản quản trị</div></div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeAdmin()">'+ic("x",18)+'</button></div>';
  if(!S.adminAuthed){
   var n=lsGet(SS_KEY,[]).length;
   o.innerHTML='<div class="modal" onclick="if(event.target===this)closeAdmin()"><div class="modal-c">'+head+
