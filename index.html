@@ -1738,6 +1738,52 @@ function pullStock(){
   toast("✅ Đã kéo tồn kho từ hệ thống."); renderStock();
  }).catch(function(e){ toast("Không kéo được tồn kho: "+e.message); var b2=el("stkpullbtn"); if(b2){b2.textContent="Kéo tồn kho (hệ thống)";b2.disabled=false;} });
 }
+function kiotSectionHTML(){
+ var rows=PRODUCTS.map(function(p){return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><div style="flex:1;font-size:12px">'+esc(p.name.replace("Wintop ",""))+'</div><input id="kv_map_'+p.id+'" placeholder="Mã hàng KiotViet" style="width:150px;font-size:12px;padding:6px 8px"/></div>';}).join("");
+ return '<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#EAF1FF;color:#1D4ED8">'+ic("sync",16)+'</span>Kết nối KiotViet</div>'
+  +'<div id="kiotstatus" class="muted" style="margin-bottom:8px">Đang tải trạng thái…</div>'
+  +'<label>Tên gian hàng (Retailer)</label><input id="kv_retailer" placeholder="vd: tengianhang (phần đầu link kiotviet.vn)"/>'
+  +'<label style="margin-top:8px">Client ID</label><input id="kv_clientid" placeholder="dán Client ID"/>'
+  +'<label style="margin-top:8px">Mã bảo mật (Client Secret)</label><input id="kv_secret" type="password" placeholder="dán mã bảo mật (để trống nếu không đổi)"/>'
+  +'<div class="muted" style="margin:12px 0 5px">Mã hàng KiotViet cho từng SP (để khớp đơn & tồn):</div>'+rows
+  +'<button id="kvsavebtn" class="btn" style="margin-top:10px" onclick="kiotSaveCfg()">'+ic("check",16)+'Kiểm tra & Lưu kết nối</button>'
+  +'<button id="kvsyncbtn" class="btn ghost" style="margin-top:9px" onclick="kiotSyncStock()">'+ic("sync",16)+'Đồng bộ tồn từ KiotViet</button>'
+  +'<div class="faint" style="margin-top:8px;font-size:11px">Khoá lưu bảo mật trên hệ thống theo từng NPP. Mỗi NPP tự nhập khoá của gian hàng mình.</div></div>';
+}
+function kiotRenderStatus(d){ var e=el("kiotstatus"); if(!e)return;
+ if(!d||!d.retailer){ e.innerHTML='<span style="color:#94A3B8">Chưa kết nối KiotViet.</span>'; return; }
+ var ok=d.connected&&d.last_ok;
+ e.innerHTML='<b style="color:'+(ok?"#0F9A6A":"#EE4D2D")+'">'+(ok?"● Đã kết nối":"● Chưa kết nối / lỗi")+'</b> · '+esc(d.retailer||"")+(d.branch_id?(' · CN '+d.branch_id):"")+(d.last_error?('<div style="color:#EE4D2D;margin-top:3px">'+esc(d.last_error)+'</div>'):"");
+ if(el("kv_retailer")&&!el("kv_retailer").value)el("kv_retailer").value=d.retailer||"";
+ if(d.sku_map){ PRODUCTS.forEach(function(p){ var i=el("kv_map_"+p.id); if(i&&!i.value&&d.sku_map[p.id])i.value=d.sku_map[p.id]; }); }
+}
+function kiotLoadStatus(){ var tn=wtTenant(); if(!tn)return;
+ fetch(WINTOP_API+"/kiotviet/config?tenant="+encodeURIComponent(tn),{headers:wtHeaders(false)}).then(function(r){return r.json();}).then(kiotRenderStatus).catch(function(){});
+}
+function kiotSaveCfg(){
+ var tn=(el("stk_tenant")?el("stk_tenant").value.trim():"")||wtTenant(); if(tn)lsSet(TENANT_KEY,tn);
+ if(!tn){ toast("Nhập Mã NPP (tenant) ở trên trước."); return; }
+ var map={}; PRODUCTS.forEach(function(p){ var i=el("kv_map_"+p.id); if(i&&i.value.trim())map[p.id]=i.value.trim(); });
+ var body={ tenant:tn, retailer:(el("kv_retailer").value||"").trim(), client_id:(el("kv_clientid").value||"").trim(), sku_map:map, enabled:true };
+ var sec=(el("kv_secret").value||"").trim(); if(sec)body.client_secret=sec;
+ if(!body.retailer||!body.client_id){ toast("Nhập đủ Retailer + Client ID."); return; }
+ var b=el("kvsavebtn"); if(b){b.textContent="Đang kiểm tra…";b.disabled=true;}
+ fetch(WINTOP_API+"/kiotviet/config",{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).then(function(r){return r.json();}).then(function(d){
+  if(b){b.innerHTML=ic("check",16)+'Kiểm tra & Lưu kết nối';b.disabled=false;}
+  if(d&&d.test&&d.test.ok){ toast("✅ Kết nối KiotViet OK"+(d.branch_id?(" · chi nhánh "+d.branch_id):"")); }
+  else { toast("❌ Lỗi: "+((d&&d.test&&d.test.error)||(d&&d.last_error)||"kiểm tra khoá")); }
+  kiotRenderStatus(d);
+ }).catch(function(e){ if(b){b.innerHTML=ic("check",16)+'Kiểm tra & Lưu kết nối';b.disabled=false;} toast("Không gọi được hệ thống: "+e.message); });
+}
+function kiotSyncStock(){
+ var tn=wtTenant(); if(!tn){ toast("Chưa có Mã NPP."); return; }
+ var b=el("kvsyncbtn"); if(b){b.textContent="Đang đồng bộ…";b.disabled=true;}
+ fetch(WINTOP_API+"/kiotviet/sync-stock?tenant="+encodeURIComponent(tn),{method:"POST",headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){
+  if(b){b.innerHTML=ic("sync",16)+'Đồng bộ tồn từ KiotViet';b.disabled=false;}
+  if(d&&d.ok){ var s=stockData()||{items:{}}; if(!s.items)s.items={}; Object.keys(d.items||{}).forEach(function(k){s.items[k]=d.items[k];}); s.at=Date.now(); lsSet(STOCK_KEY,s); toast("✅ Đồng bộ tồn "+d.synced+" SP từ KiotViet."); renderStock(); }
+  else { toast("Đồng bộ lỗi: "+((d&&d.detail)||"kiểm tra kết nối")); }
+ }).catch(function(e){ if(b){b.innerHTML=ic("sync",16)+'Đồng bộ tồn từ KiotViet';b.disabled=false;} toast("Lỗi: "+e.message); });
+}
 function renderStock(){
  var o=el("ovl"); if(!o)return; var s=stockData()||{items:{}}; var items=s.items||{}; var url=stockUrlCfg();
  var rows=PRODUCTS.map(function(p){ var q=items[p.id]; return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)"><div style="flex:1;font-size:13px">'+esc(p.name)+'</div>'+(stockBadge(p.id)||'<span class="faint" style="font-size:11px">chưa có</span>')+'<input id="stk_'+p.id+'" type="number" inputmode="numeric" value="'+(q==null?"":q)+'" placeholder="0" style="width:72px;text-align:center"/></div>'; }).join("");
@@ -1752,7 +1798,8 @@ function renderStock(){
   '<label>Endpoint đẩy đơn (đồng bộ đơn (tuỳ chọn))</label><input id="ord_url" value="'+esc(lsGet(ORDER_URL_KEY,""))+'" placeholder="https://.../api/order"/>'+
   '<label style="margin-top:8px">Bridge Key (X-Bridge-Key)</label><input id="ord_key" value="'+esc(lsGet(BRIDGE_KEY_KEY,""))+'" placeholder="khoá chống lạm dụng"/>'+
   '<button id="ordpushbtn" class="btn ok" style="margin-top:10px" onclick="lsSet(ORDER_URL_KEY,el(\'ord_url\').value.trim());lsSet(BRIDGE_KEY_KEY,el(\'ord_key\').value.trim());flushOrders()">'+ic("sync",16)+'Đồng bộ đơn</button></div>'+
-  '<div class="faint" style="text-align:center;margin-top:12px;font-size:11px">Lên đơn trừ tồn cục bộ + xếp hàng đợi; khi có mạng đồng bộ về hệ thống qua cầu nối. Tồn nhập tay hoặc kéo từ hệ thống.</div></div></div>';
+  kiotSectionHTML()+'<div class="faint" style="text-align:center;margin-top:12px;font-size:11px">Lên đơn trừ tồn cục bộ + xếp hàng đợi; khi có mạng đồng bộ về hệ thống qua cầu nối. Tồn nhập tay hoặc kéo từ hệ thống.</div></div></div>';
+ setTimeout(kiotLoadStatus,150);
 }
 
 /* ---------- ĐẨY ĐƠN KIOTVIET (hàng đợi offline → cầu nối) ---------- */
