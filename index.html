@@ -1763,8 +1763,8 @@ function kiotSectionHTML(){
 function kiotRenderStatus(d){ var e=el("kiotstatus"); if(!e)return;
  if(!d||!d.retailer){ e.innerHTML='<span style="color:#94A3B8">Chưa kết nối KiotViet.</span>'; return; }
  var ok=d.connected&&d.last_ok;
- e.innerHTML='<b style="color:'+(ok?"#0F9A6A":"#EE4D2D")+'">'+(ok?"● Đã kết nối":"● Chưa kết nối / lỗi")+'</b> · '+esc(d.retailer||"")+(d.branch_id?(' · CN '+d.branch_id):"")+(d.last_error?('<div style="color:#EE4D2D;margin-top:3px">'+esc(d.last_error)+'</div>'):"");
- if(el("kv_retailer")&&!el("kv_retailer").value)el("kv_retailer").value=d.retailer||"";
+ e.innerHTML='<b style="color:'+(ok?"#0F9A6A":"#EE4D2D")+'">'+(ok?"● Đã kết nối":"● Chưa kết nối / lỗi")+'</b> · '+esc(d.retailer||"")+(d.branch_id?(' · CN '+d.branch_id):"")+(ok?' · <span style="color:#0F9A6A">đã lưu, không cần nhập lại</span>':"")+(d.last_error?('<div style="color:#EE4D2D;margin-top:3px">'+esc(d.last_error)+'</div>'):"");
+ if(el("kv_retailer")&&!el("kv_retailer").value)el("kv_retailer").value=d.retailer||""; if(el("kv_clientid")&&!el("kv_clientid").value)el("kv_clientid").value=d.client_id||"";
  if(d.sku_map){ PRODUCTS.forEach(function(p){ var i=el("kv_map_"+p.id); if(i&&!i.value&&d.sku_map[p.id])i.value=d.sku_map[p.id]; }); }
 }
 function kiotLoadStatus(){ var tn=wtTenant(); if(!tn)return;
