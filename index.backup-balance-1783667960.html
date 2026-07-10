@@ -842,50 +842,36 @@ function pregPanel(c){ if(!c||c.status!=="pregnant"||!c.traj) return ""; var t=c
 function scanPreload(){ var o=S.user.obj,g=S.user.gender||"Nam"; if(!o) return ""; var eld=isEld(); var k=scanPicKey(o,g,eld); return k?('<img src="assets/scan/'+k+'.jpg" alt="" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">'):""; }
 function scanPreload(){ var o=S.user.obj,g=S.user.gender||"Nam"; if(!o) return ""; var eld=isEld(); var k=scanPicKey(o,g,eld); return k?('<img src="assets/scan/'+k+'.jpg" alt="" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">'):""; }
 function scanResultCard(){
- var o=S.user.obj,g=S.user.gender||"Nam", eld=isEld();
+ var o=S.user.obj,g=S.user.gender||"Nam";
+ var eld=isEld();
  var key=scanPicKey(o,g,eld); if(!key) return "";
  var z=[]; try{z=scanZones();}catch(e){} if(!z.length) return "";
  var N2I={}; PRODUCTS.forEach(function(p){N2I[p.name]=p.id;});
- var items=z.slice(0,4).map(function(zz){ var zy=zz.p.y/298*334; if(zy<20)zy=20; if(zy>320)zy=320;
-   return {col:zz.col, lb:zz.name, vl:(zz.prod||"").replace("Wintop ",""), zx:zz.p.x/200*214, zy:zy, pid:N2I[zz.prod]||(S.rec&&S.rec.prods&&S.rec.prods[0])||"colostrum"}; });
- var svg='<svg class="scan-hud-svg" viewBox="0 0 214 334" preserveAspectRatio="none">'+scanChipSVG(items,{clickable:true})+'</svg>';
+ function fx(p){return p.x/200*214;} function fy(p){var v=p.y/298*334; return v<20?20:(v>320?320:v);}
+ z=z.slice(0,4).sort(function(a,b){return a.p.y-b.p.y;});
+ var prev=-99,gg="";
+ z.forEach(function(zz){ var col=zz.col,zx=fx(zz.p),zy=fy(zz.p); var cy=Math.max(zy,prev+30,24); if(cy>308)cy=308; prev=cy;
+  var pid=N2I[zz.prod]||(S.rec&&S.rec.prods&&S.rec.prods[0])||"colostrum";
+  gg+='<g class="rz" onclick="S.tab=\'sanpham\';S.openProd=\''+pid+'\';render();window.scrollTo(0,0)" style="cursor:pointer">'
+   +'<line x1="106" y1="'+cy+'" x2="'+zx.toFixed(0)+'" y2="'+zy.toFixed(0)+'" stroke="'+col+'" stroke-width="1" stroke-dasharray="2 2" opacity=".85"/>'
+   +'<circle cx="'+zx.toFixed(0)+'" cy="'+zy.toFixed(0)+'" r="5" fill="none" stroke="'+col+'" stroke-width="1.4"><animate attributeName="r" values="4;7;4" dur="1.8s" repeatCount="indefinite"/></circle>'
+   +'<circle cx="'+zx.toFixed(0)+'" cy="'+zy.toFixed(0)+'" r="2" fill="'+col+'"/>'
+   +'<rect x="106" y="'+(cy-11)+'" width="100" height="22" rx="4" fill="#07182b" fill-opacity=".62" stroke="'+col+'" stroke-opacity=".9" stroke-width="1"/>'
+   +'<circle cx="114" cy="'+cy+'" r="2.8" fill="'+col+'"/>'
+   +'<text x="121" y="'+(cy-2)+'" font-size="8" font-weight="700" fill="#cfeffb" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.2">'+esc(zz.name)+'</text>'
+   +'<text x="121" y="'+(cy+8)+'" font-size="9" font-weight="700" fill="#ffffff" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.3">'+esc((zz.prod||"").replace("Wintop ",""))+'</text>'
+   +'</g>';
+ });
+ var svg='<svg class="scan-hud-svg" viewBox="0 0 214 334" preserveAspectRatio="none">'+gg+'</svg>';
  var frame='<div class="scan-frame"><img class="scanpic" src="assets/scan/'+key+'.jpg" alt="" onerror="this.style.display=\'none\'"><div class="scan-grid2"></div><div class="scan-dim"></div>'+svg+'<span class="hc tl"></span><span class="hc tr"></span><span class="hc bl"></span><span class="hc br"></span><div class="scan-tag">'+ic("scan",12)+' BẢN ĐỒ DINH DƯỠNG</div></div>';
  var ol=(OBJS.filter(function(x){return x.v===o;})[0]||{}).l||"";
  return '<div class="scan-panel" style="padding:16px 14px 14px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> BẢN ĐỒ DINH DƯỠNG · '+esc(ol)+'</div><div class="scan-stage2" style="height:344px">'+frame+'</div><div style="text-align:center;font-size:11px;color:#8fd6e6;margin-top:8px">Chạm vào từng vùng để xem sản phẩm phù hợp</div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
-}
-function scanChipSVG(items, opts){
- opts=opts||{};
- items=items.slice(0,4).sort(function(a,b){return a.zy-b.zy;});
- var lY=-99, rY=-99, out="";
- items.forEach(function(it,i){
-  var side=(i%2===0)?"R":"L", zx=it.zx, zy=it.zy, col=it.col, cy;
-  if(side==="R"){ cy=Math.max(zy,rY+28,22); if(cy>310)cy=310; rY=cy; }
-  else { cy=Math.max(zy,lY+28,22); if(cy>310)cy=310; lY=cy; }
-  var ax=(side==="R")?110:104;
-  var g='<line x1="'+ax+'" y1="'+cy+'" x2="'+zx+'" y2="'+zy+'" stroke="'+col+'" stroke-width="1" stroke-dasharray="2 2" opacity=".85"/>'
-   +'<circle cx="'+zx+'" cy="'+zy+'" r="5" fill="none" stroke="'+col+'" stroke-width="1.4">'+(opts.animate?'<animate attributeName="r" values="4;7;4" dur="1.7s" repeatCount="indefinite"/>':'')+'</circle>'
-   +'<circle cx="'+zx+'" cy="'+zy+'" r="2" fill="'+col+'"/>';
-  if(side==="R"){
-   g+='<rect x="110" y="'+(cy-11)+'" width="98" height="22" rx="4" fill="#07182b" fill-opacity=".62" stroke="'+col+'" stroke-opacity=".9" stroke-width="1"/>'
-    +'<circle cx="117" cy="'+cy+'" r="2.8" fill="'+col+'"/>'
-    +'<text x="124" y="'+(cy-2)+'" font-size="8" font-weight="700" fill="#cfeffb" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.2">'+esc(it.lb)+'</text>'
-    +'<text x="124" y="'+(cy+8)+'" font-size="9.5" font-weight="700" fill="#ffffff" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.3">'+esc(it.vl)+'</text>';
-  } else {
-   g+='<rect x="6" y="'+(cy-11)+'" width="98" height="22" rx="4" fill="#07182b" fill-opacity=".62" stroke="'+col+'" stroke-opacity=".9" stroke-width="1"/>'
-    +'<circle cx="97" cy="'+cy+'" r="2.8" fill="'+col+'"/>'
-    +'<text x="91" y="'+(cy-2)+'" text-anchor="end" font-size="8" font-weight="700" fill="#cfeffb" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.2">'+esc(it.lb)+'</text>'
-    +'<text x="91" y="'+(cy+8)+'" text-anchor="end" font-size="9.5" font-weight="700" fill="#ffffff" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.3">'+esc(it.vl)+'</text>';
-  }
-  if(opts.clickable && it.pid){ out+='<g class="rz" onclick="S.tab=\'sanpham\';S.openProd=\''+it.pid+'\';render();window.scrollTo(0,0)" style="cursor:pointer">'+g+'</g>'; }
-  else { out+='<g class="shudg" style="animation-delay:'+(0.5+i*0.5)+'s">'+g+'</g>'; }
- });
- return out;
 }
 function scanChips(){
  var c=S.cls||{}, o=S.user.obj, m=S.m||{}, out=[];
  var scol=c.status==="low"?"#FF8B6E":c.status==="high"?"#FFD36E":c.status==="pregnant"?"#C9A0FF":"#5BE0C4";
  var Z={head:[106,44],chest:[97,116],abdomen:[110,150],legs:[101,250],whole:[104,126]};
- function push(dot,lb,vl,zn){ if(vl==null||vl==="")return; var z=Z[zn||"whole"]; out.push({col:dot,lb:lb,vl:vl,zx:z[0],zy:z[1]}); }
+ function push(dot,lb,vl,zn){ if(vl==null||vl==="")return; out.push([dot,lb,vl,zn||"whole"]); }
  var NM={
   "Loãng xương":["#7FD0FF","XƯƠNG & KHỚP","Cần Canxi + D3","legs"],
   "Tăng cân / tăng cơ":["#FF8B6E","CƠ & CÂN NẶNG","Đạm + năng lượng","whole"],
@@ -911,7 +897,23 @@ function scanChips(){
  (S.needs||[]).forEach(function(n){ if(NM[n]) push(NM[n][0],NM[n][1],NM[n][2],NM[n][3]); });
  if((S.user.hist||[]).indexOf("Tiểu đường")>=0 && (S.needs||[]).indexOf("Tiểu đường")<0) push("#5BE0C4","ĐƯỜNG HUYẾT","Kiểm soát GI","abdomen");
  if(out.length<2){ if(m.w) push("#8fdcf5","CÂN NẶNG", m.w+" kg","whole"); if(m.h) push("#8fdcf5","CHIỀU CAO", m.h+" cm","legs"); push("#5BE0C4","NHỊP TIM","Ổn định","chest"); }
- return '<svg class="scan-hud-svg" viewBox="0 0 214 334" preserveAspectRatio="none">'+scanChipSVG(out,{animate:true})+'</svg>';
+ out=out.slice(0,4);
+ out.sort(function(a,b){ return Z[a[3]][1]-Z[b[3]][1]; });
+ var prev=-99, g="";
+ out.forEach(function(r,i){
+  var col=r[0], lb=r[1], vl=r[2], z=Z[r[3]], zx=z[0], zy=z[1];
+  var cy=Math.max(zy, prev+26, 22); if(cy>312)cy=312; prev=cy;
+  g+='<g class="shudg" style="animation-delay:'+(0.5+i*0.5)+'s">'
+   +'<line x1="106" y1="'+cy+'" x2="'+zx+'" y2="'+zy+'" stroke="'+col+'" stroke-width="1" stroke-dasharray="2 2" opacity=".85"/>'
+   +'<circle cx="'+zx+'" cy="'+zy+'" r="5" fill="none" stroke="'+col+'" stroke-width="1.4"><animate attributeName="r" values="4;7;4" dur="1.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.3;1" dur="1.6s" repeatCount="indefinite"/></circle>'
+   +'<circle cx="'+zx+'" cy="'+zy+'" r="2" fill="'+col+'"/>'
+   +'<rect x="106" y="'+(cy-11)+'" width="100" height="22" rx="4" fill="#07182b" fill-opacity=".62" stroke="'+col+'" stroke-opacity=".9" stroke-width="1"/>'
+   +'<circle cx="114" cy="'+cy+'" r="2.8" fill="'+col+'"/>'
+   +'<text x="121" y="'+(cy-2)+'" font-size="8" font-weight="700" fill="#cfeffb" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.2">'+esc(lb)+'</text>'
+   +'<text x="121" y="'+(cy+8)+'" font-size="9.5" font-weight="700" fill="#ffffff" font-family="Arial,sans-serif" paint-order="stroke" stroke="#04101c" stroke-width="1.3">'+esc(vl)+'</text>'
+   +'</g>';
+ });
+ return '<svg class="scan-hud-svg" viewBox="0 0 214 334" preserveAspectRatio="none">'+g+'</svg>';
 }
 function isEld(){ var u=S.user; if(u.obj!=="adult") return false; if(u.senior===true) return true; if(u.senior===false) return false; return (S.needs.indexOf("Phục hồi sau ốm/phẫu thuật")>=0||(u.hist&&u.hist.indexOf("Vừa phẫu thuật/ốm dậy")>=0)||S.needs.indexOf("Loãng xương")>=0); }
 function scanPicKey(o,g,eld){
