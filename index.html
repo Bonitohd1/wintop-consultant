@@ -1739,7 +1739,7 @@ function pullStock(){
   toast("✅ Đã kéo tồn kho từ hệ thống."); renderStock();
  }).catch(function(e){ toast("Không kéo được tồn kho: "+e.message); var b2=el("stkpullbtn"); if(b2){b2.textContent="Kéo tồn kho (hệ thống)";b2.disabled=false;} });
 }
-var KV_PRODS=null;
+var KV_PRODS=null, KV_CONNECTED=false;
 function kvMatchCode(id){ if(!KV_PRODS)return ""; var kw={colostrum:"colostrum",baby:"baby",ba:"wintop ba",kaoiq:"kao",gainpro:"gain pro",suregold:"sure gold",mama:"mama",canxinano:"canxi",diabet:"diabet"}[id]||""; if(!kw)return ""; kw=deburr(kw); for(var i=0;i<KV_PRODS.length;i++){ var nm=deburr(KV_PRODS[i].name||""); if(nm.indexOf(kw)>=0) return KV_PRODS[i].code; } return ""; }
 function kiotAutoMatch(){ var tn=wtTenant(); if(!tn){ toast("Chưa có Mã NPP."); return; } var b=el("kvmatchbtn"); if(b){b.textContent="Đang tải SP…";b.disabled=true;}
  fetch(WINTOP_API+"/kiotviet/products?tenant="+encodeURIComponent(tn),{headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){
@@ -1760,7 +1760,7 @@ function kiotSectionHTML(){
   +'<button id="kvsyncbtn" class="btn ghost" style="margin-top:9px" onclick="kiotSyncStock()">'+ic("sync",16)+'Đồng bộ tồn từ KiotViet</button>'
   +'<div class="faint" style="margin-top:8px;font-size:11px">Khoá lưu bảo mật trên hệ thống theo từng NPP. Mỗi NPP tự nhập khoá của gian hàng mình.</div></div>';
 }
-function kiotRenderStatus(d){ var e=el("kiotstatus"); if(!e)return;
+function kiotRenderStatus(d){ KV_CONNECTED=!!(d&&d.has_secret); var e=el("kiotstatus"); if(!e)return;
  if(!d||!d.retailer){ e.innerHTML='<span style="color:#94A3B8">Chưa kết nối KiotViet.</span>'; return; }
  var ok=d.connected&&d.last_ok;
  e.innerHTML='<b style="color:'+(ok?"#0F9A6A":"#EE4D2D")+'">'+(ok?"● Đã kết nối":"● Chưa kết nối / lỗi")+'</b> · '+esc(d.retailer||"")+(d.branch_id?(' · CN '+d.branch_id):"")+(ok?' · <span style="color:#0F9A6A">đã lưu, không cần nhập lại</span>':"")+(d.last_error?('<div style="color:#EE4D2D;margin-top:3px">'+esc(d.last_error)+'</div>'):"");
@@ -1774,9 +1774,11 @@ function kiotSaveCfg(){
  var tn=(el("stk_tenant")?el("stk_tenant").value.trim():"")||wtTenant(); if(tn)lsSet(TENANT_KEY,tn);
  if(!tn){ toast("Nhập Mã NPP (tenant) ở trên trước."); return; }
  var map={}; PRODUCTS.forEach(function(p){ var i=el("kv_map_"+p.id); if(i&&i.value.trim())map[p.id]=i.value.trim(); });
- var body={ tenant:tn, retailer:(el("kv_retailer").value||"").trim(), client_id:(el("kv_clientid").value||"").trim(), sku_map:map, enabled:true };
- var sec=(el("kv_secret").value||"").trim(); if(sec)body.client_secret=sec;
- if(!body.retailer||!body.client_id){ toast("Nhập đủ Retailer + Client ID."); return; }
+ var body={ tenant:tn, sku_map:map, enabled:true };
+ var _rt=(el("kv_retailer").value||"").trim(); if(_rt)body.retailer=_rt;
+ var _ci=(el("kv_clientid").value||"").trim(); if(_ci)body.client_id=_ci;
+ var _sec=(el("kv_secret").value||"").trim(); if(_sec)body.client_secret=_sec;
+ if(!KV_CONNECTED && (!_rt||!_ci||!_sec)){ toast("Lần đầu: nhập đủ Retailer + Client ID + Mã bảo mật."); return; }
  var b=el("kvsavebtn"); if(b){b.textContent="Đang kiểm tra…";b.disabled=true;}
  fetch(WINTOP_API+"/kiotviet/config",{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).then(function(r){var _st=r.status;return r.json().catch(function(){return{};}).then(function(d){if(d)d.__st=_st;return d;});}).then(function(d){
   if(b){b.innerHTML=ic("check",16)+'Kiểm tra & Lưu kết nối';b.disabled=false;}
