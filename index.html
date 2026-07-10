@@ -1643,7 +1643,7 @@ function dlBlob(bytes,type,fname){ var blob=new Blob([bytes],{type:type}); var u
 function ymd(){ var d=new Date(); function p(n){return ("0"+n).slice(-2);} return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"_"+p(d.getHours())+p(d.getMinutes()); }
 function adminExportCSV(){
  var aoa=adminAOA(); var csv="﻿"+aoa.map(function(row){return row.map(function(x){return '"'+(""+(x==null?"":x)).replace(/"/g,'""')+'"';}).join(",");}).join("\r\n");
- dlBlob(csv,"text/csv;charset=utf-8","wintop_khachhang_"+ymd()+".csv");
+ dlBlob(csv,"text/csv;charset=utf-8","wintop_khachhang.csv");
 }
 /* --- XLSX: OOXML đóng gói zip (store, không nén) --- */
 function crc32(buf){ var t=crc32.t; if(!t){ t=crc32.t=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } } var crc=0^(-1); for(var i=0;i<buf.length;i++) crc=(crc>>>8)^t[(crc^buf[i])&0xFF]; return (crc^(-1))>>>0; }
@@ -1681,7 +1681,7 @@ function makeXlsx(aoa){
   {name:"xl/worksheets/sheet1.xml",data:enc.encode(sheet)}
  ]);
 }
-function adminExportXLSX(){ dlBlob(makeXlsx(adminAOA()),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","wintop_khachhang_"+ymd()+".xlsx"); }
+function adminExportXLSX(){ dlBlob(makeXlsx(adminAOA()),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","wintop_khachhang.xlsx"); }
 
 /* ---------- ĐẤU VPS THẬT (mặc định — NPP dùng được ngay) ---------- */
 var WINTOP_API="https://api.wintop.vn/api/wintop";
