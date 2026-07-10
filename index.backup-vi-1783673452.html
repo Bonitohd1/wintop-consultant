@@ -507,7 +507,7 @@ var PRODUCTS = [
    gold:"Canxi Nano hạt siêu nhỏ — hấp thu cao hơn canxi thường 2–3 lần." },
 
  { id:"diabet", name:"Wintop Diabet", grad:"linear-gradient(135deg,#E9F7EF,#1E8449)", tag:"Kiểm soát đường huyết thông minh — Dinh dưỡng đầy đủ",
-   audience:"Người trưởng thành cần kiểm soát đường huyết, người tiểu đường và tiền tiểu đường (type 1 & 2). KHÔNG tự ý dùng cho tiểu đường thai kỳ.", energyDense:false, kcalml:0.92,
+   audience:"Người tiểu đường type 1 & 2 (KHÔNG dùng cho tiểu đường thai kỳ tự ý)", energyDense:false, kcalml:0.92,
    claims:["Isomalt 15g/100g & Fructose GI thấp","Beta-glucan làm chậm hấp thu đường","Protein bảo tồn khối cơ","Sữa non + Lactoferrin tăng miễn dịch"],
    facts:"Trên 100g bột / 200ml pha chuẩn: Năng lượng 418.5/184 kcal · Protein 16.3g · Isomalt 15g · Fructose 3.9g · Beta-glucan 20mg · Lactoferrin 4.4mg · Canxi 827mg.",
    ingr:"Sữa bột (45-60%), Dầu thực vật, Isomalt, Fructose, Chất xơ hòa tan (FOS/Inulin), Soy Protein, Khoáng chất (Canxi, Magie, Sắt, Kẽm, Đồng, Iot, Mangan, Selen), L-Lysine, Whey Protein, Chiết xuất hạt óc chó (100mg/100g), Vitamin (Vitamin A, Vitamin D3, Vitamin E, Vitamin K1, Vitamin C, Vitamin B1, Vitamin B2, Vitamin B6, Vitamin B12, Axit Folic, Axit Pantothenic, Biotin), Beta Glucan, Sữa non, Choline, Bột Canxi Nano (30mg/100g), Lactoferrin, Hương liệu tổng hợp dùng cho thực phẩm. Có chứa sữa, đậu nành, hạt óc chó.",
@@ -518,32 +518,32 @@ var PRODUCTS = [
 function P(id){ return PRODUCTS.find(function(p){return p.id===id;}); }
 
 var QA = [
- { q:"Vì sao trẻ uống sữa bị táo bón? Cách xử lý?", tags:"táo bón tiêu hóa casein phân khô nước whey chất xơ",
-   a:"Nguyên nhân:\n• Thành phần: một số sữa công thức chứa casein cao (đạm khó tiêu) → táo bón.\n• Pha sai tỷ lệ (quá đặc hoặc quá loãng) gây khó tiêu.\n• Thiếu nước → phân khô cứng.\nHướng xử lý:\n• Pha đúng theo hướng dẫn nhà sản xuất.\n• Cân nhắc đổi sang sữa có tỷ lệ đạm whey cao hơn casein cho dễ tiêu.\n• Bổ sung đủ nước và chất xơ qua chế độ ăn phù hợp." },
- { q:"Vì sao trẻ bị tiêu chảy hoặc đi phân xanh khi uống sữa?", tags:"tiêu chảy phân xanh lactose dị ứng đạm sữa bò sắt",
-   a:"Nguyên nhân:\n• Không dung nạp lactose (thiếu enzyme lactase tiêu hóa đường lactose).\n• Dị ứng đạm sữa bò (miễn dịch phản ứng với protein sữa bò).\n• Sữa hàm lượng sắt cao → phân có màu xanh.\nHướng xử lý:\n• Nghi không dung nạp lactose → hỏi bác sĩ để chuyển sữa không lactose.\n• Dị ứng đạm sữa bò → đổi sữa thủy phân hoặc sữa đậu nành.\n• Tiêu chảy/phân xanh kéo dài → đưa trẻ đến cơ sở y tế để được tư vấn, điều trị." },
+ { q:"Vì sao trẻ uống sữa bị táo bón? Cách xử lý?", tags:"táo bón tiêu hóa casein phân khô nước whey",
+   a:"Nguyên nhân:\n• Thành phần: một số sữa chứa casein cao (đạm khó tiêu) dễ gây táo bón.\n• Pha sai tỷ lệ (quá đặc/loãng) gây khó tiêu.\n• Thiếu nước → phân khô cứng.\nHướng xử lý:\n• Pha đúng theo hướng dẫn nhà sản xuất.\n• Cân nhắc đổi sữa có tỷ lệ đạm whey cao hơn casein cho dễ tiêu.\n• Bổ sung đủ nước và chất xơ cho trẻ." },
+ { q:"Vì sao trẻ bị tiêu chảy hoặc đi phân xanh khi uống sữa?", tags:"tiêu chảy phân xanh lactose dị ứng đạm bò sắt",
+   a:"Nguyên nhân:\n• Không dung nạp lactose (thiếu enzyme lactase).\n• Dị ứng đạm sữa bò.\n• Sắt cao có thể làm phân màu xanh.\nHướng xử lý:\n• Nghi lactose → hỏi bác sĩ chuyển sữa không lactose.\n• Dị ứng đạm bò → đổi sữa thủy phân hoặc nguồn khác (đậu nành).\n• Theo dõi; kéo dài thì đưa trẻ đến cơ sở y tế." },
  { q:"Vì sao bé uống sữa đi tiểu màu vàng đậm hơn bình thường?", tags:"nước tiểu vàng đậm thiếu nước",
-   a:"Nguyên nhân:\n• Thường do thiếu nước (uống sữa công thức mà không bổ sung đủ nước).\n• Không loại trừ bệnh lý khác → nên cho bé đi khám để xác định chính xác nguyên nhân.\nHướng xử lý:\n• Bảo đảm bé đủ nước hàng ngày, nhất là khi chủ yếu uống sữa công thức.\n• Theo dõi lượng & màu nước tiểu; không cải thiện → tham khảo ý kiến bác sĩ." },
- { q:"Vì sao pha sữa thấy lợn cợn, khó tan?", tags:"lợn cợn khó tan pha khuấy nhiệt độ nước hạt bột",
-   a:"Nguyên nhân:\n• Kỹ thuật pha: khuấy không đều.\n• Nhiệt độ nước không phù hợp (quá nóng hoặc quá lạnh làm sữa khó tan hoàn toàn).\n• Đặc thù nguyên liệu & kích thước hạt bột từng sản phẩm → độ tan khác nhau.\nHướng xử lý:\n• Dùng nước đúng nhiệt độ theo hướng dẫn nhà sản xuất.\n• Khuấy đều tay khi pha." },
- { q:"Vì sao bé hay ọc sữa ra cục kết tủa như đậu hũ?", tags:"ọc sữa nôn trớ trào ngược dạ dày",
-   a:"Nguyên nhân:\n• Trào ngược dạ dày–thực quản (hệ tiêu hóa của trẻ chưa hoàn thiện).\n• Uống sữa quá nhanh hoặc quá nhiều → dạ dày đầy nhanh gây nôn trớ.\nHướng xử lý:\n• Cho bú lượng vừa phải, tư thế đúng (giữ đầu cao hơn thân).\n• Sau khi bú giữ bé thẳng đứng khoảng 20–30 phút.\n• Nôn trớ kéo dài hoặc nghiêm trọng → đưa bé đi khám bác sĩ." },
- { q:"Dòng nào hỗ trợ tiêu hóa tốt nhất? Thuyết phục khách thế nào?", tags:"tiêu hóa wintop buralac maxwel chất xơ hương vị so sánh",
-   a:"Mỗi dòng (Wintop, Buralac, Maxwel) đều được xây dựng & bổ sung chất xơ hòa tan hỗ trợ tiêu hóa cho trẻ. Hương vị và cảm quan mỗi dòng có tông vị khác nhau → tùy khẩu vị của từng trẻ để chọn dòng phù hợp (không dòng nào tốt nhất tuyệt đối)." },
- { q:"Dòng nào hỗ trợ tăng cân mạnh nhất? So sánh sữa bột và sữa nước?", tags:"tăng cân pedia năng lượng mct sữa bột sữa nước enzyme",
-   a:"Cả 3 thương hiệu đều có dòng Pedia hỗ trợ tăng cân: cách pha cao năng lượng (100–120 kcal/100ml), tỷ lệ đạm & chất béo dễ hấp thu (như MCT), thêm enzyme hỗ trợ tiêu hóa.\nSo sánh:\n• Sữa bột: năng lượng thường cao hơn, dễ bảo quản lâu.\n• Sữa nước: tiện lợi, pha sẵn đúng tỷ lệ nên đôi khi hấp thu tốt hơn.\nGiá trị dinh dưỡng xem trên nhãn (theo 100g/100ml: năng lượng, đạm, béo, vitamin, khoáng)." },
- { q:"Bé không chịu uống sữa mới, làm sao để bé hợp tác?", tags:"đổi sữa bé kén làm quen chuyển từ từ",
-   a:"• Chuyển từ từ: pha trộn sữa cũ và mới trong 3–7 ngày.\n• Cho uống lúc bé đói nhất trong ngày.\n• Không tạo áp lực, chia nhỏ nhiều lần uống.\n• Đổi bình bú hoặc cốc nếu bé đang kén.\n→ Kiên nhẫn và theo dõi phản ứng của bé từng bước." },
- { q:"Kết hợp sữa thế nào cho phù hợp từng giai đoạn của bé?", tags:"kết hợp sữa giai đoạn độ tuổi ăn dặm sữa tươi",
-   a:"Dựa vào độ tuổi và nhu cầu:\n• 0–6 tháng: sữa công thức.\n• 6–12 tháng: sữa công thức, có thể kèm ăn dặm.\n• 1 tuổi trở lên: sữa công thức hoặc sữa tươi, kết hợp dinh dưỡng đa dạng." },
- { q:"Bé uống dòng khác thì không sao, đổi sang sữa lạ lại nổi mẩn đỏ?", tags:"nổi mẩn đỏ dị ứng đạm sữa bò lactose thành phần",
-   a:"Nguyên nhân có thể do:\n• Dị ứng đạm sữa bò.\n• Không dung nạp lactose.\n• Phản ứng với một trong các thành phần của sữa.\n→ Cần ngừng sữa, theo dõi; nếu nổi mẩn kèm tiêu chảy/sốt thì đưa bé đi khám." },
- { q:"Sữa Wintop Diabet cho người tiểu đường sao lại có vị ngọt đậm?", tags:"diabet tiểu đường isomalt vị ngọt GI đường huyết",
-   a:"• Wintop Diabet dùng nguồn nguyên liệu đặc thù, đặc biệt hệ đường Isomalt — an toàn để dùng cho người tiểu đường.\n• Vị ngọt đậm phần lớn do cảm nhận vị giác, KHÔNG phản ánh chỉ số đường huyết cao. Người dùng có thể kiểm tra GI (Glycemic Index) và đường huyết sau khi dùng để yên tâm." },
- { q:"Uống sữa bầu nhiều có dễ bị tiểu đường thai kỳ không?", tags:"sữa bầu tiểu đường thai kỳ đường huyết ít đường",
-   a:"Sữa cho phụ nữ mang thai không loại trừ khả năng làm tăng đường huyết, có thể do:\n• Uống nhiều hơn khuyến cáo của sản phẩm.\n• Bản thân mẹ bầu chuyển hóa đường kém hơn người bình thường.\nMẹ có nguy cơ hoặc đang tiểu đường: nên chọn sữa bầu dành cho người nguy cơ tiểu đường, loại không đường/ít đường; tăng cường canxi, DHA, vitamin–khoáng từ đa dạng thực phẩm." },
- { q:"Sữa Wintop Baby dùng được cho bé sinh mổ, sinh non hay bệnh lý bẩm sinh?", tags:"baby sinh mổ sinh non bệnh lý bẩm sinh tim mạch 0-12 tháng",
-   a:"• Bé sinh non hoặc có bệnh lý bẩm sinh (ví dụ tim mạch): nên tham khảo ý kiến bác sĩ hoặc chuyên gia dinh dưỡng trước khi dùng.\n• Bé sinh mổ nhưng KHÔNG có bệnh lý đặc biệt, không tiền sử dị ứng với thành phần sản phẩm, ăn uống như trẻ sơ sinh bình thường: hoàn toàn có thể dùng dòng dinh dưỡng công thức 0–12 tháng của Wintop, Buralac." }
+   a:"Nguyên nhân:\n• Thường do thiếu nước khi uống sữa công thức mà không bổ sung đủ nước.\n• Không loại trừ bệnh lý khác → nên cho bé đi khám để xác định chính xác.\nHướng xử lý:\n• Đảm bảo bé đủ nước hằng ngày.\n• Theo dõi lượng và màu nước tiểu; không cải thiện thì hỏi bác sĩ." },
+ { q:"Vì sao pha sữa thấy lợn cợn, khó tan?", tags:"lợn cợn khó tan pha sữa nhiệt độ khuấy hạt bột",
+   a:"Nguyên nhân:\n• Kỹ thuật pha: khuấy không đều.\n• Nhiệt độ nước không phù hợp (quá nóng/quá lạnh).\n• Đặc thù nguyên liệu (kích thước hạt bột) khiến độ tan khác nhau.\nHướng xử lý:\n• Dùng nước đúng nhiệt độ theo hướng dẫn.\n• Khuấy đều tay khi pha." },
+ { q:"Vì sao bé hay ọc sữa ra cục kết tủa như đậu hũ?", tags:"ọc sữa nôn trớ trào ngược kết tủa đậu hũ",
+   a:"Nguyên nhân:\n• Trào ngược dạ dày-thực quản (tiêu hóa của trẻ chưa hoàn thiện).\n• Uống quá nhanh/quá nhiều → dạ dày đầy nhanh gây nôn trớ.\nHướng xử lý:\n• Cho bú lượng vừa phải, tư thế đúng, giữ đầu cao hơn thân.\n• Sau bú giữ trẻ thẳng đứng 20-30 phút.\n• Nôn trớ kéo dài/nghiêm trọng → khám bác sĩ." },
+ { q:"Dòng nào hỗ trợ tiêu hóa tốt nhất? Thuyết phục khách thế nào?", tags:"tiêu hóa chất xơ khẩu vị cảm quan",
+   a:"Mỗi dòng đều được bổ sung chất xơ hòa tan hỗ trợ tiêu hóa cho trẻ. Hương vị và cảm quan mỗi dòng khác nhau, nên tùy khẩu vị từng trẻ để chọn dòng phù hợp." },
+ { q:"Dòng nào hỗ trợ tăng cân mạnh nhất? So sánh sữa bột và sữa nước?", tags:"tăng cân pedia năng lượng mct sữa bột sữa nước",
+   a:"Các dòng đều có sản phẩm Pedia hỗ trợ tăng cân: pha cao năng lượng (100-120 kcal/100ml), tỉ lệ đạm & chất béo dễ hấp thu (MCT), thêm enzyme hỗ trợ tiêu hóa.\nSo sánh sữa bột và sữa nước:\n• Sữa bột: thường năng lượng cao hơn, dễ bảo quản lâu.\n• Sữa nước: tiện lợi, đôi khi hấp thu tốt hơn (pha sẵn đúng tỷ lệ).\nGiá trị dinh dưỡng xem trên bảng thành phần (theo 100g/100ml)." },
+ { q:"Bé không chịu uống sữa mới, làm sao để bé hợp tác?", tags:"đổi sữa bé không chịu kén làm quen",
+   a:"• Chuyển từ từ: pha trộn sữa cũ và mới trong 3-7 ngày.\n• Cho uống khi bé đói nhất trong ngày.\n• Không tạo áp lực, chia nhỏ nhiều lần uống.\n• Đổi bình bú/cốc nếu bé kén. Kiên nhẫn, theo dõi phản ứng của bé." },
+ { q:"Kết hợp sữa thế nào cho phù hợp từng giai đoạn của bé?", tags:"kết hợp sữa giai đoạn độ tuổi ăn dặm",
+   a:"Dựa vào độ tuổi và nhu cầu:\n• 0-6 tháng: sữa công thức.\n• 6-12 tháng: sữa công thức, có thể kèm ăn dặm.\n• 1 tuổi trở lên: sữa công thức hoặc sữa tươi, kết hợp đa dạng dinh dưỡng." },
+ { q:"Bé uống dòng khác thì không sao, đổi sang sữa lạ lại nổi mẩn đỏ?", tags:"mẩn đỏ dị ứng lactose thành phần đổi sữa",
+   a:"Nguyên nhân có thể do:\n• Dị ứng đạm sữa bò.\n• Không dung nạp lactose.\n• Phản ứng với một trong các thành phần của sữa.\nTrường hợp này cần ngừng sữa, theo dõi và đưa bé đi khám nếu nổi mẩn kèm tiêu chảy/sốt." },
+ { q:"Sữa Wintop Diabet cho người tiểu đường sao lại có vị ngọt đậm?", tags:"tiểu đường diabet isomalt vị ngọt gi đường huyết",
+   a:"Wintop Diabet dùng nguồn nguyên liệu đặc thù, đặc biệt hệ đường isomalt an toàn cho người tiểu đường. Vị ngọt đậm một phần do cảm nhận vị giác, không phản ánh chỉ số đường huyết cao. Người dùng có thể kiểm tra GI và đường huyết sau khi dùng để yên tâm." },
+ { q:"Uống sữa bầu nhiều có dễ bị tiểu đường thai kỳ không?", tags:"sữa bầu tiểu đường thai kỳ đường huyết mama",
+   a:"Sản phẩm cho phụ nữ mang thai không loại trừ khả năng làm tăng đường huyết. Nguyên nhân:\n• Uống nhiều hơn khuyến cáo.\n• Bản thân mẹ bầu chuyển hóa đường không tốt bằng người bình thường.\nMẹ bầu có nguy cơ/bị tiểu đường nên chọn sữa bầu dành riêng, sản phẩm không đường/ít đường; tăng cường canxi, DHA, vitamin khoáng chất từ đa dạng thực phẩm." },
+ { q:"Sữa Wintop Baby dùng được cho bé sinh mổ, sinh non hay bệnh lý bẩm sinh không?", tags:"baby sinh mổ sinh non bệnh lý bẩm sinh 0-12 tháng",
+   a:"Bé sinh non hoặc có bệnh lý bẩm sinh: nên tham khảo ý kiến bác sĩ/chuyên gia dinh dưỡng.\nBé sinh mổ nhưng không có bệnh lý đặc biệt, không tiền sử dị ứng thành phần và ăn uống như trẻ sơ sinh khỏe mạnh bình thường → hoàn toàn có thể dùng dòng dinh dưỡng công thức cho trẻ 0-12 tháng của Wintop." },
 ];
 
 var PROMO = {
@@ -639,10 +639,10 @@ function stockLevel(id){ var s=stockData(); if(!s||!s.items||s.items[id]==null) 
 function stockBadge(id,big){ var q=stockLevel(id); if(q==null) return ""; var c,t; if(q<=0){c="#DC2626";t="Hết hàng";} else if(q<=STOCK_LOW){c="#C2691A";t="Sắp hết ("+q+")";} else {c="#0F9A6A";t="Còn hàng";} return '<span class="stockb" style="background:'+c+'22;color:'+c+';'+(big?"font-size:12px;padding:4px 10px;":"")+'">'+t+'</span>'; }
 function stockInfo(id){ var q=stockLevel(id);
   if(q==null){ return '<div class="card" style="display:flex;align-items:center;gap:11px;padding:12px 14px;margin-bottom:12px"><span style="width:38px;height:38px;border-radius:11px;background:#EEF2F7;color:#64748B;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("box",18)+'</span><div><div style="font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px">Tồn kho tại điểm bán</div><div style="font-weight:700;font-size:14px;color:#64748B">Chưa cập nhật</div></div></div>'; }
-  var c,t,sub; if(q<=0){c="#DC2626";t="Hết hàng";sub="Liên hệ nhà phân phối đặt thêm";} else if(q<=STOCK_LOW){c="#C2691A";t="Sắp hết — còn "+q+" "+unit(id);sub="Nên đặt bổ sung sớm";} else {c="#0F9A6A";t="Còn hàng — "+q+" lon";sub="Sẵn sàng bán";}
+  var c,t,sub; if(q<=0){c="#DC2626";t="Hết hàng";sub="Liên hệ nhà phân phối đặt thêm";} else if(q<=STOCK_LOW){c="#C2691A";t="Sắp hết — còn "+q+" lon";sub="Nên đặt bổ sung sớm";} else {c="#0F9A6A";t="Còn hàng — "+q+" lon";sub="Sẵn sàng bán";}
   return '<div class="card" style="display:flex;align-items:center;gap:11px;padding:12px 14px;margin-bottom:12px;border:1px solid '+c+'33;background:'+c+'0d"><span style="width:38px;height:38px;border-radius:11px;background:'+c+'1f;color:'+c+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("box",18)+'</span><div><div style="font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px">Tồn kho tại điểm bán</div><div style="font-weight:800;font-size:15px;color:'+c+'">'+t+'</div><div class="faint" style="font-size:11.5px">'+sub+'</div></div></div>'; }
 function stockLine(id){ var q=stockLevel(id); if(q==null) return '';
-  var c,t; if(q<=0){c="#DC2626";t="Hết hàng";} else if(q<=STOCK_LOW){c="#C2691A";t="Sắp hết · còn "+q+" "+unit(id);} else {c="#0F9A6A";t="Còn "+q+" "+unit(id);}
+  var c,t; if(q<=0){c="#DC2626";t="Hết hàng";} else if(q<=STOCK_LOW){c="#C2691A";t="Sắp hết · còn "+q+" lon";} else {c="#0F9A6A";t="Còn "+q+" lon";}
   return '<span style="display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:'+c+';background:'+c+'15;padding:3px 9px;border-radius:999px">'+t+'</span>'; }
 function stockDec(id,qty){ var s=stockData(); if(!s||!s.items||s.items[id]==null) return false; s.items[id]=Math.max(0,s.items[id]-qty); s.at=Date.now(); try{ localStorage.setItem(STOCK_KEY,JSON.stringify(s)); }catch(e){} return true; }
 function pullStockAuto(){ if(typeof wtTenant!=="function")return; var tn=wtTenant(); if(!tn)return; if(!navigator.onLine)return;
@@ -914,8 +914,6 @@ function scanChips(){
  return '<svg class="scan-hud-svg" viewBox="0 0 214 334" preserveAspectRatio="none">'+scanChipSVG(out,{animate:true})+'</svg>';
 }
 function isEld(){ var u=S.user; if(u.obj!=="adult") return false; if(u.senior===true) return true; if(u.senior===false) return false; return (S.needs.indexOf("Phục hồi sau ốm/phẫu thuật")>=0||(u.hist&&u.hist.indexOf("Vừa phẫu thuật/ốm dậy")>=0)||S.needs.indexOf("Loãng xương")>=0); }
-function unit(id){ return id==="colostrum"?"vỉ":"lon"; }
-function aggUnit(ids){ return (ids&&ids.indexOf("colostrum")>=0)?"đơn vị":"lon"; }
 function scanPicKey(o,g,eld){
  if(o==="tre_0_12") return "baby";
  if(o==="tre_1_10") return g==="Nữ"?"child_nu":"child_nam";
@@ -1030,7 +1028,7 @@ function step4(){ if(S.scanState==='scanning') return stepBar()+scanLoader(); va
    (stockBadge(id,true)?'<div style="padding:8px 14px 0">'+stockBadge(id,true)+'</div>':"")+
    '<div style="display:flex;gap:13px;padding:14px"><div style="width:80px;height:80px;border-radius:14px;flex-shrink:0;border:1px solid var(--line);overflow:hidden;position:relative;background:#fff"><div style="position:absolute;inset:0;background:url('+pimg(id)+') center/cover"></div><div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%, rgba(255,255,255,0) 34%, rgba(255,255,255,.92) 80%)"></div></div><div style="flex:1;min-width:0"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="pill" style="background:var(--pri-soft);color:var(--pri);font-size:10px">'+(i===0?"Ưu tiên 1":"Kết hợp")+'</span>'+stockBadge(id)+'</div><div style="font-weight:700;font-family:var(--fh);font-size:15.5px;margin-top:5px">'+esc(p.name)+'</div><div class="muted" style="font-size:12px;margin-top:2px;line-height:1.4">'+esc(p.tag)+'</div></div></div>'+
    chips+
-   (i===0?('<div class="qclose"><div class="c"><div class="l">Liều/ngày</div><div class="n">'+x.dose+'</div></div><div class="sep"></div><div class="c"><div class="l">Dùng/tháng</div><div class="n">≈ '+x.pm+' '+unit(id)+'</div></div></div>'):"")+
+   (i===0?('<div class="qclose"><div class="c"><div class="l">Liều/ngày</div><div class="n">'+x.dose+'</div></div><div class="sep"></div><div class="c"><div class="l">Dùng/tháng</div><div class="n">≈ '+x.pm+' lon</div></div></div>'):"")+
    '<div style="display:flex;gap:9px;padding:12px 14px"><button class="btn sec" style="flex:1;font-size:13px;padding:11px" onclick="S.tab=\'sanpham\';S.openProd=\''+id+'\';render()">'+ic("info",16)+'Chi tiết</button><button class="btn" style="flex:1;font-size:13px;padding:11px" onclick="orderProduct(\''+id+'\')">'+ic("cart",16)+'Lên đơn</button></div></div>'; }).join("");
  return stepBar()+
  (c?heroCard(c,nm):'<div class="card" style="text-align:center;padding:22px">Chưa đủ dữ liệu để phân tích.</div>')+
@@ -1076,12 +1074,6 @@ TAILIEU[0].items=Object.keys(TDOC).map(function(id){return {t:TDOC[id].n,k:"pdf"
 
 /* 26 video dinh dưỡng & sức khoẻ (YouTube) — nhúng link, KHÔNG tải về */
 var YTVIDS=["r0f_CzHH4Iw","0oYnWltNSg8","8stL61F6ZEM","ug-xYlY4IRg","Zj9E_Rgx8fg","2CQSCUx5RO4","mSdFJXuzEqY","91Jcgs5DPoY","cmnHuUiM7xc","Vayl8nWhBCQ","JsZZS1uXYn4","8tRqwQeD7Ac","5g1ssEdZLVo","giWLzm68Lsg","NK9xv1_ruNU","8JdiOWlB8to","0z0fK0b3Ti4","UPtv5V90f7o","5Akl0p9FMoQ","kD0ly-OIQJs","9cBPhj-KpKc","0zVWeDz9m2U","iGllwa4uw88","dpjEkNJh350","-BR4uE7zDMw","1HwP47-a31U"];
-function openDoc(id){ var url="assets/docs/"+id+".pdf"; var name=(typeof TDOC!=="undefined"&&TDOC[id]?TDOC[id].n:"Tài liệu đào tạo"); var o=el("ovl");
- if(!o){ window.open(url,"_blank"); return; }
- o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="max-width:920px;width:96vw;height:90vh;display:flex;flex-direction:column;padding:0;overflow:hidden">'
-  +'<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)"><button class="btn ghost" style="width:auto;padding:8px 11px" onclick="closeOvl()">'+ic("back",18)+' Quay lại</button><div style="flex:1;font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(name)+'</div><a class="btn sec" style="width:auto;padding:8px 11px;font-size:12px;text-decoration:none" href="'+url+'" target="_blank" rel="noreferrer">Toàn màn hình</a></div>'
-  +'<iframe src="'+url+'" style="flex:1;width:100%;border:0;background:#f5f7fa" title="'+esc(name)+'"></iframe>'
-  +'</div></div>'; }
 function renderDocs(){
  var KIND={video:"🎬 Video",pdf:"📄 PDF",doc:"📝 Tài liệu",img:"🖼️ Ảnh"};
  return '<h2>Tài liệu</h2><div class="muted" style="margin:-6px 2px 13px">Tài liệu đào tạo & kiến thức. PDF đào tạo mở trực tiếp trong app; video mở trên YouTube (cần mạng).</div>'+
@@ -1089,7 +1081,6 @@ function renderDocs(){
     g.items.map(function(it){
       var has=it.url&&it.url!=="";
       var btn = it.url==="#sanpham" ? '<button class="btn sec" style="width:auto;padding:8px 13px;font-size:12px" onclick="setTab(\'sanpham\')">Mở mục Sản phẩm</button>'
-        : (it.id && it.url && it.url.indexOf('assets/docs/')===0) ? '<button class="btn sec" style="width:auto;padding:8px 13px;font-size:12px" onclick="openDoc(\''+it.id+'\')">Xem '+ic("arrow",14)+'</button>'
         : has ? '<a class="btn sec" style="width:auto;padding:8px 13px;font-size:12px;text-decoration:none" href="'+it.url+'" target="_blank" rel="noreferrer">Xem '+ic("arrow",14)+'</a>'
         : '<span class="pill" style="background:#f1f5f9;color:#94A3B8">Chờ cập nhật link</span>';
       var _hd='<div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-weight:600;font-size:13.5px">'+esc(it.t)+'</div><div class="faint" style="margin-top:2px">'+(KIND[it.k]||"")+(it.note?' · '+esc(it.note):"")+'</div></div>'+btn+'</div>';
@@ -1125,7 +1116,7 @@ function renderProducts(){
    pInfoSec(p.id)+secT("calc","var(--pri-soft)","var(--pri)","Bảng thành phần dinh dưỡng")+(p.tpImgs?p.tpImgs.map(function(im){return '<div style="border:2px solid #DCEBFB;border-radius:16px;padding:9px;background:linear-gradient(160deg,#F3F8FF,#ffffff);box-shadow:0 6px 18px rgba(29,78,216,.10);margin-bottom:9px"><img loading="lazy" src="assets/products/'+p.id+'/'+im+'" alt="Bảng thành phần '+esc(p.name)+'" style="width:100%;display:block;border-radius:11px"></div>';}).join(""):'<div style="border:2px solid #DCEBFB;border-radius:16px;padding:9px;background:linear-gradient(160deg,#F3F8FF,#ffffff);box-shadow:0 6px 18px rgba(29,78,216,.10);margin-bottom:9px"><img loading="lazy" src="assets/products/'+p.id+'/tpdd.jpg" alt="Bảng thành phần '+esc(p.name)+'" style="width:100%;display:block;border-radius:11px" onerror="this.parentNode.style.display=\'none\';var t=document.getElementById(\'tt-'+p.id+'\');if(t)t.style.display=\'\'"></div>')+'<table class="ntable" id="tt-'+p.id+'" style="display:none">'+factRows(p.facts)+(hasLf?'<tr class="lf"><td>⭐ Lactoferrin</td><td class="v">Có</td></tr>':"")+'</table>'+
    secT("leaf","var(--health-soft)","var(--health)","Thành phần nguyên liệu")+'<div class="facts">'+esc(p.ingr)+'</div>'+
    secT("pkg","var(--gold-soft)","var(--gold)","Quy cách & hướng dẫn sử dụng")+'<div class="facts" style="white-space:pre-line">'+esc(p.usage)+'</div>'+(p.id==="baby"?'<div style="border:2px solid #DCEBFB;border-radius:14px;padding:8px;background:#F3F8FF;margin-top:8px"><div style="font-size:11.5px;font-weight:700;color:var(--pri);margin-bottom:5px">📊 Bảng lượng ăn đề nghị</div><img loading="lazy" src="https://drive.google.com/thumbnail?id=1MOyC2oeh7Nfk27XJEnfF-6nXwBVGGWZd&sz=w1000" alt="Lượng ăn đề nghị Baby" style="width:100%;display:block;border-radius:10px;min-height:40px"><a href="https://drive.google.com/file/d/1MOyC2oeh7Nfk27XJEnfF-6nXwBVGGWZd/view" target="_blank" rel="noreferrer" style="display:block;text-align:center;font-size:11.5px;color:var(--pri);margin-top:6px">Mở ảnh gốc trên Drive →</a></div>':"")+'<div class="gold">'+ic("star",15)+' '+esc(p.gold)+'</div>'+(p.storage?secT("shield","var(--health-soft)","var(--health)","Bảo quản")+'<div class="facts" style="white-space:pre-line">'+esc(p.storage)+'</div>':"")+
-   secT("spark","var(--gold-soft)","var(--gold)","Hướng dẫn chốt sale (cho tư vấn viên)")+pdoc("assets/products/"+p.id+"/sale.jpg","")+'<button class="btn sec" style="width:auto;padding:9px 14px;font-size:13px;display:inline-flex;align-items:center;gap:7px;margin:2px 0 6px" onclick="openDoc(\''+p.id+'\')">📄 Tài liệu đào tạo sản phẩm (PDF) '+ic("arrow",14)+'</button>'+((typeof TDOC!=="undefined"&&TDOC[p.id])?'<details style="margin:0 0 10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--pri);font-weight:600">🤖 Tóm tắt nhanh (AI)</summary><div class="faint" style="white-space:pre-line;line-height:1.6;margin-top:6px">'+esc(TDOC[p.id].sum)+'</div></details>':"")+
+   secT("spark","var(--gold-soft)","var(--gold)","Hướng dẫn chốt sale (cho tư vấn viên)")+pdoc("assets/products/"+p.id+"/sale.jpg","")+'<a class="btn sec" style="width:auto;padding:9px 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;margin:2px 0 6px" href="assets/docs/'+p.id+'.pdf" target="_blank" rel="noreferrer">📄 Tài liệu đào tạo sản phẩm (PDF) '+ic("arrow",14)+'</a>'+((typeof TDOC!=="undefined"&&TDOC[p.id])?'<details style="margin:0 0 10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--pri);font-weight:600">🤖 Tóm tắt nhanh (AI)</summary><div class="faint" style="white-space:pre-line;line-height:1.6;margin-top:6px">'+esc(TDOC[p.id].sum)+'</div></details>':"")+
    ({colostrum:1,gainpro:1,suregold:1,canxinano:1,mama:1}[p.id]
      ? secT("info","var(--pri-soft)","var(--pri)","Hồ sơ tự công bố sản phẩm (HSCB)")+pdoc("assets/products/"+p.id+"/hscb.jpg","Trang 1 — bản tự công bố (có dấu đỏ)")+pdoc("assets/products/"+p.id+"/hscb2.jpg","Trang 2 — thành phần & cơ sở sản xuất")
      : secT("info","var(--pri-soft)","var(--pri)","Giấy tiếp nhận đăng ký bản công bố sản phẩm")+pdoc("assets/products/"+p.id+"/hscb.jpg","Giấy tiếp nhận công bố (Chi cục ATVSTP) — tờ xanh"))+
@@ -1313,7 +1304,6 @@ function asstSend(t){ t=(t||'').trim(); if(!t)return; asstLog.push({r:'u',t:t});
 }
 function asstProd(dq){ var f=null; PRODUCTS.forEach(function(x){ if(f)return; var key=deburr(x.name.replace(/[Ww]intop/,'')).trim(); if(key && dq.indexOf(key)>=0) f=x; }); if(!f){ PRODUCTS.forEach(function(x){ if(f)return; if(deburr(x.name+' '+x.tag+' '+x.audience+' '+(x.claims||[]).join(' ')).indexOf(dq)>=0) f=x; }); } return f; }
 function asstAnswer(raw){ var d=deburr(raw);
-  if(/(dau da day|da day|ruot kich thich|hoi chung ruot|tieu chay|bat dung nap lactose|di ung dam bo|di ung dam sua|tieu duong thai ky)/.test(d)) return '⚠️ Trường hợp này có dấu hiệu cần thăm khám (dạ dày, hội chứng ruột kích thích, tiêu chảy, bất dung nạp lactose, dị ứng đạm bò sữa, hoặc tiểu đường thai kỳ). Nên hướng dẫn khách đi khám bác sĩ chuyên khoa trước — CHƯA tư vấn sữa để đảm bảo an toàn cho khách.';
   if(/(don hang|don cua toi|kiem tra don|tra cuu don|bao nhieu don|order)/.test(d)){ var q=(typeof orderQueue==='function')?orderQueue():[]; if(!q.length) return 'Hiện chưa có đơn nào. Bấm "Lên đơn" ở trang chủ để tạo đơn mới nhé.'; var pend=q.filter(function(o){return !o.sent;}).length, lon=q.reduce(function(s,o){return s+(o.qty||0);},0); var last=q.slice(-3).reverse().map(function(o){return '• '+(o.name||'Đơn')+' ×'+o.qty+' lon'+(o.sent?' (đã đồng bộ)':' (chờ đồng bộ)');}).join('\n'); return '📦 Bạn có '+q.length+' đơn · '+lon+' lon · '+pend+' đơn đang đồng bộ về hệ thống.\nGần nhất:\n'+last; }
   var pStock=/(ton kho|con hang|con bao nhieu|het hang|con may|con lon)/.test(d);
   var prod=asstProd(d);
@@ -1782,14 +1772,14 @@ function renderOrders(){
  if(!q.length) return '<button class="backbtn" onclick="setTab(\'profile\')">'+ic("back",18)+'Quay lại</button><div class="card" style="text-align:center;padding:32px 16px;color:var(--muted)"><div style="width:60px;height:60px;border-radius:50%;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;margin:0 auto 10px">'+ic("cart",28)+'</div>Chưa có đơn nào.<div class="faint" style="margin-top:4px">Bấm nút bên dưới để tạo đơn mới.</div><button class="btn cta-pulse" style="margin-top:14px;width:auto;padding:11px 20px" onclick="setTab(\'makeorder\')">'+ic('cart',17)+'Tạo đơn mới</button></div>';
  var pend=q.filter(function(o){return !o.sent;}).length;
  var cards=q.map(function(o){ var sc="#0F9A6A", sb="#DCF3E8", stt="✓ Đã ghi nhận";
-  return '<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="font-weight:700;font-family:var(--fh);font-size:14.5px">'+esc(o.name||"Đơn hàng")+'</div><span class="stockb" style="background:'+sb+';color:'+sc+'">'+stt+'</span></div><div class="muted" style="font-size:12.5px;margin-top:5px">Số lượng: <b>'+o.qty+' '+unit(o.sku)+'</b></div>'+((o.buyer||o.phone)?'<div class="muted" style="font-size:12px;margin-top:3px">Khách: '+esc(o.buyer||"")+(o.phone?(" · "+esc(o.phone)):"")+'</div>':'')+'<div class="faint" style="font-size:11px;margin-top:5px">'+relTime(o.at)+(o.area?(" · "+esc(o.area)):"")+'</div></div>';
+  return '<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div style="font-weight:700;font-family:var(--fh);font-size:14.5px">'+esc(o.name||"Đơn hàng")+'</div><span class="stockb" style="background:'+sb+';color:'+sc+'">'+stt+'</span></div><div class="muted" style="font-size:12.5px;margin-top:5px">Số lượng: <b>'+o.qty+' lon</b></div>'+((o.buyer||o.phone)?'<div class="muted" style="font-size:12px;margin-top:3px">Khách: '+esc(o.buyer||"")+(o.phone?(" · "+esc(o.phone)):"")+'</div>':'')+'<div class="faint" style="font-size:11px;margin-top:5px">'+relTime(o.at)+(o.area?(" · "+esc(o.area)):"")+'</div></div>';
  }).join("");
  return '<button class="backbtn" onclick="setTab(\'profile\')">'+ic("back",18)+'Quay lại</button><div class="rhead"><span class="rh-ic">'+ic("cart",16)+'</span>Đơn của tôi ('+q.length+')</div>'+'<button class="btn cta-pulse" style="margin-bottom:12px" onclick="setTab(\'makeorder\')">'+ic('cart',17)+'Tạo đơn mới</button>'+cards;
 }
 
 
 /* ---------- LÊN ĐƠN MỚI (chọn SKU + số lượng) ---------- */
-function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ toast("Chỉ còn "+lvl+" "+unit(sku)+" "+P(sku).name+" tại điểm bán."); nv=lvl; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
+function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ toast("Chỉ còn "+lvl+" lon "+P(sku).name+" tại điểm bán."); nv=lvl; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
 function renderMakeOrder(){
  var cart=S.cart||{}; var items=Object.keys(cart).filter(function(k){return cart[k]>0;});
  var totQty=0,totAmt=0; items.forEach(function(k){var e=EXTRA[k]||{price:0};totQty+=cart[k];totAmt+=(e.price||0)*cart[k];});
@@ -1802,22 +1792,22 @@ function renderMakeOrder(){
  var rows;
  if(inCart.length){ rows=inCart.map(rowFor).join('')+(others.length?(S.moMore?('<div class="muted" style="margin:10px 2px 6px">Thêm sản phẩm khác:</div>'+others.map(rowFor).join('')):('<button class="btn sec" style="width:100%;margin:2px 0 8px" onclick="S.moMore=true;var v=el(\'view\');if(v)v.innerHTML=renderMakeOrder()">'+ic("plus",16)+'Thêm sản phẩm khác</button>')):''); }
  else { rows=PRODUCTS.map(rowFor).join(''); }
- return '<button class="backbtn" onclick="setTab(\'orders\')">'+ic("back",18)+'Đơn của tôi</button><div class="rhead"><span class="rh-ic">'+ic("cart",16)+'</span>Lên đơn mới</div><div class="card"><label>Tên khách</label><input value="'+esc(b.name)+'" oninput="S.orderBuyer.name=this.value" placeholder="(tuỳ chọn)"/><label style="margin-top:8px">Số điện thoại</label><input type="tel" value="'+esc(b.phone)+'" oninput="S.orderBuyer.phone=this.value" placeholder="(tuỳ chọn)"/></div><div class="muted" style="margin:4px 2px 9px">Chọn sản phẩm & số lượng (kiểm tồn tại điểm bán):</div>'+rows+'<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;bottom:10px;box-shadow:0 8px 20px rgba(0,0,0,.14);border:1px solid #cfe0fb"><div><div style="font-size:12px;color:var(--muted)">'+totQty+' '+aggUnit(items)+' · '+items.length+' SP</div></div><button class="btn" style="width:auto;padding:12px 22px'+(totQty>0?'':';opacity:.5')+'" '+(totQty>0?'':'disabled')+' onclick="submitOrder()">'+ic("check",17)+'Tạo đơn</button></div>';
+ return '<button class="backbtn" onclick="setTab(\'orders\')">'+ic("back",18)+'Đơn của tôi</button><div class="rhead"><span class="rh-ic">'+ic("cart",16)+'</span>Lên đơn mới</div><div class="card"><label>Tên khách</label><input value="'+esc(b.name)+'" oninput="S.orderBuyer.name=this.value" placeholder="(tuỳ chọn)"/><label style="margin-top:8px">Số điện thoại</label><input type="tel" value="'+esc(b.phone)+'" oninput="S.orderBuyer.phone=this.value" placeholder="(tuỳ chọn)"/></div><div class="muted" style="margin:4px 2px 9px">Chọn sản phẩm & số lượng (kiểm tồn tại điểm bán):</div>'+rows+'<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;bottom:10px;box-shadow:0 8px 20px rgba(0,0,0,.14);border:1px solid #cfe0fb"><div><div style="font-size:12px;color:var(--muted)">'+totQty+' lon · '+items.length+' SP</div></div><button class="btn" style="width:auto;padding:12px 22px'+(totQty>0?'':';opacity:.5')+'" '+(totQty>0?'':'disabled')+' onclick="submitOrder()">'+ic("check",17)+'Tạo đơn</button></div>';
 }
 function submitOrder(){
  var cart=S.cart||{}; var items=Object.keys(cart).filter(function(k){return cart[k]>0;});
  if(!items.length){ toast("Chưa chọn sản phẩm nào."); return; }
- for(var i=0;i<items.length;i++){ var lvl=stockLevel(items[i]); if(lvl!=null&&cart[items[i]]>lvl){ toast("⚠ "+P(items[i]).name+" chỉ còn "+lvl+" "+unit(items[i])+" — điều chỉnh lại."); return; } }
+ for(var i=0;i<items.length;i++){ var lvl=stockLevel(items[i]); if(lvl!=null&&cart[items[i]]>lvl){ toast("⚠ "+P(items[i]).name+" chỉ còn "+lvl+" lon — điều chỉnh lại."); return; } }
  var b=S.orderBuyer||{name:"",phone:""}; var totQty=0,totAmt=0;
  var rows=items.map(function(k){ var e=EXTRA[k]||{price:0},qty=cart[k],amt=(e.price||0)*qty; totQty+=qty; totAmt+=amt;
-   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)"><div style="width:38px;height:38px;border-radius:9px;background:#fff url('+pimg(k)+') center/cover;flex-shrink:0;border:1px solid #eef2f7"></div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">'+esc(P(k).name)+'</div><div class="faint">'+qty+' '+unit(k)+'</div></div></div>';
+   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)"><div style="width:38px;height:38px;border-radius:9px;background:#fff url('+pimg(k)+') center/cover;flex-shrink:0;border:1px solid #eef2f7"></div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">'+esc(P(k).name)+'</div><div class="faint">'+qty+' lon</div></div></div>';
  }).join("");
  var o=el("ovl"); if(!o){ doSubmitOrder(); return; }
  o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="max-width:440px">'+
    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="width:34px;height:34px;border-radius:10px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("cart",18)+'</span><div style="font-weight:800;font-family:var(--fh);font-size:16px;flex:1">Xác nhận đặt đơn</div><button class="btn ghost" style="width:auto;padding:6px" onclick="closeOvl()">'+ic("x",18)+'</button></div>'+
    ((b.name||b.phone)?('<div class="faint" style="margin:2px 0 8px">Khách: <b style="color:#111">'+esc(b.name||"—")+'</b>'+(b.phone?(' · '+esc(b.phone)):"")+'</div>'):'<div class="faint" style="margin:2px 0 8px">Khách lẻ tại quầy</div>')+
    '<div style="max-height:44vh;overflow:auto">'+rows+'</div>'+
-   '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:11px 13px;border-radius:12px;background:var(--pri-soft)"><div style="font-size:12.5px;color:var(--pri-dark)">'+totQty+' '+aggUnit(items)+' · '+items.length+' SP · '+esc(S.acc.area||"điểm bán")+'</div></div>'+
+   '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:11px 13px;border-radius:12px;background:var(--pri-soft)"><div style="font-size:12.5px;color:var(--pri-dark)">'+totQty+' lon · '+items.length+' SP · '+esc(S.acc.area||"điểm bán")+'</div></div>'+
    '<div class="faint" style="text-align:center;margin:10px 0 2px;font-size:11px">Đơn được ghi nhận & trừ tồn tại điểm bán, đang đồng bộ về hệ thống khi có mạng.</div>'+
    '<div style="display:flex;gap:9px;margin-top:12px"><button class="btn ghost" style="flex:1" onclick="closeOvl()">Quay lại</button><button class="btn ok" style="flex:2" onclick="doSubmitOrder()">'+ic("check",17)+'Xác nhận đặt đơn</button></div>'+
    '</div></div>';
@@ -1827,10 +1817,10 @@ function doSubmitOrder(){
  if(!items.length){ closeOvl(); return; }
  var names=[],totQty=0,totAmt=0,b=S.orderBuyer||{name:"",phone:""};
  items.forEach(function(k){ var e=EXTRA[k]||{price:0}, qty=cart[k]; if(stockLevel(k)!=null)stockDec(k,qty); bumpOrder(); queueOrder({sku:k,name:P(k).name,qty:qty,price:e.price,amount:(e.price||0)*qty,buyer:b.name,phone:b.phone,area:S.acc.area,pg:S.acc.name,at:Date.now(),sent:false}); names.push(qty+" "+P(k).name); totQty+=qty; totAmt+=(e.price||0)*qty; });
- pushNotif("cart","Đã tạo đơn hàng",totQty+" "+aggUnit(items)+" · "+items.length+" SP"+(b.name?(" · "+b.name):"")+" · Chờ đẩy về NPP");
+ pushNotif("cart","Đã tạo đơn hàng",totQty+" lon · "+items.length+" SP"+(b.name?(" · "+b.name):"")+" · Chờ đẩy về NPP");
  S.cart={}; S.orderBuyer={name:"",phone:""}; S.moMore=false;
  closeOvl();
- toast("✅ Đã tạo đơn: "+names.join(", ")+". Tổng "+totQty+" "+aggUnit(items)+" · đang đồng bộ về hệ thống.");
+ toast("✅ Đã tạo đơn: "+names.join(", ")+". Tổng "+totQty+" lon"+" · đang đồng bộ về hệ thống.");
  setTab("orders");
 }
 
