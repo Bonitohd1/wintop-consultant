@@ -1547,11 +1547,12 @@ function buildSession(){
   warn:r.freeze?"ĐÓNG BĂNG — yếu tố tiểu đường thai kỳ, chuyển khám bác sĩ":"",
   ordered:false, orderQty:"", orderTime:"", date:dt.toLocaleDateString("vi-VN"), time:dt.toLocaleTimeString("vi-VN") };
 }
+function autoPushSession(sess){ if(!navigator.onLine) return; try{ var body={ tenant:wtTenant(), source:"wintop-consultant", sessions:[wtMapSession(sess||{})] }; fetch(WT_DEF.sessions,{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).catch(function(){}); }catch(e){} }
 function finishConsult(){
  if(S._saved) return; S._saved=true;
  bumpConsult(S.rec);
  logConsult();
- if(S.consent){ saveSessionEnc(buildSession()).then(function(id){ S.curSessionId=id; }).catch(function(e){ console.warn("Lưu phiên lỗi:",e); }); }
+ if(S.consent){ var _ss=buildSession(); saveSessionEnc(_ss).then(function(id){ S.curSessionId=id; }).catch(function(e){ console.warn("Lưu phiên lỗi:",e); }); try{ autoPushSession(_ss); }catch(e){} }
 }
 /* ===== THỐNG KÊ CÁ NHÂN (nhật ký cục bộ) ===== */
 var STATS_KEY="wt_stats_v1";
@@ -1768,20 +1769,20 @@ function kiotSaveCfg(){
  var sec=(el("kv_secret").value||"").trim(); if(sec)body.client_secret=sec;
  if(!body.retailer||!body.client_id){ toast("Nhập đủ Retailer + Client ID."); return; }
  var b=el("kvsavebtn"); if(b){b.textContent="Đang kiểm tra…";b.disabled=true;}
- fetch(WINTOP_API+"/kiotviet/config",{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).then(function(r){return r.json();}).then(function(d){
+ fetch(WINTOP_API+"/kiotviet/config",{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).then(function(r){var _st=r.status;return r.json().catch(function(){return{};}).then(function(d){if(d)d.__st=_st;return d;});}).then(function(d){
   if(b){b.innerHTML=ic("check",16)+'Kiểm tra & Lưu kết nối';b.disabled=false;}
   if(d&&d.test&&d.test.ok){ toast("✅ Kết nối KiotViet OK"+(d.branch_id?(" · chi nhánh "+d.branch_id):"")); }
-  else { toast("❌ Lỗi: "+((d&&d.test&&d.test.error)||(d&&d.last_error)||"kiểm tra khoá")); }
+  else { toast("❌ Lỗi ("+(d&&d.__st)+"): "+((d&&d.test&&d.test.error)||(d&&d.detail)||(d&&d.last_error)||"kiểm tra backend/khoá")); }
   kiotRenderStatus(d);
  }).catch(function(e){ if(b){b.innerHTML=ic("check",16)+'Kiểm tra & Lưu kết nối';b.disabled=false;} toast("Không gọi được hệ thống: "+e.message); });
 }
 function kiotSyncStock(){
  var tn=wtTenant(); if(!tn){ toast("Chưa có Mã NPP."); return; }
  var b=el("kvsyncbtn"); if(b){b.textContent="Đang đồng bộ…";b.disabled=true;}
- fetch(WINTOP_API+"/kiotviet/sync-stock?tenant="+encodeURIComponent(tn),{method:"POST",headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){
+ fetch(WINTOP_API+"/kiotviet/sync-stock?tenant="+encodeURIComponent(tn),{method:"POST",headers:wtHeaders(false)}).then(function(r){var _st=r.status;return r.json().catch(function(){return{};}).then(function(d){if(d)d.__st=_st;return d;});}).then(function(d){
   if(b){b.innerHTML=ic("sync",16)+'Đồng bộ tồn từ KiotViet';b.disabled=false;}
   if(d&&d.ok){ var s=stockData()||{items:{}}; if(!s.items)s.items={}; Object.keys(d.items||{}).forEach(function(k){s.items[k]=d.items[k];}); s.at=Date.now(); lsSet(STOCK_KEY,s); toast("✅ Đồng bộ tồn "+d.synced+" SP từ KiotViet."); renderStock(); }
-  else { toast("Đồng bộ lỗi: "+((d&&d.detail)||"kiểm tra kết nối")); }
+  else { toast("Đồng bộ lỗi ("+(d&&d.__st)+"): "+((d&&d.detail)||"kiểm tra kết nối")); }
  }).catch(function(e){ if(b){b.innerHTML=ic("sync",16)+'Đồng bộ tồn từ KiotViet';b.disabled=false;} toast("Lỗi: "+e.message); });
 }
 function renderStock(){
@@ -1792,12 +1793,6 @@ function renderStock(){
   '<label style="margin-top:8px">Mã NPP (tenant — công ty cấp)</label><input id="stk_tenant" value="'+esc(lsGet(TENANT_KEY,""))+'" placeholder="VD: npp-thongoc-hn"/>'+
   '<div class="muted" style="margin:12px 0 4px">Số lon tồn theo SKU (Sắp hết khi ≤ '+STOCK_LOW+')</div>'+rows+
   '<button class="btn" style="margin-top:12px" onclick="saveStock()">'+ic("check",16)+'Lưu tồn kho</button>'+
-  '<label style="margin-top:12px">Endpoint tồn kho — hệ thống (tuỳ chọn, kéo tự động)</label><input id="stk_url" value="'+esc(url)+'" placeholder="https://.../api/stock (qua cầu nối hệ thống)"/>'+
-  '<button id="stkpullbtn" class="btn ghost" style="margin-top:9px" onclick="pullStock()">'+ic("sync",16)+'Kéo tồn từ hệ thống</button>'+
-  '<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#FFEDE4;color:#EE4D2D">'+ic("cart",16)+'</span>Đồng bộ đơn về hệ thống</div><div class="muted" style="margin-bottom:6px">Đơn chờ đồng bộ: <b>'+pendingOrders().length+'</b></div>'+
-  '<label>Endpoint đẩy đơn (đồng bộ đơn (tuỳ chọn))</label><input id="ord_url" value="'+esc(lsGet(ORDER_URL_KEY,""))+'" placeholder="https://.../api/order"/>'+
-  '<label style="margin-top:8px">Bridge Key (X-Bridge-Key)</label><input id="ord_key" value="'+esc(lsGet(BRIDGE_KEY_KEY,""))+'" placeholder="khoá chống lạm dụng"/>'+
-  '<button id="ordpushbtn" class="btn ok" style="margin-top:10px" onclick="lsSet(ORDER_URL_KEY,el(\'ord_url\').value.trim());lsSet(BRIDGE_KEY_KEY,el(\'ord_key\').value.trim());flushOrders()">'+ic("sync",16)+'Đồng bộ đơn</button></div>'+
   kiotSectionHTML()+'<div class="faint" style="text-align:center;margin-top:12px;font-size:11px">Lên đơn trừ tồn cục bộ + xếp hàng đợi; khi có mạng đồng bộ về hệ thống qua cầu nối. Tồn nhập tay hoặc kéo từ hệ thống.</div></div></div>';
  setTimeout(kiotLoadStatus,150);
 }
