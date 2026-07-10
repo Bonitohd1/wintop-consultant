@@ -1905,6 +1905,10 @@ function adminLogin(){
   S.adminAuthed=true; S.adminData=data; renderAdmin();
  }).catch(function(e){ if(btn){btn.textContent="Mở khoá";btn.disabled=false;} var b=el("admerr"); if(b)b.textContent="Sai mật khẩu hoặc dữ liệu lỗi. Thử lại."; });
 }
+function adminResetPass(){ if(!confirm("Đặt lại mật khẩu quản trị về MẶC ĐỊNH?\n\nDữ liệu đã lưu trên máy KHÔNG bị mất — chỉ đưa mật khẩu về mặc định để đăng nhập lại.")) return;
+ try{ localStorage.removeItem(WK_KEY); }catch(e){}
+ var e=el("admerr"); if(e){ e.style.color="#0F9A6A"; e.textContent="✅ Đã đặt lại về mật khẩu mặc định. Nhập mật khẩu mặc định để vào, rồi đổi lại nếu cần."; }
+ var i=el("admpass"); if(i){ i.value=""; i.focus(); } }
 function adminDoChangePass(){
  var o=prompt("Nhập MẬT KHẨU HIỆN TẠI:"); if(o==null)return;
  var n=prompt("Nhập MẬT KHẨU MỚI (tối thiểu 6 ký tự):"); if(n==null)return; if(n.length<6){toast("Mật khẩu mới quá ngắn.");return;}
@@ -1974,7 +1978,7 @@ function renderAdmin(){
    '<div class="muted" style="margin-bottom:10px">Đang giữ <b>'+n+'</b> phiên tư vấn (mã hoá) trên thiết bị này. Nhập mật khẩu quản trị để mở & tải dữ liệu.</div>'+
    '<label>Mật khẩu quản trị</label><input id="admpass" type="password" placeholder="••••••••" onkeydown="if(event.key===\'Enter\')adminLogin()"/>'+
    '<div id="admerr" style="color:#DC2626;font-size:12.5px;margin:6px 2px 0;min-height:16px"></div>'+
-   '<button id="admloginbtn" class="btn" style="margin-top:10px" onclick="adminLogin()">'+ic("unlock",17)+'Mở khoá</button>'+
+   '<button id="admloginbtn" class="btn" style="margin-top:10px" onclick="adminLogin()">'+ic("unlock",17)+'Mở khoá</button><div style="text-align:center;margin-top:11px"><a onclick="adminResetPass()" style="font-size:11.5px;color:#94A3B8;cursor:pointer;text-decoration:underline">Quên mật khẩu? Đặt lại về mặc định</a></div>'+
    '<div class="faint" style="text-align:center;margin-top:12px;font-size:11px">RBAC: tư vấn viên không thể mở dữ liệu này.</div>'+
    '</div></div>';
   setTimeout(function(){var i=el("admpass");if(i)i.focus();},60); return;
