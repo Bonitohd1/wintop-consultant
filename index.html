@@ -1692,7 +1692,8 @@ var WINTOP_API="https://api.wintop.vn/api/wintop";
 var WT_DEF={ sessions:WINTOP_API+"/sessions", stock:WINTOP_API+"/stock", order:WINTOP_API+"/orders", key:"wintop-app-2026" };
 function wtKey(){ return lsGet(BRIDGE_KEY_KEY, WT_DEF.key) || WT_DEF.key; }
 function wtTenant(){ return lsGet(TENANT_KEY,"") || ""; }
-function wtHeaders(json){ var h=json?{"Content-Type":"application/json"}:{}; h["X-Bridge-Key"]=wtKey(); var t=wtTenant(); if(t)h["X-Tenant"]=t; return h; }
+function wtToken(){ return lsGet(TOKEN_KEY,"") || ""; }
+function wtHeaders(json){ var h=json?{"Content-Type":"application/json"}:{}; var tk=wtToken(); if(tk)h["X-Npp-Token"]=tk; h["X-Bridge-Key"]=wtKey(); var t=wtTenant(); if(t)h["X-Tenant"]=t; return h; }
 
 /* ---------- ĐỒNG BỘ STUDIO (hook, cấu hình URL) ---------- */
 function syncCfg(){ var c=lsGet(SYNC_KEY,{url:""}); if(!c.url)c.url=WT_DEF.sessions; return c; }
@@ -1805,6 +1806,7 @@ function renderStock(){
  var rows=PRODUCTS.map(function(p){ var q=items[p.id]; return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)"><div style="flex:1;font-size:13px">'+esc(p.name)+'</div>'+(stockBadge(p.id)||'<span class="faint" style="font-size:11px">chưa có</span>')+'<input id="stk_'+p.id+'" type="number" inputmode="numeric" value="'+(q==null?"":q)+'" placeholder="0" style="width:72px;text-align:center"/></div>'; }).join("");
  o.innerHTML='<div class="modal" onclick="if(event.target===this)closeStock()"><div class="modal-c" style="max-width:480px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="ico" style="background:var(--health-soft);color:var(--health);width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center">'+ic("pkg",18)+'</span><div style="font-weight:700;font-family:var(--fh);font-size:16px;flex:1">Tồn kho điểm bán</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeStock()">'+ic("x",18)+'</button></div>'+
   '<label>Tên điểm bán / nhà phân phối</label><input id="stk_area" value="'+esc(s.area||S.acc.area||"")+'" placeholder="VD: NPP Thỏ Ngọc - Hà Nội"/>'+
+  '<label style="margin-top:8px">Mã kích hoạt (công ty cấp — bảo mật)</label><div style="display:flex;gap:6px"><input id="stk_token" value="'+esc(lsGet(TOKEN_KEY,""))+'" placeholder="Dán mã npp_..." style="flex:1"/><button class="btn" style="width:auto;padding:0 14px" onclick="activateNpp()">Kích hoạt</button></div><div id="act_status" class="faint" style="font-size:11.5px;margin-top:4px"></div>'+
   '<label style="margin-top:8px">Mã NPP (tenant — công ty cấp)</label><input id="stk_tenant" value="'+esc(lsGet(TENANT_KEY,""))+'" placeholder="VD: npp-thongoc-hn"/>'+
   '<div class="muted" style="margin:12px 0 4px">Số lon tồn theo SKU (Sắp hết khi ≤ '+STOCK_LOW+')</div>'+rows+
   '<button class="btn" style="margin-top:12px" onclick="saveStock()">'+ic("check",16)+'Lưu tồn kho</button>'+
@@ -1812,8 +1814,28 @@ function renderStock(){
  setTimeout(kiotLoadStatus,150);
 }
 
+function activateNpp(){
+  var tk=(el("stk_token")?el("stk_token").value.trim():"");
+  var st=el("act_status");
+  if(!tk){ toast("Dán mã kích hoạt."); return; }
+  lsSet(TOKEN_KEY,tk);
+  if(st)st.innerHTML="Đang kiểm tra…";
+  fetch(WINTOP_API+"/me",{headers:wtHeaders(false)})
+   .then(function(r){ return r.ok?r.json():Promise.reject(new Error("HTTP "+r.status)); })
+   .then(function(d){
+     if(d.tenant){ lsSet(TENANT_KEY,d.tenant); if(el("stk_tenant"))el("stk_tenant").value=d.tenant; }
+     toast("✅ Đã kích hoạt: "+(d.name||d.tenant||""));
+     if(st)st.innerHTML='<span style="color:var(--health)">✓ Đã kích hoạt: '+esc(d.name||d.tenant||"")+'</span>';
+   })
+   .catch(function(e){
+     lsSet(TOKEN_KEY,"");
+     toast("Mã không hợp lệ.");
+     if(st)st.innerHTML='<span style="color:#c0392b">✗ Mã không hợp lệ hoặc đã thu hồi</span>';
+   });
+}
+
 /* ---------- ĐẨY ĐƠN KIOTVIET (hàng đợi offline → cầu nối) ---------- */
-var OQ_KEY="wt_order_queue", ORDER_URL_KEY="wt_order_url", BRIDGE_KEY_KEY="wt_bridge_key", TENANT_KEY="wt_tenant";
+var OQ_KEY="wt_order_queue", ORDER_URL_KEY="wt_order_url", BRIDGE_KEY_KEY="wt_bridge_key", TENANT_KEY="wt_tenant", TOKEN_KEY="wt_npp_token";
 function orderQueue(){ return lsGet(OQ_KEY,[]); }
 function pendingOrders(){ return orderQueue().filter(function(o){return !o.sent;}); }
 function queueOrder(o){ var q=orderQueue(); q.push(o); lsSet(OQ_KEY,q); }
