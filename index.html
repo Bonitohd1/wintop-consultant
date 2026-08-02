@@ -2079,6 +2079,24 @@ function submitRestock(){ var cart=S.rcart||{}; var items=Object.keys(cart).filt
    .then(function(){ S.rcart={}; pushNotif("cart","Đã gửi đơn nhập hàng","Đơn đặt công ty đang chờ duyệt."); toast("✅ Đã gửi đơn đặt hàng công ty. Theo dõi duyệt trên hệ thống."); closeAdmin(); })
    .catch(function(e){ toast("Gửi đơn lỗi: "+e.message+" — kiểm tra Mã NPP + mạng."); });
 }
+function openInbound(){
+ var o=el("ovl"); if(!o)return;
+ o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="max-width:520px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div style="font-weight:800;font-family:var(--fh);font-size:16px;flex:1">Đơn cấp dưới đặt lên</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic("x",18)+'</button></div><div class="faint" style="font-size:11.5px;margin-bottom:10px">Đơn bổ sung do NPP cấp dưới đặt lên tuyến của bạn. Bấm “Giao” sẽ trừ tồn kho của bạn.</div><div id="inbwrap" class="muted" style="text-align:center;padding:16px">Đang tải…</div></div></div>';
+ fetch(WINTOP_API+"/npp/inbound-restock",{headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){
+  var rows=(d&&d.items)||[]; var w=el("inbwrap"); if(!w)return;
+  if(!rows.length){ w.innerHTML='<div class="muted" style="text-align:center;padding:16px">Chưa có đơn nào từ cấp dưới đặt lên.</div>'; return; }
+  w.className=""; w.innerHTML=rows.map(function(o){
+   var items=(o.items||[]).map(function(i){return (i.qty||0)+"× "+esc(i.name||i.sku);}).join(", ");
+   var done=o.shipped||o.status==="delivering"||o.status==="delivered";
+   return '<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;color:var(--muted)">Từ NPP: <b style="color:#111">'+esc(o.from_tenant||"—")+'</b> · '+(o.total_qty||0)+' lon</div><div style="font-size:12.5px;margin:4px 0">'+items+'</div>'+(done?'<div style="color:#0F9A6A;font-size:12px;font-weight:700">✓ Đã giao</div>':'<button class="btn ok" style="margin-top:4px" onclick="fulfillInbound(\''+o.id+'\')">'+ic("check",15)+'Giao (trừ tồn của bạn)</button>')+'</div>';
+  }).join("");
+ }).catch(function(e){ var w=el("inbwrap"); if(w)w.innerHTML='<div class="muted" style="text-align:center;padding:16px">Lỗi tải: '+esc(e.message)+'</div>'; });
+}
+function fulfillInbound(id){
+ fetch(WINTOP_API+"/npp/inbound-restock/"+id+"/fulfill",{method:"POST",headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){
+  if(d&&d.ok){ toast("✅ "+(d.message||"Đã giao.")); openInbound(); } else { toast("Lỗi: "+((d&&d.detail)||"không giao được")); }
+ }).catch(function(e){ toast("Lỗi: "+e.message); });
+}
 function renderAdmin(){
  var o=el("ovl"); if(!o)return;
  if(!S.adminOpen){o.innerHTML="";return;}
@@ -2104,6 +2122,7 @@ function renderAdmin(){
   '<div style="border-top:1px solid var(--line);margin:12px 0;padding-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#0E3D2E;color:#12B981">'+ic("cart",16)+'</span>Quản trị Nhà Phân Phối</div>'+
   '<div style="display:flex;gap:9px"><button class="btn sec" style="flex:1" onclick="openStock()">'+ic("box",16)+'Tồn kho</button><button class="btn ok" style="flex:1" onclick="openRestock()">'+ic("cart",16)+'Đặt hàng công ty</button></div>'+
   '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openRestockOrders()">'+ic("box",16)+'Đơn đã đặt & trạng thái duyệt</button>'+
+  '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openInbound()">'+ic("box",16)+'Đơn cấp dưới đặt lên (tuyến trên)</button>'+
   '<button class="btn ghost" style="margin-top:9px" onclick="makePgLink()">'+ic("user",16)+'Tạo link cho PG (cấp mã tư vấn viên)</button>'+
   '<button class="btn ghost" style="margin-top:9px" onclick="openZaloOA()">'+ic("spark",16)+'Chat Zalo OA doanh nghiệp</button></div>'+
   '<button class="btn ghost" style="margin-top:10px" onclick="closeAdmin()">Đóng</button>'+
