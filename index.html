@@ -1211,12 +1211,77 @@ function qaOnly(){ var v=el("view"),cur=document.activeElement,pos=cur&&cur.id==
 
 /* ===== TAB 4: QUIZ ===== */
 var BADGES=[{i:"leaf",t:"Tập sự"},{i:"school",t:"Nhân viên"},{i:"check",t:"Tư vấn viên"},{i:"star",t:"Chuyên gia DD"},{i:"trophy",t:"Đại sứ WINTOP"}];
-function renderQuiz(){ if(!S.quiz)return '<h2>Quiz ôn tập nghiệp vụ</h2>'+QUIZ.map(function(L,i){return '<div class="card" style="display:flex;align-items:center;gap:12px"><div style="width:42px;height:42px;border-radius:13px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center">'+ic(["leaf","school","calc","info","trophy"][i],20)+'</div><div style="flex:1"><div style="font-weight:600;font-family:var(--fh)">Cấp '+(i+1)+': '+esc(L.lv)+'</div><div class="muted">'+L.qs.length+' câu hỏi</div></div><button class="btn" style="width:auto;padding:9px 15px" onclick="startLevel('+i+')">Bắt đầu</button></div>';}).join("");
- var Q=S.quiz,L=QUIZ[Q.lv]; if(Q.done){var b=Q.score<=4?BADGES[0]:Q.score<=6?BADGES[1]:Q.score<=8?BADGES[2]:Q.score===9?BADGES[3]:BADGES[4];return '<div class="card" style="text-align:center;padding:26px"><div style="width:74px;height:74px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 10px">'+ic(b.i,38)+'</div><h2 style="margin:0">'+esc(b.t)+'</h2><div class="muted" style="margin:6px 0 14px">Điểm: '+Q.score+'/'+L.qs.length+' · Cấp '+(Q.lv+1)+'</div><button class="btn" onclick="S.quiz=null;render()">Chọn cấp khác</button></div>';}
- var q=L.qs[Q.i]; return '<div class="card"><div class="muted">Cấp '+(Q.lv+1)+' · '+esc(L.lv)+' · Câu '+(Q.i+1)+'/'+L.qs.length+'</div><div style="font-weight:600;font-family:var(--fh);margin:9px 0 12px;font-size:15px">'+esc(q.q)+'</div>'+q.o.map(function(opt,oi){var cls="chk";if(Q.ans!=null&&oi===q.c)cls="chk on";return '<div class="'+cls+'" '+(Q.ans==null?'onclick="answerQ('+oi+')"':"")+'><span class="bx" style="border-radius:50%">'+(Q.ans!=null&&oi===q.c?ic("check",13):"")+'</span>'+esc(opt)+(Q.ans===oi&&oi!==q.c?' '+'<span style="color:var(--bad);margin-left:auto">✕</span>':"")+'</div>';}).join("")+(Q.ans!=null?('<div class="alert" style="background:var(--health-soft);color:#0b5e44;margin-top:8px">'+ic("info",16)+' '+esc(q.e)+'</div><button class="btn" style="margin-top:11px" onclick="nextQ()">'+(Q.i+1<L.qs.length?"Câu tiếp":"Xem kết quả")+' '+ic("arrow",18)+'</button>'):"")+'</div>'; }
-function startLevel(i){ S.quiz={lv:i,i:0,ans:null,score:0,done:false};render(); }
-function answerQ(o){ var Q=S.quiz;Q.ans=o;if(o===QUIZ[Q.lv].qs[Q.i].c)Q.score++;render(); }
-function nextQ(){ var Q=S.quiz;if(Q.i+1<QUIZ[Q.lv].qs.length){Q.i++;Q.ans=null;}else Q.done=true;render(); }
+/* ===== HỌC VIỆN WINTOP — game hoá: phiêu lưu ngẫu nhiên + XP/chuỗi/tim + huy hiệu ===== */
+function quizStats(){ var s=lsGet("wt_quiz_v1",{xp:0,plays:0,answered:0,correct:0,bestStreak:0,badges:[]}); if(!s.badges)s.badges=[]; return s; }
+function saveQuiz(s){ lsSet("wt_quiz_v1",s); }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
+function allQuestions(){ var out=[]; QUIZ.forEach(function(L,li){ (L.qs||[]).forEach(function(q){ out.push({q:q.q,o:q.o,c:q.c,e:q.e,lv:li}); }); }); return out; }
+function shufQ(q){ var idx=shuffle(q.o.map(function(_,i){return i;})); return {q:q.q,o:idx.map(function(i){return q.o[i];}),c:idx.indexOf(q.c),e:q.e,lv:q.lv}; }
+function buildRun(n,li){ var pool=(li==null)?allQuestions():allQuestions().filter(function(x){return x.lv===li;}); return shuffle(pool).slice(0,n).map(shufQ); }
+function xpRank(xp){ var idx=0; for(var i=0;i<RLEVELS.length;i++){ if(xp>=RLEVELS[i].m)idx=i; } var cur=RLEVELS[idx],nxt=RLEVELS[idx+1],ics=["leaf","school","check","star","trophy"]; var pct=nxt?Math.round((xp-cur.m)*100/(nxt.m-cur.m)):100; return {name:cur.n,ic:ics[idx]||"star",pct:Math.max(4,Math.min(100,pct)),next:nxt?nxt.m:null}; }
+var BADGE_DEFS=[
+ {id:"first",ic:"spark",n:"Nhập môn",d:"Chơi phiêu lưu lần đầu"},
+ {id:"streak5",ic:"flame",n:"Chuỗi lửa",d:"Đúng liền 5 câu"},
+ {id:"streak10",ic:"flame",n:"Bốc cháy",d:"Đúng liền 10 câu"},
+ {id:"perfect",ic:"star",n:"Hoàn hảo",d:"Một phiêu lưu không sai câu nào"},
+ {id:"xp100",ic:"check",n:"Trăm điểm",d:"Tích luỹ 100 XP"},
+ {id:"xp300",ic:"trophy",n:"Cao thủ",d:"Tích luỹ 300 XP"},
+ {id:"ans50",ic:"school",n:"Chăm chỉ",d:"Trả lời 50 câu"},
+ {id:"ans150",ic:"cup",n:"Học giả",d:"Trả lời 150 câu"}
+];
+function badgeById(id){ for(var i=0;i<BADGE_DEFS.length;i++)if(BADGE_DEFS[i].id===id)return BADGE_DEFS[i]; return null; }
+function checkBadges(runPerfect){ var s=quizStats(),nw=[]; function g(id){ if(s.badges.indexOf(id)<0){s.badges.push(id);nw.push(id);} }
+ if(s.plays>=1)g("first"); if((s.bestStreak||0)>=5)g("streak5"); if((s.bestStreak||0)>=10)g("streak10");
+ if((s.xp||0)>=100)g("xp100"); if((s.xp||0)>=300)g("xp300"); if((s.answered||0)>=50)g("ans50"); if((s.answered||0)>=150)g("ans150");
+ if(runPerfect)g("perfect"); saveQuiz(s);
+ nw.forEach(function(id){ var b=badgeById(id); if(b){ pushNotif("trophy","🏅 Mở khoá huy hiệu: "+b.n,b.d); setTimeout(function(){toast("🏅 Huy hiệu mới: "+b.n+"!","ok");},250);} });
+ return nw; }
+function renderQuiz(){
+ if(S.adv)return renderAdv();
+ if(S.quiz)return renderLevel();
+ var st=quizStats(),rk=xpRank(st.xp||0);
+ var badges=BADGE_DEFS.map(function(b){ var got=st.badges.indexOf(b.id)>=0;
+   return '<div style="flex:0 0 auto;width:80px;text-align:center;opacity:'+(got?'1':'.5')+'"><div style="width:54px;height:54px;margin:0 auto 5px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:'+(got?'var(--gold-soft)':'#EEF1F5')+';color:'+(got?'var(--gold)':'#B6BDC7')+';'+(got?'box-shadow:0 4px 12px rgba(245,158,11,.25)':'')+'">'+ic(got?b.ic:"star",25)+'</div><div style="font-size:10px;font-weight:700;color:'+(got?'#111':'#9AA3AF')+'">'+(got?esc(b.n):"???")+'</div></div>';
+ }).join('');
+ return '<h2>Học viện Wintop 🎓</h2>'
+  +'<div class="card" style="background:linear-gradient(135deg,#10357A,#2563EB);color:#fff;border:none"><div style="display:flex;align-items:center;gap:12px"><div style="width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center">'+ic(rk.ic,26)+'</div><div style="flex:1"><div style="font-weight:800;font-family:var(--fh);font-size:17px">'+esc(rk.name)+'</div><div style="font-size:12px;opacity:.85">'+(st.xp||0)+' XP'+(rk.next!=null?(' · còn '+(rk.next-(st.xp||0))+' XP lên hạng'):' · hạng cao nhất')+'</div></div><div style="text-align:right"><div style="font-size:20px;font-weight:800">🔥 '+(st.bestStreak||0)+'</div><div style="font-size:10px;opacity:.8">chuỗi tốt nhất</div></div></div><div style="height:8px;border-radius:5px;background:rgba(255,255,255,.22);margin-top:12px;overflow:hidden"><div style="height:100%;width:'+rk.pct+'%;background:#FFD36E;border-radius:5px;transition:width .6s"></div></div></div>'
+  +'<button class="btn ok" style="margin:2px 0 8px;font-size:15px;padding:15px" onclick="startAdventure()">'+ic("spark",18)+'Bắt đầu phiêu lưu (10 câu ngẫu nhiên)</button>'
+  +'<div class="card"><div style="font-weight:700;font-family:var(--fh);margin-bottom:2px">🏅 Bộ sưu tập huy hiệu</div><div class="muted" style="font-size:12px;margin-bottom:10px">Mở khoá bằng cách chơi — càng giỏi càng nhiều huy hiệu.</div><div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px">'+badges+'</div></div>'
+  +'<div class="muted" style="margin:8px 2px 8px;font-weight:600">Hoặc luyện theo chủ đề:</div>'
+  +QUIZ.map(function(L,i){return '<div class="card" style="display:flex;align-items:center;gap:12px;padding:12px"><div style="width:38px;height:38px;border-radius:12px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center">'+ic(["leaf","school","calc","info","trophy"][i],18)+'</div><div style="flex:1"><div style="font-weight:600">Cấp '+(i+1)+': '+esc(L.lv)+'</div><div class="muted" style="font-size:12px">'+L.qs.length+' câu · xáo trộn</div></div><button class="btn sec" style="width:auto;padding:8px 14px" onclick="startLevel('+i+')">Luyện</button></div>';}).join("");
+}
+function qOptsHTML(q,ansIdx,cb){ return q.o.map(function(op,oi){ var extra=''; if(ansIdx!=null){ if(oi===q.c)extra='border-color:#0F9A6A;background:#E7F7F0'; else if(oi===ansIdx)extra='border-color:#DC2626;background:#FDECEC'; } return '<button '+(ansIdx!=null?'disabled':'')+' onclick="'+cb+'('+oi+')" style="display:block;width:100%;text-align:left;border:1.5px solid #d9e0ea;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:14px;cursor:pointer;'+extra+'">'+esc(op)+'</button>'; }).join(''); }
+/* ---- Phiêu lưu ---- */
+function startAdventure(){ S.quiz=null; S.adv={pool:buildRun(10,null),i:0,ans:null,lives:3,streak:0,combo:0,maxStreak:0,xp:0,correct:0,seen:0,done:false,applied:false,lastGain:0}; window.scrollTo(0,0); render(); }
+function advPick(oi){ var A=S.adv; if(!A||A.ans!=null||A.done)return; A.ans=oi; A.seen++; var q=A.pool[A.i];
+ if(oi===q.c){ A.correct++; A.streak++; A.combo++; A.maxStreak=Math.max(A.maxStreak,A.streak); var g=10+Math.min(A.combo-1,5)*2; A.xp+=g; A.lastGain=g; try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} }
+ else { A.streak=0; A.combo=0; A.lives--; A.lastGain=0; try{navigator.vibrate&&navigator.vibrate([25,40,25]);}catch(e){} }
+ render(); }
+function advNext(){ var A=S.adv; if(!A)return; if(A.lives<=0)A.done=true; else if(A.i+1<A.pool.length){A.i++;A.ans=null;} else A.done=true; render(); }
+function renderAdv(){ var A=S.adv;
+ if(A.done){ if(!A.applied){ A.applied=true; var s=quizStats(); s.xp=(s.xp||0)+A.xp; s.plays=(s.plays||0)+1; s.answered=(s.answered||0)+A.seen; s.correct=(s.correct||0)+A.correct; s.bestStreak=Math.max(s.bestStreak||0,A.maxStreak); saveQuiz(s); checkBadges(A.correct===A.pool.length); }
+   var perfect=(A.correct===A.pool.length),stars=A.correct>=A.pool.length?3:(A.correct>=Math.ceil(A.pool.length*0.6)?2:(A.correct>=1?1:0));
+   return '<div class="card" style="text-align:center;padding:26px"><div style="font-size:30px;letter-spacing:5px">'+(stars?'⭐'.repeat(stars):'—')+'</div><h2 style="margin:8px 0 2px">'+(perfect?'Xuất sắc!':(A.lives<=0?'Hết lượt rồi!':'Hoàn thành!'))+'</h2><div class="muted" style="margin-bottom:4px">Đúng '+A.correct+'/'+A.pool.length+' · +'+A.xp+' XP · chuỗi cao nhất 🔥'+A.maxStreak+'</div><div style="display:flex;gap:9px;margin-top:14px"><button class="btn ok" style="flex:1" onclick="startAdventure()">'+ic("refresh",16)+'Phiêu lưu tiếp</button><button class="btn sec" style="flex:1" onclick="S.adv=null;render()">Về Học viện</button></div></div>';
+ }
+ var q=A.pool[A.i],answered=A.ans!=null,hearts=''; for(var h=0;h<3;h++)hearts+=(h<A.lives?'❤️':'🤍');
+ var top='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><button class="btn ghost" style="width:auto;padding:6px 10px" onclick="if(confirm(\'Thoát phiêu lưu? Điểm chưa được tính.\')){S.adv=null;render();}">'+ic("x",16)+'</button><div style="flex:1"><div style="height:7px;border-radius:5px;background:#E6EBF2;overflow:hidden"><div style="height:100%;width:'+Math.round(A.i/A.pool.length*100)+'%;background:var(--pri);transition:width .3s"></div></div></div><div style="font-size:15px">'+hearts+'</div></div>';
+ var streakChip=A.combo>=2?'<div style="text-align:center;margin-bottom:8px"><span style="background:#FFF1DC;color:#C2691A;font-weight:800;font-size:12px;padding:3px 12px;border-radius:999px">🔥 Chuỗi '+A.combo+' · x'+(1+Math.min(A.combo-1,5)*0.2).toFixed(1)+' điểm</span></div>':'';
+ var fb=answered?('<div style="margin-top:10px;padding:11px 13px;border-radius:12px;background:'+(A.ans===q.c?'#E7F7F0':'#FDECEC')+';font-size:12.5px;line-height:1.55">'+(A.ans===q.c?'<b style="color:#0F9A6A">✓ Chính xác! +'+A.lastGain+' XP</b><br>':'<b style="color:#DC2626">✗ Chưa đúng.</b><br>')+esc(q.e)+'</div><button class="btn" style="margin-top:12px" onclick="advNext()">'+((A.i+1<A.pool.length&&A.lives>0)?'Câu tiếp ':'Xem kết quả ')+ic("arrow",16)+'</button>'):'';
+ return top+streakChip+'<div class="card"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Câu '+(A.i+1)+'/'+A.pool.length+'</div><div style="font-weight:700;font-size:15px;line-height:1.5;margin-bottom:12px">'+esc(q.q)+'</div>'+qOptsHTML(q,A.ans,'advPick')+fb+'</div>';
+}
+/* ---- Luyện theo chủ đề ---- */
+function startLevel(i){ S.adv=null; S.quiz={lv:i,pool:buildRun(QUIZ[i].qs.length,i),i:0,ans:null,score:0,done:false,applied:false}; window.scrollTo(0,0); render(); }
+function lvlPick(oi){ var Q=S.quiz; if(!Q||Q.ans!=null)return; Q.ans=oi; if(oi===Q.pool[Q.i].c)Q.score++; render(); }
+function lvlNext(){ var Q=S.quiz; if(Q.i+1<Q.pool.length){Q.i++;Q.ans=null;}else Q.done=true; render(); }
+function renderLevel(){ var Q=S.quiz;
+ if(Q.done){ if(!Q.applied){ Q.applied=true; var s=quizStats(); s.xp=(s.xp||0)+Q.score*5; s.answered=(s.answered||0)+Q.pool.length; s.correct=(s.correct||0)+Q.score; saveQuiz(s); checkBadges(false); }
+   var b=Q.score<=4?BADGES[0]:Q.score<=6?BADGES[1]:Q.score<=8?BADGES[2]:(Q.score===9?BADGES[3]:BADGES[4]);
+   return '<div class="card" style="text-align:center;padding:26px"><div style="width:74px;height:74px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 10px">'+ic(b.i,38)+'</div><h2 style="margin:0">'+esc(b.t)+'</h2><div class="muted" style="margin:6px 0 14px">Điểm: '+Q.score+'/'+Q.pool.length+' · +'+(Q.score*5)+' XP</div><div style="display:flex;gap:9px"><button class="btn ok" style="flex:1" onclick="startLevel('+Q.lv+')">Luyện lại</button><button class="btn sec" style="flex:1" onclick="S.quiz=null;render()">Về Học viện</button></div></div>';
+ }
+ var q=Q.pool[Q.i],answered=Q.ans!=null;
+ var fb=answered?('<div style="margin-top:10px;padding:11px 13px;border-radius:12px;background:'+(Q.ans===q.c?'#E7F7F0':'#FDECEC')+';font-size:12.5px;line-height:1.55">'+(Q.ans===q.c?'<b style="color:#0F9A6A">✓ Chính xác!</b><br>':'<b style="color:#DC2626">✗ Chưa đúng.</b><br>')+esc(q.e)+'</div><button class="btn" style="margin-top:12px" onclick="lvlNext()">'+((Q.i+1<Q.pool.length)?'Câu tiếp ':'Xem kết quả ')+ic("arrow",16)+'</button>'):'';
+ return '<button class="backbtn" onclick="S.quiz=null;render()">'+ic("arrow",16)+'Học viện</button><div class="card"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Cấp '+(Q.lv+1)+' · Câu '+(Q.i+1)+'/'+Q.pool.length+'</div><div style="font-weight:700;font-size:15px;line-height:1.5;margin-bottom:12px">'+esc(q.q)+'</div>'+qOptsHTML(q,Q.ans,'lvlPick')+fb+'</div>';
+}
 
 /* ===== TAB 5: ƯU ĐÃI ===== */
 function renderPromo(){ var y=S.promoYear,pr=PROMO[y]; return '<h2>Chương trình ưu đãi ✨</h2><div class="chips" style="margin-bottom:11px">'+["2025","2026"].map(function(yr){return '<div class="chip '+(y===yr?"on":"")+'" onclick="S.promoYear=\''+yr+'\';render()">Năm '+yr+(yr==="2026"?" · hiện tại":"")+'</div>';}).join("")+'</div><div class="card" style="padding:0;overflow:hidden"><div style="background:linear-gradient(135deg,#F59E0B,#B45309);padding:26px 16px;text-align:center;color:#fff"><div style="font-size:30px">🏅</div><div style="font-weight:700;font-family:var(--fh);font-size:17px;margin-top:6px">'+esc(pr.name.toUpperCase())+'</div></div><div style="padding:14px"><div class="facts"><b>Thời gian:</b> '+esc(pr.time)+'</div><div class="facts" style="margin-top:8px;background:var(--pri-soft);border-radius:12px;padding:11px">'+ic("info",15)+' '+esc(pr.rule)+'</div></div></div>'+
@@ -1341,7 +1406,13 @@ var TIPS=["Nhớ đo Z-score/BMI trước khi gợi ý sản phẩm nhé!","Giai
 var asstOpen=false, asstLog=[];
 function curMascot(){ return MASCOTS[S.mascotId]||MASCOTS.lion; }
 var FAB_HELLOS=['Hi 👋','Chào bạn!','Cần giúp gì?','Hỏi mình nhé!','Chốt đơn thôi! 💪'];
-function fabHi(){ var b=el('fabhi'); if(!b||(typeof asstOpen!=='undefined'&&asstOpen))return; b.textContent=FAB_HELLOS[Math.floor(Math.random()*FAB_HELLOS.length)]; b.classList.add('show'); setTimeout(function(){ if(b)b.classList.remove('show'); },3200); }
+/* Lời chào SỐNG ĐỘNG: theo thời điểm trong ngày + hỏi han + nhắc nhở nhẹ */
+function greetTime(){ var h=new Date().getHours(); if(h<11)return ['Chào buổi sáng! ☀️','Sáng tốt lành nhé!','Bắt đầu ngày mới thôi! 💪']; if(h<14)return ['Chào buổi trưa!','Trưa rồi, nghỉ tay chút nhé 🍵']; if(h<18)return ['Chào buổi chiều!','Chiều hiệu quả nhé!']; return ['Chào buổi tối! 🌙','Tối rồi, cố thêm chút nhé!']; }
+var GREET_ASK=['Hôm nay tư vấn được mấy khách rồi? 😊','Cần mình gợi ý sản phẩm không?','Nhớ đo BMI trước khi tư vấn nhé!','Rảnh thì làm phiêu lưu Học viện nhé! 🎓','Uống nước chưa? Nghỉ tay tí nào 💧','Có khách khó chốt? Hỏi mình nhé!','Kiểm tồn kho trước khi lên đơn nhé!'];
+function greetLine(){ var p=greetTime().concat(GREET_ASK); return p[Math.floor(Math.random()*p.length)]; }
+function fabHi(){ var b=el('fabhi'); if(!b||(typeof asstOpen!=='undefined'&&asstOpen))return; b.textContent=greetLine(); b.classList.add('show'); setTimeout(function(){ if(b)b.classList.remove('show'); },3600); }
+/* Thỉnh thoảng gửi 1 thông báo chào hỏi/hỏi han (giống app MKT), có chặn spam 9 phút */
+function greetNotif(){ try{ if(typeof document!=='undefined'&&document.visibilityState!=='visible')return; var last=lsGet('wt_greet_at',0); if(Date.now()-last<9*60000)return; lsSet('wt_greet_at',Date.now()); pushNotif('spark', greetTime()[0], GREET_ASK[Math.floor(Math.random()*GREET_ASK.length)]); var ta=el('topactions'); if(ta&&typeof topActions==='function')ta.innerHTML=topActions(true); }catch(e){} }
 function renderFab(){ var f=el('fab'); if(f) f.innerHTML=curMascot()+'<span class="dot"></span><span class="fab-hi" id="fabhi"></span>'; var g=el('gamefab'); if(g) g.innerHTML=ic('gift',27)+'<span class="gbadge">MỚI</span>'; }
 function openGame(){ var o=el('ovl'); if(!o)return; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="text-align:center;padding:26px 20px"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#C9A0FF,#7C5CE0);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;box-shadow:0 10px 22px rgba(124,92,224,.4)">'+ic("gift",38)+'</div><div style="font-weight:800;font-family:var(--fh);font-size:19px;color:#10357A">Vòng quay may mắn</div><div style="display:inline-block;background:#F1ECFF;color:#7C5CE0;font-weight:800;font-size:11px;letter-spacing:.5px;padding:5px 14px;border-radius:999px;margin-top:9px">SẮP RA MẮT</div><div class="muted" style="margin-top:13px;line-height:1.65;font-size:13.5px">Tích điểm mỗi đơn · quay thưởng · đổi quà cho khách hàng thân thiết. Tính năng đang được phát triển — hãy đón chờ! 🎁</div><button class="btn" style="margin-top:18px" onclick="closeOvl()">Đã hiểu</button></div></div>'; }
 function setMascot(id){ S.mascotId=id; MASCOT=MASCOTS[id]||MASCOTS.lion; renderFab(); render(); var av=el('asstav'); if(av) av.innerHTML=curMascot(); }
@@ -1542,7 +1613,7 @@ function bodyScan(){
 }
 
 render();renderFab();try{startSplash();}catch(e){var sp=el("splash");if(sp)sp.style.display="none";}
-try{setTimeout(fabHi,4500);setInterval(fabHi,16000);}catch(e){}
+try{setTimeout(fabHi,4500);setInterval(fabHi,16000);setTimeout(greetNotif,7000);setInterval(greetNotif,12*60000);}catch(e){}
 </script>
 <script>
 /* ============================================================
