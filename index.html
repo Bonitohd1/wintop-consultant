@@ -1488,6 +1488,9 @@ function renderAsst(){ if(!asstOpen) return; var sugg=[{t:'💡 Mẹo',c:'tip'},
 /* ===== TRANG CHỦ (rút gọn, dịu mắt) ===== */
 function hProducts(){ return '<div class="hscroll">'+PRODUCTS.slice(0,6).map(function(p,i){return '<div class="hcard pop" style="animation-delay:'+(i*0.06).toFixed(2)+'s" onclick="S.openProd=\''+p.id+'\';setTab(\'sanpham\')"><div class="himg">'+(i<3?'<span class="hot">HOT</span>':'')+'<div class="ph" style="background-image:url('+pimg(p.id)+')"></div><div class="vg"></div><span class="shine"></span></div><div class="hcard-t">'+esc(p.name)+'</div><div class="faint" style="padding:0 12px 12px;line-height:1.35">'+esc(p.tag.length>32?p.tag.slice(0,32)+"…":p.tag)+'</div></div>';}).join("")+'</div>'; }
 /* ===== SỐNG ĐỘNG: nhiệm vụ hằng ngày + chuỗi ngày + ăn mừng chốt đơn ===== */
+/* lsGet/lsSet cũng có ở khối script sau; khai báo tại đây (khối này chạy TRƯỚC khi khởi động) để daily() dùng được ngay */
+function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
 function daily(){ var d=lsGet('wt_daily_v1',null); var today=new Date().toISOString().slice(0,10);
  if(!d||d.date!==today){ var streak=1; if(d&&d.date){ var y=new Date(Date.now()-864e5).toISOString().slice(0,10); streak=(d.date===y)?((d.streak||0)+1):1; } d={date:today,streak:streak,tasks:{consult:false,quiz:false,order:false},bonus:false}; lsSet('wt_daily_v1',d); }
  return d; }
