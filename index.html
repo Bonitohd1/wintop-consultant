@@ -1430,6 +1430,7 @@ function topActions(onDark){ var col=onDark?"#fff":"#0F1B2D"; var bg=onDark?"rgb
  return '<button class="hbtn'+(u>0?' ring':'')+'" style="background:'+bg+';color:'+col+';box-shadow:'+sh+'" onclick="openNoti()">'+ic("bell",20)+(u>0?'<span class="hbadge">'+u+'</span>':"")+'</button>'+
   '<button class="hbtn" style="background:'+bg+';box-shadow:'+sh+';padding:0" onclick="setTab(\'profile\')"><span class="av-ini">'+ini+'</span></button>'; }
 function closeOvl(){ S.notiOpen=false; S.accOpen=false; el("ovl").innerHTML=""; }
+function activateNpp(){ var tn=(el("ac_tenant")?el("ac_tenant").value.trim():""), tk=(el("ac_token")?el("ac_token").value.trim():""); if(!tn){ toast("Nhập Mã NPP để kết nối."); return; } try{ localStorage.setItem("wt_tenant",JSON.stringify(tn)); if(tk)localStorage.setItem("wt_npp_token",JSON.stringify(tk)); }catch(e){} toast("✅ Đã kết nối NPP "+tn+" — bắt đầu đồng bộ dữ liệu.","ok"); try{ if(typeof pullStockAuto==="function")pullStockAuto(); if(typeof flushOrders==="function"&&navigator.onLine)flushOrders(true); }catch(e){} openAcc(); }
 function openNoti(){ S.notiOpen=true; S.accOpen=false; renderOvl(); var a=dynNotifs(); a.forEach(function(n){n.read=true;}); try{localStorage.setItem(NOTIF_KEY,JSON.stringify(a));}catch(e){} NOTIFS.forEach(function(n){n.read=true;}); render(); }
 function openAcc(){ S.accOpen=true; S.notiOpen=false; renderOvl(); }
 function renderOvl(){ var o=el("ovl");
@@ -1442,7 +1443,13 @@ function renderOvl(){ var o=el("ovl");
   '<label>Mã NPP của bạn</label><input value="'+esc(S.acc.code||"")+'" oninput="S.acc.code=this.value;saveNpp()" placeholder="VD: NPP-HN-012"/>'+
   '<label>Tuyến trên (mã NPP cấp trên)</label><input value="'+esc(S.acc.parent||"")+'" oninput="S.acc.parent=this.value;saveNpp()" placeholder="Để trống nếu là NPP cấp 1"/>'+
   (S.acc.parent?('<div class="day-card" style="margin-top:10px"><span class="day-ic">'+ic("cart",18)+'</span><div style="flex:1;font-size:12.5px;color:#334155">Đặt bổ sung hàng → tuyến trên: <b>'+esc(S.acc.parent)+'</b></div></div>'):'')+
-  '<div class="day-card" style="margin-top:10px"><span class="day-ic">'+ic("lock",18)+'</span><div style="flex:1;font-size:12.5px;color:#334155">Thông tin khách được <b>mã hoá &amp; bảo mật</b> an toàn trên máy.</div></div>'+
+  '<div style="border-top:1px solid var(--line);margin:14px 0 4px;padding-top:12px"><div style="font-weight:700;font-size:13px;margin-bottom:2px">🔗 Kết nối nhà phân phối</div><div class="faint" style="font-size:11.5px">Định danh &amp; đồng bộ dữ liệu theo đúng NPP của bạn.</div></div>'+
+  (function(){ var tn=lsGet("wt_tenant",""),lock=false; try{lock=!!localStorage.getItem("wt_tenant_locked");}catch(e){}
+    var st=tn?('<div class="day-card" style="margin-top:6px"><span class="day-ic" style="background:#DCF3E8;color:#0F9A6A">'+ic("check",18)+'</span><div style="flex:1;font-size:12.5px;color:#334155">Đang gắn NPP: <b>'+esc(tn)+'</b>'+(lock?' · khoá theo link':'')+'</div></div>'):('<div class="day-card" style="margin-top:6px"><span class="day-ic" style="background:#FFF1DC;color:#C2691A">'+ic("alert",18)+'</span><div style="flex:1;font-size:12.5px;color:#334155">Chưa gắn NPP — app đang chạy độc lập, chưa đồng bộ dữ liệu. Nhập mã để kết nối.</div></div>');
+    if(lock) return st;
+    return st+'<label style="margin-top:8px">Mã NPP</label><input id="ac_tenant" value="'+esc(tn)+'" placeholder="Mã NPP được cấp"/><label style="margin-top:8px">Khoá kích hoạt (nếu có)</label><input id="ac_token" type="password" placeholder="Dán khoá kích hoạt NPP"/><button class="btn" style="margin-top:9px" onclick="activateNpp()">'+ic("check",16)+'Kết nối NPP</button>';
+  })()+
+  '<div class="day-card" style="margin-top:12px"><span class="day-ic">'+ic("lock",18)+'</span><div style="flex:1;font-size:12.5px;color:#334155">Thông tin khách được <b>mã hoá &amp; bảo mật</b> an toàn trên máy.</div></div>'+
   '<div class="faint" style="text-align:center;margin-top:14px">Wintop Consultant · v3.2 · Offline-first</div>'+
   '<button class="btn" style="margin-top:12px" onclick="closeOvl()">Xong</button></div></div>'; return; }
  o.innerHTML="";
