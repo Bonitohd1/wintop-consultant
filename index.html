@@ -228,6 +228,8 @@
  @keyframes fadeUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
  @keyframes slideUp{ from{transform:translateY(100%)} to{transform:translateY(0)} }
  @keyframes conffall{ to{ transform:translateY(105vh) rotate(400deg); opacity:.15 } }
+ .btn,.chip,.qg,.qg-hot{ transition:transform .09s ease, box-shadow .15s ease; }
+ .btn:active,.chip:active,.qg:active{ transform:scale(.96); }
  .sheet-c{ animation:slideUp .28s ease; }
  .dwrap{ position:fixed; inset:0; background:rgba(15,27,45,.45); z-index:45; opacity:0; transition:opacity .28s ease; }
  .dwrap.open{ opacity:1; }
@@ -1280,7 +1282,7 @@ function advPick(oi){ var A=S.adv; if(!A||A.ans!=null||A.done)return; A.ans=oi; 
  render(); }
 function advNext(){ var A=S.adv; if(!A)return; if(A.lives<=0)A.done=true; else if(A.i+1<A.pool.length){A.i++;A.ans=null;} else A.done=true; render(); }
 function renderAdv(){ var A=S.adv;
- if(A.done){ if(!A.applied){ A.applied=true; var s=quizStats(); s.xp=(s.xp||0)+A.xp; s.plays=(s.plays||0)+1; s.answered=(s.answered||0)+A.seen; s.correct=(s.correct||0)+A.correct; s.bestStreak=Math.max(s.bestStreak||0,A.maxStreak); saveQuiz(s); try{dailyMark('quiz');pushXp();}catch(e){} checkBadges(A.correct===A.pool.length); }
+ if(A.done){ if(!A.applied){ A.applied=true; var s=quizStats(); s.xp=(s.xp||0)+A.xp; s.plays=(s.plays||0)+1; s.answered=(s.answered||0)+A.seen; s.correct=(s.correct||0)+A.correct; s.bestStreak=Math.max(s.bestStreak||0,A.maxStreak); saveQuiz(s); try{dailyMark('quiz');weeklyBump('quiz');pushXp();}catch(e){} checkBadges(A.correct===A.pool.length); }
    var perfect=(A.correct===A.pool.length),stars=A.correct>=A.pool.length?3:(A.correct>=Math.ceil(A.pool.length*0.6)?2:(A.correct>=1?1:0));
    return '<div class="card" style="text-align:center;padding:26px"><div style="font-size:30px;letter-spacing:5px">'+(stars?'⭐'.repeat(stars):'—')+'</div><h2 style="margin:8px 0 2px">'+(perfect?'Xuất sắc!':(A.lives<=0?'Hết lượt rồi!':'Hoàn thành!'))+'</h2><div class="muted" style="margin-bottom:4px">Đúng '+A.correct+'/'+A.pool.length+' · +'+A.xp+' XP · chuỗi cao nhất 🔥'+A.maxStreak+'</div><div style="display:flex;gap:9px;margin-top:14px"><button class="btn ok" style="flex:1" onclick="startAdventure()">'+ic("refresh",16)+'Phiêu lưu tiếp</button><button class="btn sec" style="flex:1" onclick="S.adv=null;render()">Về Học viện</button></div></div>';
  }
@@ -1295,7 +1297,7 @@ function startLevel(i){ S.adv=null; S.quiz={lv:i,pool:buildRun(QUIZ[i].qs.length
 function lvlPick(oi){ var Q=S.quiz; if(!Q||Q.ans!=null)return; Q.ans=oi; if(oi===Q.pool[Q.i].c)Q.score++; render(); }
 function lvlNext(){ var Q=S.quiz; if(Q.i+1<Q.pool.length){Q.i++;Q.ans=null;}else Q.done=true; render(); }
 function renderLevel(){ var Q=S.quiz;
- if(Q.done){ if(!Q.applied){ Q.applied=true; var s=quizStats(); s.xp=(s.xp||0)+Q.score*5; s.answered=(s.answered||0)+Q.pool.length; s.correct=(s.correct||0)+Q.score; saveQuiz(s); try{dailyMark('quiz');pushXp();}catch(e){} checkBadges(false); }
+ if(Q.done){ if(!Q.applied){ Q.applied=true; var s=quizStats(); s.xp=(s.xp||0)+Q.score*5; s.answered=(s.answered||0)+Q.pool.length; s.correct=(s.correct||0)+Q.score; saveQuiz(s); try{dailyMark('quiz');weeklyBump('quiz');pushXp();}catch(e){} checkBadges(false); }
    var b=Q.score<=4?BADGES[0]:Q.score<=6?BADGES[1]:Q.score<=8?BADGES[2]:(Q.score===9?BADGES[3]:BADGES[4]);
    return '<div class="card" style="text-align:center;padding:26px"><div style="width:74px;height:74px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 10px">'+ic(b.i,38)+'</div><h2 style="margin:0">'+esc(b.t)+'</h2><div class="muted" style="margin:6px 0 14px">Điểm: '+Q.score+'/'+Q.pool.length+' · +'+(Q.score*5)+' XP</div><div style="display:flex;gap:9px"><button class="btn ok" style="flex:1" onclick="startLevel('+Q.lv+')">Luyện lại</button><button class="btn sec" style="flex:1" onclick="S.quiz=null;render()">Về Học viện</button></div></div>';
  }
@@ -1425,7 +1427,9 @@ function renderOvl(){ var o=el("ovl");
 
 /* ===== TRỢ LÝ LINH VẬT ===== */
 var TIPS=["Nhớ đo Z-score/BMI trước khi gợi ý sản phẩm nhé!","Giai đoạn 'Nhận biết' đừng bán vội — kể chuyện, khơi gợi trước.","Khách hay ốm vặt → ưu tiên Colostrum Gain (Lactoferrin).","Mẹ bầu nghi tiểu đường → ngưng tư vấn, mời đi khám bác sĩ.","Chốt nhanh: cho khách xem số lon/tháng + thành tiền.","Trẻ nhẹ cân là ưu tiên số 1 — dùng dòng đậm độ cao Wintop BA."];
-var asstOpen=false, asstLog=[];
+var asstOpen=false, asstLog=(function(){ try{ var a=lsGet('wt_asst_v1',[]); return Array.isArray(a)?a.slice(-40):[]; }catch(e){ return []; } })();
+function saveAsst(){ try{ lsSet('wt_asst_v1', asstLog.slice(-40)); }catch(e){} }
+function clearAsst(){ asstLog=[]; saveAsst(); asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
 function curMascot(){ return MASCOTS[S.mascotId]||MASCOTS.lion; }
 var FAB_HELLOS=['Hi 👋','Chào bạn!','Cần giúp gì?','Hỏi mình nhé!','Chốt đơn thôi! 💪'];
 /* Lời chào SỐNG ĐỘNG: theo thời điểm trong ngày + hỏi han + nhắc nhở nhẹ */
@@ -1450,7 +1454,7 @@ function asstCardHtml(p){ var vid=(typeof TUVAN_VIDEO!=='undefined'&&TUVAN_VIDEO
   return '<div class="asst-prod"><div class="ap-img" style="background-image:url('+pimg(p.id)+')"></div><div style="flex:1;min-width:0"><div class="ap-name">'+esc(p.name)+'</div>'+(sb?'<div style="margin:3px 0">'+sb+'</div>':'')+'<div class="ap-btns"><button onclick="S.openProd=\''+p.id+'\';setTab(\'sanpham\');closeAsst()">Chi tiết</button>'+(vid?'<a href="https://www.youtube.com/shorts/'+vid+'" target="_blank" rel="noreferrer">▶ Video</a>':'')+'<button class="ap-ord" onclick="cartAdd(\''+p.id+'\',1);setTab(\'makeorder\');closeAsst()">+ Lên đơn</button></div></div></div>'; }
 function asstProdCardsById(ids){ if(!ids||!ids.length)return ''; var out=[],seen={}; ids.forEach(function(id){ if(!seen[id]&&typeof P==='function'&&P(id)){seen[id]=1;out.push(P(id));} }); if(!out.length)return ''; return '<div class="asst-prods">'+out.slice(0,2).map(asstCardHtml).join('')+'</div>'; }
 function asstProdCards(text){ if(typeof PRODUCTS==='undefined')return ''; var dt=deburr(text).toLowerCase(),out=[],seen={}; PRODUCTS.forEach(function(p){ if(seen[p.id])return; var sh=deburr(p.name.replace(/wintop/ig,'')).trim().toLowerCase(); if(sh&&sh.length>=2&&dt.indexOf(sh)>=0){seen[p.id]=1;out.push(p);} }); if(!out.length)return ''; return '<div class="asst-prods">'+out.slice(0,2).map(asstCardHtml).join('')+'</div>'; }
-function asstAppend(r,t,fade,sp){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub '+r+(fade&&r==='a'?' fadein':''); d.innerHTML=(r==='a')?(mdToHtml(t)+((sp!==undefined&&sp!==null)?asstProdCardsById(sp):asstProdCards(t))):(esc(t).replace(/\n/g,'<br>')); l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
+function asstAppend(r,t,fade,sp){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub '+r+(fade&&r==='a'?' fadein':''); d.innerHTML=(r==='a')?(mdToHtml(t)+((sp!==undefined&&sp!==null)?asstProdCardsById(sp):asstProdCards(t))):(esc(t).replace(/\n/g,'<br>')); l.appendChild(d); l.scrollTop=l.scrollHeight; try{saveAsst();}catch(e){} return d; }
 function asstTyping(){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub a'; d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>'; l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
 function asstReply(ans){ var typ=asstTyping(); var delay=550+Math.min(1100,(ans.length||0)*7); setTimeout(function(){ if(typ&&typ.parentNode) typ.parentNode.removeChild(typ); asstAppend('a',ans,true); },delay); }
 function buildAsstContext(){ var ctx={ pg:(S.acc&&S.acc.name)||'', tab:S.tab, npp:(typeof wtTenant==='function'?wtTenant():'') };
@@ -1515,6 +1519,15 @@ function dailyCardHTML(){ var d=daily(); var T=[['consult','Tư vấn 1 khách',
  var rows=T.map(function(x){var ok=d.tasks[x[0]];return '<div style="display:flex;align-items:center;gap:9px;padding:5px 0"><span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:'+(ok?'#DCF3E8':'#EEF1F5')+';color:'+(ok?'#0F9A6A':'#B6BDC7')+'">'+ic(ok?'check':x[2],15)+'</span><span style="flex:1;font-size:13px;'+(ok?'color:#0F9A6A;text-decoration:line-through':'')+'">'+x[1]+'</span></div>';}).join('');
  return '<div class="card" style="border-color:#FFE0B2;background:linear-gradient(135deg,#FFF9F0,#fff)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:2px"><b style="font-family:var(--fh);font-size:14.5px">🎯 Nhiệm vụ hôm nay</b><span style="margin-left:auto;font-size:12px;color:#C2691A;font-weight:800">🔥 '+(d.streak||1)+' ngày</span></div><div class="muted" style="font-size:11.5px;margin-bottom:2px">Hoàn tất cả 3 để nhận +30 XP · '+done+'/3</div>'+rows+'</div>';
 }
+/* ===== NHIỆM VỤ TUẦN + thưởng lớn ===== */
+var WEEK_GOALS={consult:15,order:8,quiz:5};
+function weekId(){ var d=new Date(),day=(d.getDay()+6)%7,m=new Date(d); m.setDate(d.getDate()-day); return m.toISOString().slice(0,10); }
+function weekly(){ var w=lsGet('wt_weekly_v1',null),id=weekId(); if(!w||w.id!==id){ w={id:id,consult:0,order:0,quiz:0,claimed:false}; lsSet('wt_weekly_v1',w); } return w; }
+function weeklyBump(k){ var w=weekly(); w[k]=(w[k]||0)+1; if(!w.claimed && (w.consult||0)>=WEEK_GOALS.consult && (w.order||0)>=WEEK_GOALS.order && (w.quiz||0)>=WEEK_GOALS.quiz){ w.claimed=true; var s=quizStats(); s.xp=(s.xp||0)+100; saveQuiz(s); try{pushXp();}catch(e){} pushNotif('trophy','🏆 Hoàn thành nhiệm vụ TUẦN!','+100 XP thưởng lớn — tuần sau tiếp tục nhé!'); setTimeout(function(){toast('🏆 Xong nhiệm vụ tuần! +100 XP','ok');},300); } lsSet('wt_weekly_v1',w); if(S.tab==='home'){var v=el('view');if(v)v.innerHTML=renderHome();} }
+function weeklyCardHTML(){ var w=weekly(),G=[['consult','Tư vấn khách','stetho',WEEK_GOALS.consult],['order','Chốt đơn','cart',WEEK_GOALS.order],['quiz','Phiêu lưu Học viện','spark',WEEK_GOALS.quiz]],doneAll=(w.consult||0)>=WEEK_GOALS.consult&&(w.order||0)>=WEEK_GOALS.order&&(w.quiz||0)>=WEEK_GOALS.quiz;
+ var rows=G.map(function(g){var cur=w[g[0]]||0,pct=Math.min(100,Math.round(cur/g[3]*100)),ok=cur>=g[3];return '<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:600;color:#334155">'+g[1]+'</span><span style="color:'+(ok?'#0F9A6A':'#64748B')+';font-weight:700">'+cur+'/'+g[3]+(ok?' ✓':'')+'</span></div><div style="height:7px;border-radius:5px;background:#EEF2F7;overflow:hidden"><div style="height:7px;width:'+pct+'%;border-radius:5px;background:'+(ok?'#0F9A6A':'linear-gradient(90deg,#C9A0FF,#7C5CE0)')+'"></div></div></div>';}).join('');
+ return '<div class="card" style="border-color:#E4DBFF;background:linear-gradient(135deg,#F7F3FF,#fff)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="font-family:var(--fh);font-size:14.5px">🏆 Nhiệm vụ tuần</b><span style="margin-left:auto;font-size:11.5px;color:#7C5CE0;font-weight:800">'+(doneAll?(w.claimed?'Đã nhận +100 XP 🎉':'Hoàn thành!'):'Thưởng +100 XP')+'</span></div>'+rows+'</div>';
+}
 function celebrate(msg){ try{ var o=document.createElement('div'); o.style.cssText='position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden'; var emo=['🎉','✨','🎊','⭐','💪','🎈']; var burst=''; for(var i=0;i<20;i++){ burst+='<span style="position:absolute;left:'+(Math.random()*100)+'%;top:-30px;font-size:'+(16+Math.random()*18)+'px;animation:conffall '+(1.1+Math.random()*.9).toFixed(2)+'s ease-in '+(Math.random()*.35).toFixed(2)+'s forwards">'+emo[i%emo.length]+'</span>'; } o.innerHTML=burst+'<div style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);background:#fff;border-radius:18px;padding:18px 26px;box-shadow:0 16px 40px rgba(0,0,0,.22);text-align:center;animation:pop .3s ease"><div style="font-size:34px">🎉</div><div style="font-weight:800;font-family:var(--fh);font-size:16px;color:#0F9A6A;margin-top:2px">'+esc(msg||'Chốt đơn thành công!')+'</div></div>'; document.body.appendChild(o); try{navigator.vibrate&&navigator.vibrate([15,30,15,30,45]);}catch(e){} setTimeout(function(){o.style.transition='opacity .45s';o.style.opacity='0';setTimeout(function(){o.remove();},460);},1500); }catch(e){} }
 /* ===== CHẾ ĐỘ TRÌNH KHÁCH: toàn màn hình, hình lớn, để PG đưa khách xem ===== */
 var presSec='uudai';
@@ -1535,7 +1548,7 @@ function renderHome(){ var hr=new Date().getHours(); var greet=hr<11?'Chào bu�
  var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'cart',l:'Lên đơn',t:'makeorder',bg:'#FFF1DC',c:'#C2691A'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
  return '<div class="home-greet"><div class="home-av">'+curMascot()+'</div><div style="flex:1"><div class="muted">'+greet+' 👋</div><div style="font-size:16px;font-weight:600;font-family:var(--fh)">Tư vấn viên Wintop</div></div>'+topActions(false)+'</div>'+
  '<div class="start-cta" onclick="newConsult()"><span style="width:40px;height:40px;border-radius:13px;color:#fff;background:linear-gradient(145deg,#34D0B4,#0F9A6A);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(15,154,106,.3)">'+ic('stetho',21)+'</span><div style="flex:1"><div style="font-weight:600;font-size:15px">Bắt đầu tư vấn khách</div><div class="faint">Đo chỉ số · gợi ý sản phẩm trong 3 phút</div></div>'+ic('arrow',20)+'</div>'+
- dailyCardHTML()+
+ dailyCardHTML()+weeklyCardHTML()+
  '<div class="qg-grid">'+qg.map(function(x){return '<div class="qg'+(x.t==='makeorder'?' qg-hot':'')+'" onclick="setTab(\''+x.t+'\')"><div class="qg-ic" style="background:'+x.bg+';color:'+x.c+'">'+ic(x.ic,22)+'</div><div class="qg-l">'+x.l+'</div></div>';}).join('')+'</div>'+
  '<button class="btn sec" style="margin:2px 0 12px;border-color:#CBD9F5" onclick="openPresent()">'+ic('star',17)+'Chế độ trình khách 🖥️ — giới thiệu Wintop</button>'+
  '<div class="row-head"><span>Sản phẩm nổi bật</span><span style="font-size:12px;color:var(--pri);cursor:pointer" onclick="setTab(\'sanpham\')">Xem tất cả</span></div>'+hProducts()+
@@ -1693,8 +1706,8 @@ function cryptoOK(){ return !!(window.crypto&&crypto.subtle); }
 
 /* ---------- COUNTERS (ẩn danh, plaintext) ---------- */
 function counters(){ return lsGet(CT_KEY,{total:0,orders:0,skus:0}); }
-function bumpConsult(rec){ var c=counters(); c.total=(c.total||0)+1; if(rec&&!rec.freeze&&rec.prods&&rec.prods.length) c.skus=(c.skus||0)+rec.prods.length; lsSet(CT_KEY,c); try{dailyMark('consult');}catch(e){} }
-function bumpOrder(){ var c=counters(); c.orders=(c.orders||0)+1; lsSet(CT_KEY,c); try{dailyMark('order');}catch(e){} }
+function bumpConsult(rec){ var c=counters(); c.total=(c.total||0)+1; if(rec&&!rec.freeze&&rec.prods&&rec.prods.length) c.skus=(c.skus||0)+rec.prods.length; lsSet(CT_KEY,c); try{dailyMark('consult');weeklyBump('consult');}catch(e){} }
+function bumpOrder(){ var c=counters(); c.orders=(c.orders||0)+1; lsSet(CT_KEY,c); try{dailyMark('order');weeklyBump('order');}catch(e){} }
 
 /* ---------- MÃ HOÁ PHÍA PG ---------- */
 var _pubKey=null;
