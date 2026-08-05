@@ -230,6 +230,8 @@
  @keyframes conffall{ to{ transform:translateY(105vh) rotate(400deg); opacity:.15 } }
  .btn,.chip,.qg,.qg-hot{ transition:transform .09s ease, box-shadow .15s ease; }
  .btn:active,.chip:active,.qg:active{ transform:scale(.96); }
+ .tour-hl{ outline:3px solid #2563EB; outline-offset:3px; border-radius:14px; animation:tourpulse 1.25s ease-in-out infinite; }
+ @keyframes tourpulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(37,99,235,.5) } 50%{ box-shadow:0 0 0 9px rgba(37,99,235,0) } }
  .sheet-c{ animation:slideUp .28s ease; }
  .dwrap{ position:fixed; inset:0; background:rgba(15,27,45,.45); z-index:45; opacity:0; transition:opacity .28s ease; }
  .dwrap.open{ opacity:1; }
@@ -703,7 +705,28 @@ function renderFeedback(){
  return '<h2>Cảm nhận khách hàng</h2>'+intro+'<div class="fb-grid">'+cards+'</div>';
 }
 
-function openGuide(){ var o=el('ovl'); if(!o)return; var steps=[['stetho','Bắt đầu tư vấn','Bấm "Bắt đầu tư vấn khách" → nhập thông tin, đo chỉ số (BMI/Z-score) → app gợi ý sản phẩm phù hợp trong ~3 phút.'],['cart','Lên đơn','Vào "Lên đơn": chọn sản phẩm + số lượng (app kiểm tồn tại điểm bán) → Tạo đơn. Theo dõi ở "Đơn của tôi".'],['cup','Tra cứu sản phẩm','Tab "Sản phẩm": xem công dụng, thành phần, HSCB, phiếu kiểm nghiệm, hướng dẫn chốt sale từng SKU.'],['school','Ôn nghiệp vụ','Làm "Quiz" 5 cấp để lên hạng; xem "Tài liệu" có video dinh dưỡng.'],['spark','Trợ lý AI','Chạm linh vật (góc phải dưới) để hỏi nhanh về sản phẩm, đơn hàng, tồn kho, dinh dưỡng.']]; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="font-weight:700;font-family:var(--fh);font-size:16px;flex:1">Hướng dẫn sử dụng</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic('x',18)+'</button></div>'+steps.map(function(s,i){return '<div style="display:flex;gap:12px;margin-bottom:13px"><span style="width:36px;height:36px;border-radius:11px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic(s[0],18)+'</span><div><div style="font-weight:700;font-size:13.5px">'+(i+1)+'. '+s[1]+'</div><div class="muted" style="font-size:12.5px;line-height:1.5;margin-top:2px">'+s[2]+'</div></div></div>';}).join('')+'</div></div>'; }
+/* ===== TOUR TƯƠNG TÁC: highlight từng vị trí quan trọng + Tiếp ===== */
+var TOUR=[
+ {sel:'.start-cta',tab:'home',t:'Bắt đầu tư vấn khách',d:'Chạm đây để bắt đầu: nhập thông tin → đo chỉ số (BMI/Z-score) → app gợi ý sản phẩm phù hợp trong ~3 phút.'},
+ {sel:'.qg-hot',tab:'home',t:'Lên đơn nhanh',d:'Ô "Lên đơn" để tạo đơn: chọn sản phẩm + số lượng, app kiểm tồn tại điểm bán rồi tạo đơn.'},
+ {sel:'#tabbar',tab:'home',t:'Thanh điều hướng',d:'Chuyển nhanh giữa Trang chủ · Tư vấn · Sản phẩm · Hỏi-Đáp ngay tại đây.'},
+ {sel:'#fab',tab:'home',t:'Trợ lý Wintop',d:'Chạm linh vật (góc phải dưới) để hỏi nhanh về sản phẩm, đơn hàng, tồn kho, dinh dưỡng.'}
+];
+var _tourI=0;
+function tourClear(){ try{ var hs=document.querySelectorAll('.tour-hl'); for(var i=0;i<hs.length;i++){ hs[i].classList.remove('tour-hl'); hs[i].style.zIndex=''; } var p=el('tourpop'); if(p)p.remove(); var b=el('tourbd'); if(b)b.remove(); }catch(e){} }
+function endTour(){ tourClear(); try{lsSet('wt_seen_guide',1);}catch(e){} }
+function startTour(){ _tourI=0; closeOvl(); setTimeout(tourStep,120); }
+function tourNext(){ _tourI++; if(_tourI>=TOUR.length){ endTour(); toast('Xong hướng dẫn! Chúc bán hàng vui 🎉','ok'); return; } tourStep(); }
+function tourStep(){ tourClear(); var s=TOUR[_tourI]; if(!s){ endTour(); return; } if(s.tab&&S.tab!==s.tab)setTab(s.tab);
+ setTimeout(function(){ var tgt=document.querySelector(s.sel);
+  var bd=document.createElement('div'); bd.id='tourbd'; bd.style.cssText='position:fixed;inset:0;z-index:9996;background:rgba(15,22,32,.55)'; document.body.appendChild(bd);
+  if(tgt){ tgt.classList.add('tour-hl'); if(getComputedStyle(tgt).position==='static')tgt.style.position='relative'; tgt.style.zIndex='9997'; try{tgt.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){} }
+  var pop=document.createElement('div'); pop.id='tourpop'; pop.style.cssText='position:fixed;left:12px;right:12px;bottom:86px;z-index:9998;background:#fff;border-radius:18px;padding:16px;box-shadow:0 16px 40px rgba(0,0,0,.32)';
+  pop.innerHTML='<div style="display:flex;gap:6px;margin-bottom:9px">'+TOUR.map(function(_,i){return '<div style="flex:1;height:4px;border-radius:2px;background:'+(i<=_tourI?'#2563EB':'#E2E8F0')+'"></div>';}).join('')+'</div><div style="font-weight:800;font-family:var(--fh);font-size:16px">'+esc(s.t)+'</div><div style="font-size:13px;color:#475569;line-height:1.5;margin:5px 0 13px">'+esc(s.d)+'</div><div style="display:flex;gap:9px"><button onclick="endTour()" style="flex:1;border:none;background:#EEF2F7;color:#475569;border-radius:10px;padding:11px;font-weight:600;cursor:pointer">Bỏ qua</button><button onclick="tourNext()" style="flex:2;border:none;background:#2563EB;color:#fff;border-radius:10px;padding:11px;font-weight:700;cursor:pointer">'+((_tourI+1<TOUR.length)?'Tiếp →':'Xong 🎉')+'</button></div>';
+  document.body.appendChild(pop);
+ },300);
+}
+function openGuide(){ var o=el('ovl'); if(!o)return; var steps=[['stetho','Bắt đầu tư vấn','Bấm "Bắt đầu tư vấn khách" → nhập thông tin, đo chỉ số (BMI/Z-score) → app gợi ý sản phẩm phù hợp trong ~3 phút.'],['cart','Lên đơn','Vào "Lên đơn": chọn sản phẩm + số lượng (app kiểm tồn tại điểm bán) → Tạo đơn. Theo dõi ở "Đơn của tôi".'],['cup','Tra cứu sản phẩm','Tab "Sản phẩm": xem công dụng, thành phần, HSCB, phiếu kiểm nghiệm, hướng dẫn chốt sale từng SKU.'],['school','Ôn nghiệp vụ','Làm "Quiz" 5 cấp để lên hạng; xem "Tài liệu" có video dinh dưỡng.'],['spark','Trợ lý AI','Chạm linh vật (góc phải dưới) để hỏi nhanh về sản phẩm, đơn hàng, tồn kho, dinh dưỡng.']]; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="font-weight:700;font-family:var(--fh);font-size:16px;flex:1">Hướng dẫn sử dụng</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic('x',18)+'</button></div>'+steps.map(function(s,i){return '<div style="display:flex;gap:12px;margin-bottom:13px"><span style="width:36px;height:36px;border-radius:11px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic(s[0],18)+'</span><div><div style="font-weight:700;font-size:13.5px">'+(i+1)+'. '+s[1]+'</div><div class="muted" style="font-size:12.5px;line-height:1.5;margin-top:2px">'+s[2]+'</div></div></div>';}).join('')+'<button class="btn" style="margin-top:6px" onclick="startTour()">'+ic('spark',17)+'Xem hướng dẫn tương tác từng bước</button></div></div>'; }
 function showLoader(msg){ var l=el("loader"); if(!l)return; l.innerHTML='<div class="ldbox"><div class="ld-spin"><div class="ld-ring"></div><div class="ld-mas">'+curMascot()+'</div></div><div class="ld-txt">'+(msg||"Đang tải…")+'</div></div>'; l.classList.add("show"); }
 function hideLoader(){ var l=el("loader"); if(l) l.classList.remove("show"); }
 function setTab(t){ S.tab=t; if(t==="quiz")S.quiz=null; window.scrollTo(0,0); showLoader(); render(); pageFade(); setTimeout(hideLoader,280); }
@@ -1682,7 +1705,7 @@ function bodyScan(){
 }
 
 render();renderFab();try{startSplash();}catch(e){var sp=el("splash");if(sp)sp.style.display="none";}
-try{ if(!lsGet("wt_seen_guide",0)){ lsSet("wt_seen_guide",1); setTimeout(function(){ if(S.tab==="home"&&typeof openGuide==="function")openGuide(); },4300); } }catch(e){}
+try{ if(!lsGet("wt_seen_guide",0)){ lsSet("wt_seen_guide",1); setTimeout(function(){ if(S.tab==="home"&&typeof startTour==="function")startTour(); },4300); } }catch(e){}
 try{setTimeout(fabHi,4500);setInterval(fabHi,16000);setTimeout(greetNotif,7000);setInterval(greetNotif,12*60000);}catch(e){}
 </script>
 <script>
