@@ -2258,6 +2258,17 @@ function submitRestock(){ var cart=S.rcart||{}; var items=Object.keys(cart).filt
    .then(function(){ S.rcart={}; pushNotif("cart","Đã gửi đơn nhập hàng","Đơn đặt công ty đang chờ duyệt."); toast("✅ Đã gửi đơn đặt hàng công ty. Theo dõi duyệt trên hệ thống."); closeAdmin(); })
    .catch(function(e){ toast("Gửi đơn lỗi: "+e.message+" — kiểm tra Mã NPP + mạng."); });
 }
+function childLink(tenant,token){ return location.origin+location.pathname+"?npp="+encodeURIComponent(tenant)+(token?("&token="+encodeURIComponent(token)):""); }
+function openChildren(){ var o=el("ovl"); if(!o)return; var me=(typeof wtTenant==="function"?wtTenant():"");
+ o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="max-width:520px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div style="font-weight:800;font-family:var(--fh);font-size:16px;flex:1">Mã cho NPP cấp dưới</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic("x",18)+'</button></div>'
+  +'<div class="faint" style="font-size:11.5px;margin-bottom:10px">Bạn ('+esc(me||"NPP")+') tạo mã cho các NPP cấp dưới. Mã con tự gắn tuyến trên là bạn; đơn bổ sung của họ sẽ về bạn.</div>'
+  +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px"><div style="flex:1;min-width:120px"><div style="font-size:11px;color:#64748B;margin-bottom:3px">Mã NPP cấp dưới</div><input id="ch_code" placeholder="VD: NPP-HN-021"/></div><div style="flex:1;min-width:120px"><div style="font-size:11px;color:#64748B;margin-bottom:3px">Tên (tuỳ chọn)</div><input id="ch_name" placeholder="Tên NPP"/></div><button class="btn" style="width:auto;padding:11px 16px" onclick="createChild()">'+ic("check",16)+'Tạo mã</button></div>'
+  +'<div id="ch_new"></div><div id="ch_list" class="muted" style="text-align:center;padding:12px">Đang tải danh sách…</div></div></div>';
+ loadChildren();
+}
+function loadChildren(){ fetch(WINTOP_API+"/npp/children",{headers:wtHeaders(false)}).then(function(r){return r.json();}).then(function(d){ var rows=(d&&d.items)||[]; var w=el("ch_list"); if(!w)return; if(!rows.length){ w.innerHTML='<div class="muted" style="padding:12px;text-align:center">Chưa có NPP cấp dưới nào.</div>'; return; } w.className=""; w.innerHTML='<div style="font-weight:700;font-size:13px;margin:6px 0 8px">NPP cấp dưới của bạn ('+rows.length+')</div>'+rows.map(function(x){ var lk=childLink(x.tenant,x.token); return '<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:7px"><div style="font-weight:700;font-size:13px">'+esc(x.name||x.tenant)+' <span class="faint" style="font-weight:400">('+esc(x.tenant)+')</span></div>'+(x.token?('<div style="display:flex;gap:6px;margin-top:6px"><input readonly value="'+esc(lk)+'" style="flex:1;font-size:11px;padding:7px" onclick="this.select()"/><button class="btn sec" style="width:auto;padding:7px 11px;font-size:12px" onclick="copyText(\''+esc(lk)+'\')">Copy link</button></div>'):'<div class="faint" style="font-size:11px;margin-top:4px">Mã đã thu hồi</div>')+'</div>';}).join(""); }).catch(function(){ var w=el("ch_list"); if(w)w.innerHTML='<div class="muted" style="padding:12px;text-align:center">Chưa tải được — cần mạng và đã kết nối NPP.</div>'; }); }
+function createChild(){ var code=(el("ch_code")?el("ch_code").value.trim():""), name=(el("ch_name")?el("ch_name").value.trim():""); if(!code){ toast("Nhập Mã NPP cấp dưới."); return; }
+ fetch(WINTOP_API+"/npp/create-child",{method:"POST",headers:wtHeaders(true),body:JSON.stringify({tenant:code,name:name||undefined})}).then(function(r){var st=r.status;return r.json().catch(function(){return{};}).then(function(d){if(d)d.__st=st;return d;});}).then(function(d){ if(d&&d.ok){ var lk=childLink(d.tenant,d.token); var box=el("ch_new"); if(box)box.innerHTML='<div style="background:#E0EDFF;border-radius:10px;padding:11px;margin-bottom:10px"><div style="font-weight:700;font-size:12.5px">✅ Đã tạo mã cho '+esc(d.tenant)+'</div><div class="faint" style="font-size:11px;margin:4px 0">Gửi link này cho NPP cấp dưới — mở là tự kết nối:</div><div style="display:flex;gap:6px"><input readonly value="'+esc(lk)+'" style="flex:1;font-size:11px;padding:7px" onclick="this.select()"/><button class="btn" style="width:auto;padding:7px 11px;font-size:12px" onclick="copyText(\''+esc(lk)+'\')">Copy</button></div></div>'; if(el("ch_code"))el("ch_code").value=""; if(el("ch_name"))el("ch_name").value=""; loadChildren(); toast("✅ Đã tạo mã cấp dưới.","ok"); } else { toast("Lỗi: "+((d&&d.detail)||"không tạo được mã")); } }).catch(function(e){ toast("Lỗi: "+e.message); }); }
 function openInbound(){
  var o=el("ovl"); if(!o)return;
  o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="max-width:520px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div style="font-weight:800;font-family:var(--fh);font-size:16px;flex:1">Đơn cấp dưới đặt lên</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic("x",18)+'</button></div><div class="faint" style="font-size:11.5px;margin-bottom:10px">Đơn bổ sung do NPP cấp dưới đặt lên tuyến của bạn. Bấm “Giao” sẽ trừ tồn kho của bạn.</div><div id="inbwrap" class="muted" style="text-align:center;padding:16px">Đang tải…</div></div></div>';
@@ -2302,6 +2313,7 @@ function renderAdmin(){
   '<div style="display:flex;gap:9px"><button class="btn sec" style="flex:1" onclick="openStock()">'+ic("box",16)+'Tồn kho</button><button class="btn ok" style="flex:1" onclick="openRestock()">'+ic("cart",16)+'Đặt hàng công ty</button></div>'+
   '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openRestockOrders()">'+ic("box",16)+'Đơn đã đặt & trạng thái duyệt</button>'+
   '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openInbound()">'+ic("box",16)+'Đơn cấp dưới đặt lên (tuyến trên)</button>'+
+  '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openChildren()">'+ic("userplus",16)+'Tạo mã cho NPP cấp dưới</button>'+
   '<button class="btn ghost" style="margin-top:9px" onclick="makePgLink()">'+ic("user",16)+'Tạo link cho PG (cấp mã tư vấn viên)</button>'+
   '<button class="btn ghost" style="margin-top:9px" onclick="openZaloOA()">'+ic("spark",16)+'Chat Zalo OA doanh nghiệp</button></div>'+
   '<button class="btn ghost" style="margin-top:10px" onclick="closeAdmin()">Đóng</button>'+
@@ -2312,11 +2324,12 @@ function renderAdmin(){
 /* Tự đồng bộ đơn về hệ thống NPP: khi mở app, khi có mạng lại, và mỗi 60s */
 (function(){
   // Cap san Ma NPP qua link ?npp=<ma> (ban giao NPP khong phai go tay)
-  try{ var usp=new URLSearchParams(location.search); var np=usp.get("npp"); var pgc=usp.get("pg"); var arc=usp.get("area");
+  try{ var usp=new URLSearchParams(location.search); var np=usp.get("npp"); var pgc=usp.get("pg"); var arc=usp.get("area"); var tkq=usp.get("token");
     if(np){ np=np.trim(); localStorage.setItem("wt_tenant", JSON.stringify(np)); localStorage.setItem("wt_tenant_locked","1"); }
+    if(tkq){ tkq=tkq.trim(); localStorage.setItem("wt_npp_token", JSON.stringify(tkq)); }
     if(pgc){ pgc=pgc.trim(); localStorage.setItem("wt_pg", JSON.stringify(pgc)); try{ if(window.S&&S.acc){ S.acc.name=pgc; } }catch(e){} }
     if(arc){ arc=arc.trim(); localStorage.setItem("wt_area", JSON.stringify(arc)); try{ if(window.S&&S.acc){ S.acc.area=arc; } }catch(e){} }
-    if((np||pgc||arc)){ try{ history.replaceState(null,"",location.pathname+location.hash); if(typeof render==="function") render(); }catch(e){} }
+    if((np||pgc||arc||tkq)){ try{ history.replaceState(null,"",location.pathname+location.hash); if(typeof render==="function") render(); }catch(e){} }
   }catch(e){}
   function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){} }
   function autoStock(){ try{ if(typeof pullStockAuto==="function") pullStockAuto(); }catch(e){} }
