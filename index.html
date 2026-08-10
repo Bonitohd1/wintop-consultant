@@ -699,7 +699,7 @@ var CMPX={
  colostrum:{pack:"Sữa pha sẵn — hộp giấy 110ml & 180ml (đóng lốc 4 hộp)", conv:"Uống liền, tiện mang theo khi đi học/đi chơi/dã ngoại — không cần pha", pick:"Hợp khi cần bổ sung năng lượng, tăng đề kháng và cần sự tiện lợi mang đi ngoài"},
  baby:{pack:"Sữa bột công thức — đóng lon (400g & 900g)", conv:"Pha với nước ấm theo bảng lượng ăn — dùng tại nhà", pick:"Nền tảng dinh dưỡng cho trẻ 0–12 tháng"},
  ba:{pack:"Sữa bột công thức — đóng lon (400g & 900g)", conv:"Pha với nước ấm — dùng tại nhà", pick:"Ưu tiên khi trẻ nhẹ cân, biếng ăn, cần tăng cân"},
- kaoiq:{pack:"Sữa bột công thức — đóng lon 900g", conv:"Pha với nước ấm — dùng tại nhà", pick:"Ưu tiên phát triển chiều cao & trí não (Canxi Nano + MK-7 + DHA cao)"},
+ kaoiq:{pack:"Sữa bột công thức — đóng lon", conv:"Pha với nước ấm — dùng tại nhà", pick:"Ưu tiên phát triển chiều cao & trí não (Canxi Nano + MK-7 + DHA cao)"},
  gainpro:{pack:"Sữa bột — đóng lon", conv:"Pha với nước ấm — dùng tại nhà", pick:"Người lớn gầy cần tăng cân, hỗ trợ khớp"},
  suregold:{pack:"Sữa bột — đóng lon", conv:"Pha với nước ấm — dùng tại nhà", pick:"Người mới ốm dậy/hậu phẫu cần phục hồi nhanh"},
  canxinano:{pack:"Sữa bột — đóng lon", conv:"Pha với nước ấm — dùng tại nhà", pick:"Người lớn cần bổ sung canxi, chắc xương khớp"},
@@ -871,11 +871,11 @@ function dynWarn(prods,b){ var h=S.user.hist||[],add="";
  return b+add; }
 function buildRec(){ var o=S.user.obj,c=S.cls;
  var cx=contraCheck(); if(cx) return cx;
- if(o==="pregnant"&&hasDiabetes()) return {freeze:true,title:"Cảnh báo an toàn — Tiểu đường thai kỳ",b:"Khách có dấu hiệu/tiền sử tiểu đường thai kỳ. Nhân viên KHÔNG tự ý kê đơn hay giới thiệu sản phẩm. Bắt buộc hướng dẫn khách đi khám và hỏi ý kiến bác sĩ chuyên khoa trước khi áp dụng bất kỳ chế độ dinh dưỡng bổ sung nào.",prods:[]};
+ if(o==="pregnant"&&hasDiabetes()) return {freeze:true,title:(S.user.postpartum?"Cảnh báo an toàn — Tiểu đường ở mẹ sau sinh":"Cảnh báo an toàn — Tiểu đường thai kỳ"),b:(S.user.postpartum?"Mẹ sau sinh có dấu hiệu/tiền sử tiểu đường. Nhân viên KHÔNG tự ý kê đơn hay giới thiệu sản phẩm. Bắt buộc hướng dẫn khách đi khám và hỏi ý kiến bác sĩ chuyên khoa trước khi áp dụng chế độ dinh dưỡng bổ sung.":"Khách có dấu hiệu/tiền sử tiểu đường thai kỳ. Nhân viên KHÔNG tự ý kê đơn hay giới thiệu sản phẩm. Bắt buộc hướng dẫn khách đi khám và hỏi ý kiến bác sĩ chuyên khoa trước khi áp dụng bất kỳ chế độ dinh dưỡng bổ sung nào."),prods:[]};
  if(o==="pregnant"&&S.user.hist.indexOf("Tiền sản giật")>=0){ var mp=applyCur(["mama"],"Mẹ bầu có tiền sản giật: có thể dùng Wintop Mama hỗ trợ dinh dưỡng, NHƯNG ⚠️ BẮT BUỘC hướng dẫn khám bác sĩ chuyên khoa sản NGAY (theo dõi huyết áp, đạm niệu). Không tự ý điều chỉnh chế độ ăn/liều lượng."); return {freeze:false,title:"Mẹ bầu tiền sản giật — cần khám sản khoa",b:mp.b,prods:mp.prods}; }
  var severe=c&&(c.label==="Suy dinh dưỡng nặng"||(o==="adult"&&c.val!=null&&c.val<16)||(o==="tre_1_10"&&c.status==="low"&&c.val!=null&&c.lo!=null&&c.metric&&c.metric.indexOf("BMI")>=0&&c.val<c.lo-2)); var SEVERE_WARN=" ⚠️ BẮT BUỘC: chỉ số ở mức SUY DINH DƯỠNG NẶNG / BMI rất thấp — hướng dẫn khách đi khám bác sĩ dinh dưỡng/chuyên khoa. Sản phẩm chỉ HỖ TRỢ, không thay thế điều trị y tế.";
  if(o==="tre_0_12"){ var bb0="Trẻ 0–12 tháng: CHỈ dùng Wintop Baby (công thức 0–12 tháng theo nhãn). KHÔNG tư vấn BA/KaoIQ/Colostrum (nhãn ghi từ 1 tuổi trở lên)."+(pretermWeeks()>0?" Trẻ sinh non — tính theo tuổi hiệu chỉnh ≈ "+((correctedMonths()!=null)?correctedMonths().toFixed(0):"?")+" tháng; theo dõi định kỳ với bác sĩ nhi khoa.":"")+(severe?SEVERE_WARN:"")+" Luôn kèm khuyến cáo: Sữa mẹ là tốt nhất cho sức khỏe trẻ sơ sinh và trẻ nhỏ."; var cb0=applyCur(["baby"],bb0); return {freeze:false,severe:severe,title:"Khuyến nghị cho trẻ 0–12 tháng",b:cb0.b,prods:cb0.prods}; }
- if(o==="tre_1_10"&&pretermWeeks()>0){ var cm=correctedMonths(); if(cm!=null&&cm<12){ var bbp="Trẻ sinh non — tuổi hiệu chỉnh ≈ "+cm.toFixed(0)+" tháng (< 12 tháng): DÙNG Wintop Baby, CHƯA chuyển BA/KaoIQ dù tuổi thực đã ≥ 1. BẮT BUỘC khám và theo dõi định kỳ với bác sĩ nhi khoa."; var cbp=applyCur(["baby"],bbp); return {freeze:false,title:"Trẻ sinh non — theo tuổi hiệu chỉnh",b:cbp.b,prods:cbp.prods}; } }
+ if(o==="tre_1_10"&&pretermWeeks()>0){ var cm=correctedMonths(); if(cm!=null&&cm<12){ var bbp="Trẻ sinh non — tuổi hiệu chỉnh ≈ "+cm.toFixed(0)+" tháng (< 12 tháng): DÙNG Wintop Baby, CHƯA chuyển BA/KaoIQ dù tuổi thực đã ≥ 1. BẮT BUỘC khám và theo dõi định kỳ với bác sĩ nhi khoa. Luôn kèm khuyến cáo: Sữa mẹ là tốt nhất cho sức khỏe trẻ sơ sinh và trẻ nhỏ."; var cbp=applyCur(["baby"],bbp); return {freeze:false,title:"Trẻ sinh non — theo tuổi hiệu chỉnh",b:dynWarn(cbp.prods,cbp.b),prods:cbp.prods}; } }
  if(c&&c.status==="low"){ var prods,b; if(o==="adult"){var eld=S.needs.indexOf("Phục hồi sau ốm/phẫu thuật")>=0||S.user.hist.indexOf("Vừa phẫu thuật/ốm dậy")>=0;prods=eld?["suregold","gainpro"]:["gainpro","suregold"];b="Thể trạng GẦY/thiếu cân là ưu tiên số 1. Đề xuất dòng đậm độ năng lượng cao để phục hồi thể trọng trước khi xét nhu cầu khác."+(severe?SEVERE_WARN:"");} else if(o==="pregnant"){prods=["mama"];b=S.user.postpartum?"Mẹ sau sinh thể trạng gầy (BMI thấp) — ưu tiên phục hồi thể trọng bằng Wintop Mama, ăn đủ năng lượng & đạm; kết hợp tư vấn thêm dinh dưỡng cho bé.":"Mẹ thể trạng gầy trước thai kỳ — cần tăng cân đủ theo khuyến nghị. Ưu tiên dinh dưỡng chuyên biệt cho mẹ bầu, ăn đủ năng lượng & đạm.";} else {prods=["ba","colostrum"];b="Trẻ đang nhẹ cân/suy dinh dưỡng — ưu tiên số 1. Hệ thống BẮT BUỘC đề xuất dòng đậm độ năng lượng cao (1.2 kcal/ml) để phục hồi thể trọng. Bỏ qua điều kiện lọc nhu cầu khác."+(severe?SEVERE_WARN:"");} var cs=decorateRec(prods,b); return {freeze:false,title:"Ưu tiên phục hồi thể trạng",b:dynWarn(cs.prods,cs.b),prods:cs.prods}; }
  var n=S.needs,map;
  if(o==="adult"){ if(hasDiabetes())map={prods:["diabet"],b:"Khách tiểu đường (không thai kỳ): dòng Isomalt/Fructose GI thấp + Beta-glucan kiểm soát đường huyết, kèm miễn dịch (Lactoferrin)."}; else if(n.indexOf("Ăn kiêng / kiểm soát cân nặng")>=0)map={prods:["diabet"],b:"Người ăn kiêng/kiểm soát cân nặng (không tiểu đường): Wintop Diabet GI thấp, năng lượng kiểm soát mà vẫn đủ vi chất — đây là ngoại lệ được tư vấn Diabet cho người KHÔNG bị tiểu đường."}; else if(n.indexOf("Loãng xương")>=0||S.user.hist.indexOf("Loãng xương")>=0)map={prods:["canxinano"],b:"Bổ sung Canxi nano sinh khả dụng cao + MK7 + D3 cho xương chắc, khớp linh hoạt."}; else if(n.indexOf("Tăng cân / tăng cơ")>=0)map={prods:["gainpro"],b:"Dòng năng lượng cao + glucosamine hỗ trợ khớp để tăng cân, tăng cơ."}; else if(n.indexOf("Phục hồi sau ốm/phẫu thuật")>=0)map={prods:["suregold","gainpro"],b:"Sure Gold (đạm đậu nành dễ hấp thu + FOS cao) phục hồi nhanh; kết hợp Gain Pro khi cần tăng cơ phục hồi."}; else map={prods:["suregold"],b:"Nền dinh dưỡng cân bằng cho người trưởng thành/cao tuổi."}; }
@@ -912,7 +912,7 @@ function scanZones(){ var o=S.user.obj,c=S.cls,n=S.needs,z=[];
  var POS={head:{x:100,y:40},chest:{x:100,y:92},abdomen:{x:108,y:130},legs:{x:100,y:205},whole:{x:100,y:150}};
  function add(name,need,prod,pos,col){ z.push({name:name,need:need,prod:prod,p:POS[pos],col:col}); }
  if(o==="tre_0_12"||(o==="tre_1_10"&&pretermWeeks()>0&&correctedMonths()!=null&&correctedMonths()<12)){ add("Não bộ & thị giác","DHA + ARA + Choline (công thức 0–12 tháng)","Wintop Baby","head","#C9A0FF"); add("Miễn dịch","Lactoferrin + sữa non + 2'-FL HMO","Wintop Baby","chest","#7FB2FF"); add("Xương & tăng trưởng","Canxi + Vitamin D3 + Photpho","Wintop Baby","legs","#7FD0FF"); if(c&&c.status==="low") add("Năng lượng & cân nặng","Theo bảng lượng ăn — khám nhi nếu nhẹ cân","Wintop Baby","whole","#FF8B6E"); return z.slice(0,4); }
- if(c&&c.status==="low"){ if(o==="adult") add("Năng lượng & cơ","Đậm độ cao + đạm phục hồi thể trọng","Wintop Gain Pro","whole","#FF8B6E"); else if(o==="pregnant") add("Tăng cân thai kỳ","Năng lượng & đạm cho mẹ gầy","Wintop Mama","abdomen","#FF8B6E"); else add("Năng lượng & cân nặng","Đậm độ cao 1.2 kcal/ml — ưu tiên #1","Wintop BA","whole","#FF8B6E"); }
+ if(c&&c.status==="low"){ if(o==="adult") add("Năng lượng & cơ","Đậm độ cao + đạm phục hồi thể trọng","Wintop Gain Pro","whole","#FF8B6E"); else if(o==="pregnant") add((S.user.postpartum?"Phục hồi sau sinh":"Tăng cân thai kỳ"),"Năng lượng & đạm"+(S.user.postpartum?" phục hồi sau sinh":" cho mẹ gầy"),"Wintop Mama","abdomen","#FF8B6E"); else add("Năng lượng & cân nặng","Đậm độ cao 1.2 kcal/ml — ưu tiên #1","Wintop BA","whole","#FF8B6E"); }
  if(o==="tre_0_12"||o==="tre_1_10"){ if(S.user.deliv==="Sinh mổ") add("Miễn dịch & đường ruột","Sinh mổ — Lactoferrin sữa non + men tiêu hoá cân bằng vi sinh","Wintop Colostrum Gain","chest","#7FB2FF"); if(n.indexOf("Phát triển trí não")>=0||n.indexOf("Tăng chiều cao")>=0){ add("Trí não","DHA cao phát triển não bộ","Wintop KaoIQ","head","#C9A0FF"); add("Xương & chiều cao","Canxi + D3 + MK7 + Lysine","Wintop KaoIQ","legs","#7FD0FF"); } if(n.indexOf("Hay ốm / miễn dịch kém")>=0) add("Đề kháng","Lactoferrin + sữa non + HMO","Wintop Colostrum Gain","chest","#7FB2FF"); if(n.indexOf("Tiêu hóa kém")>=0||c&&c.status==="low") add("Tiêu hóa & hấp thu","5 enzyme + FOS + HMO","Wintop BA","abdomen","#5BE0C4"); }
  else if(o==="adult"){ if(n.indexOf("Loãng xương")>=0) add("Xương & khớp","Canxi Nano + MK7 + D3","Wintop Canxi Nano","legs","#7FD0FF"); if(n.indexOf("Tiểu đường")>=0) add("Chuyển hóa đường","Isomalt GI thấp + Beta-glucan","Wintop Diabet","abdomen","#5BE0C4"); if(n.indexOf("Tim mạch")>=0) add("Tim mạch","MUFA + MK7 bảo vệ mạch máu","Wintop Gain Pro","chest","#7FB2FF"); if(n.indexOf("Phục hồi sau ốm/phẫu thuật")>=0) add("Phục hồi","Đạm đậu nành dễ hấp thu + FOS","Wintop Sure Gold","chest","#7FB2FF"); }
  else if(o==="pregnant"){ if(S.user.postpartum){ add("Sau sinh khoẻ mạnh","Phục hồi & lợi sữa · Canxi + Sắt + DHA","Wintop Mama","abdomen","#C9A0FF"); } else { add("Thai kỳ khoẻ mạnh","Sắt + Axit Folic + DHA + Canxi","Wintop Mama","abdomen","#C9A0FF"); } }
@@ -996,6 +996,7 @@ function scanChips(){
   "Bổ sung Canxi":["#7FD0FF","CANXI","Xương mẹ & bé","legs"],
   "Bổ sung DHA":["#8fdcf5","DHA","Trí não thai nhi","head"],
   "Tăng cân thai kỳ":["#FFD36E","TĂNG CÂN","Theo lộ trình IOM","abdomen"],
+  "Phục hồi sau sinh":["#FFD36E","PHỤC HỒI","Dinh dưỡng sau sinh","abdomen"],
   "Tăng chiều cao":["#7FD0FF","CHIỀU CAO","Canxi + Lysine","legs"],
   "Tăng cân":["#FF8B6E","CÂN NẶNG","Đậm độ cao","whole"],
   "Hay ốm / miễn dịch kém":["#7FB2FF","MIỄN DỊCH","Sữa non + HMO","chest"],
@@ -1023,7 +1024,11 @@ var PACK_DEFAULT={units:[{u:"lon",f:1},{u:"thùng",f:12}]}; /* mặc định: 1 
 function packOf(id){ return PACKS[id]||PACK_DEFAULT; }
 function orderUnitIdx(id){ return (S.orderUnit&&S.orderUnit[id])||0; }
 function orderUnitFactor(id){ var p=packOf(id); return (p.units[orderUnitIdx(id)]||p.units[0]).f; }
-function setOrderUnit(id,i){ if(!S.orderUnit)S.orderUnit={}; S.orderUnit[id]=i; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
+function setOrderUnit(id,i){ if(!S.orderUnit)S.orderUnit={}; var pk=packOf(id); var f=(pk.units[i]||pk.units[0]).f||1; var q=(S.cart&&S.cart[id])||0;
+ if(f>1&&q>0){ var lvl=stockLevel(id); var snap=Math.max(f,Math.round(q/f)*f); if(lvl!=null&&snap>lvl){ snap=Math.floor(lvl/f)*f; }
+  if(snap<f){ toast("Tồn không đủ 1 "+((pk.units[i]||{}).u||"")+" — giữ đơn vị nhỏ."); if(S.tab==="makeorder"){ var v0=el("view"); if(v0) v0.innerHTML=renderMakeOrder(); } return; }
+  if(!S.cart)S.cart={}; S.cart[id]=snap; }
+ S.orderUnit[id]=i; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
 function cartStep(id,dir){ cartAdd(id, dir*orderUnitFactor(id)); }
 function packBreakdown(id,q){ var p=packOf(id); if(p.units.length<2||!q) return ""; var big=p.units[p.units.length-1]; if(q<big.f) return ""; var n=Math.floor(q/big.f), r=q%big.f; return " = "+n+" "+big.u+(r?" + "+r+" "+unit(id):""); }
 /* PHÂN LOẠI (quy cách/khối lượng) để chọn khi lên đơn — chỉ là nhãn đi kèm đơn, không tách tồn riêng. */
@@ -2139,7 +2144,7 @@ function renderOrders(){
 
 
 /* ---------- LÊN ĐƠN MỚI (chọn SKU + số lượng) ---------- */
-function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ toast("Chỉ còn "+lvl+" "+unit(sku)+" "+P(sku).name+" tại điểm bán."); nv=lvl; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
+function cartAdd(sku,delta){ if(!S.cart)S.cart={}; var lvl=stockLevel(sku); var nv=(S.cart[sku]||0)+delta; if(nv<0)nv=0; if(lvl!=null&&nv>lvl){ toast("Chỉ còn "+lvl+" "+unit(sku)+" "+P(sku).name+" tại điểm bán."); nv=lvl; } var f=orderUnitFactor(sku); if(f>1){ nv=Math.floor(nv/f)*f; } S.cart[sku]=nv; if(S.tab==="makeorder"){ var v=el("view"); if(v) v.innerHTML=renderMakeOrder(); } }
 function renderMakeOrder(){
  var cart=S.cart||{}; var items=Object.keys(cart).filter(function(k){return cart[k]>0;});
  var totQty=0,totAmt=0; items.forEach(function(k){var e=EXTRA[k]||{price:0};totQty+=cart[k];totAmt+=(e.price||0)*cart[k];});
@@ -2359,6 +2364,8 @@ function renderAdmin(){
     if(arc){ arc=arc.trim(); localStorage.setItem("wt_area", JSON.stringify(arc)); try{ if(window.S&&S.acc){ S.acc.area=arc; } }catch(e){} }
     if((np||pgc||arc||tkq)){ try{ history.replaceState(null,"",location.pathname+location.hash); if(typeof render==="function") render(); }catch(e){} }
   }catch(e){}
+  // Deep-link mở thẳng 1 sản phẩm qua #sp=<id> (vd từ QR/tin nhắn) — nối lúc mở & khi hash đổi.
+  try{ if(typeof checkDeepLink==="function"){ checkDeepLink(); window.addEventListener("hashchange", checkDeepLink); } }catch(e){}
   function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){} }
   function autoStock(){ try{ if(typeof pullStockAuto==="function") pullStockAuto(); }catch(e){} }
   window.addEventListener("load",function(){ setTimeout(function(){ autoFlush(); autoStock(); },2500); });
