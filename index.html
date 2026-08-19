@@ -1968,6 +1968,58 @@ function wtTenant(){ return lsGet(TENANT_KEY,"") || ""; }
 function wtToken(){ return lsGet(TOKEN_KEY,"") || ""; }
 function wtHeaders(json){ var h=json?{"Content-Type":"application/json"}:{}; var tk=wtToken(); if(tk)h["X-Npp-Token"]=tk; h["X-Bridge-Key"]=wtKey(); var t=wtTenant(); if(t)h["X-Tenant"]=t; return h; }
 
+/* ---------- ĐỒNG BỘ DANH MỤC (Product Master) — OFFLINE-FIRST ----------
+ * Nguồn sự thật SKU nằm ở Product Master (server). App tải snapshot khi có mạng,
+ * lưu localStorage; mở app đọc snapshot (offline vẫn chạy); chưa từng sync thì dùng
+ * bản mặc định gói sẵn trong app. Overlay CÓ CHỦ ĐÍCH: Master là nguồn chuẩn cho
+ * QUY CÁCH (variants) + GIẤY TỜ (số công bố/kiểm nghiệm); KHÔNG đụng claims/mô tả
+ * đang có để tránh làm nghèo nội dung khi Master chưa đủ dữ liệu. */
+var CATALOG_KEY="wt_catalog_v1";
+/* App id (trong PRODUCTS) -> sku_code (trong Product Master) */
+var WT_APP2SKU={ colostrum:"WT-COLOSTRUM-GAIN", baby:"WT-BABY", ba:"WT-BA" };
+function catalogCache(){ try{ return JSON.parse(localStorage.getItem(CATALOG_KEY)||"null"); }catch(e){ return null; } }
+function applyCatalog(){
+  var c=catalogCache(); if(!c||!c.items||!c.items.length) return;
+  var bySku={}; c.items.forEach(function(it){ if(it&&it.sku_code) bySku[it.sku_code]=it; });
+  if(typeof PRODUCTS==='undefined') return;
+  PRODUCTS.forEach(function(p){
+    var sku=WT_APP2SKU[p.id]; var it=sku&&bySku[sku]; if(!it) return;
+    /* Nguồn chuẩn: QUY CÁCH */
+    if(it.variants&&it.variants.length){
+      var labels=it.variants.map(function(v){ return v&&(v.label||v.size); }).filter(Boolean);
+      if(labels.length&&typeof VARIANTS!=='undefined'){ VARIANTS[p.id]=labels; }
+      p._packs=it.variants; /* {label,pack_unit,pack_factor} — cho lên đơn dùng sau */
+    }
+    /* Bổ sung (không ghi đè): GIẤY TỜ đã chuẩn hoá */
+    if(it.cong_bo_number) p.congBo=it.cong_bo_number;
+    if(it.cong_bo_url) p.congBoUrl=it.cong_bo_url;
+    if(it.test_cert_url && !p.testCert) p.testCert=it.test_cert_url;
+    p._synced=true;
+  });
+}
+function syncCatalog(){
+  if(!navigator.onLine) return;
+  try{
+    fetch(WINTOP_API+"/catalog",{headers:wtHeaders(false)})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){
+        if(!d||!d.items) return;
+        var cur=catalogCache();
+        if(cur && cur.version===d.version) return; /* không đổi thì thôi */
+        d.at=Date.now();
+        try{ localStorage.setItem(CATALOG_KEY,JSON.stringify(d)); }catch(e){}
+        applyCatalog();
+        try{ if(typeof render==='function') render(); }catch(e){}
+      }).catch(function(){});
+  }catch(e){}
+}
+/* Đọc snapshot ngay (offline-safe), rồi thử refresh khi có mạng */
+try{ applyCatalog(); }catch(e){}
+if(typeof window!=='undefined'){
+  window.addEventListener("online", function(){ syncCatalog(); });
+  setTimeout(function(){ syncCatalog(); }, 1200);
+}
+
 /* ---------- ĐỒNG BỘ STUDIO (hook, cấu hình URL) ---------- */
 function syncCfg(){ var c=lsGet(SYNC_KEY,{url:""}); if(!c.url)c.url=WT_DEF.sessions; return c; }
 function adminSaveSyncUrl(u){ var c=syncCfg(); c.url=(u||"").trim(); lsSet(SYNC_KEY,c); }
