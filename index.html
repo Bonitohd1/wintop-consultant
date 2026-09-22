@@ -408,6 +408,49 @@
  .top .av,.home-av,.asst-av,.dhead .da,.mini{ position:relative; overflow:hidden; }
  #fab .fab-inner{ position:absolute; inset:5px; border-radius:50%; overflow:hidden; }
  .mini .mascot-img{ border-radius:11px; }
+
+/* ===== CSS BIEU DO TANG TRUONG (port) ===== */
+  .gr-emy{position:relative;width:94px;height:94px;margin:6px auto 16px;border-radius:50%;background:linear-gradient(135deg,#8FA6FF,#26327A);display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;box-shadow:0 16px 32px -12px rgba(38,50,122,.55)}
+  .gr-emy:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px dashed rgba(38,50,122,.22)}
+  .gr-emy-tr{position:absolute;right:-2px;bottom:-2px;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+  .gv-tabs{display:flex;gap:8px;margin-bottom:12px}
+  .gv-tab{flex:1;height:42px;border:1.5px solid var(--line);background:#fff;border-radius:12px;font-family:var(--fh);font-weight:700;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+  .gv-tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .gchart{width:100%;height:auto;display:block;border-radius:12px;touch-action:manipulation}
+  .gc-band{animation:gcFade .55s ease both}
+  .gc-line{animation:gcFade .5s ease .05s both}
+  .gc-path{stroke-dasharray:1;stroke-dashoffset:1;animation:gcDraw .7s cubic-bezier(.4,0,.2,1) .12s forwards}
+  .gc-pt{opacity:0;transform-box:fill-box;transform-origin:center;animation:gcPop .42s cubic-bezier(.34,1.56,.64,1) forwards}
+  .gc-callout{opacity:0;animation:gcFade .35s ease .5s forwards}
+  @keyframes gcDraw{to{stroke-dashoffset:0}}
+  @keyframes gcFade{from{opacity:0}to{opacity:1}}
+  @keyframes gcPop{0%{opacity:0;transform:scale(.2)}100%{opacity:1;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.gc-band,.gc-line,.gc-path,.gc-pt,.gc-callout{animation:none;opacity:1;stroke-dashoffset:0}}
+  .glegend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:11px;color:var(--muted)}
+  .glegend span{display:inline-flex;align-items:center;gap:5px}
+  .glegend i{display:inline-block;width:18px;height:0;border-top-width:2.5px;border-top-style:solid;vertical-align:middle}
+  .glegend i.gc-sw-dash{border-top-style:dashed}
+  .glegend i.gc-sw-dot{width:10px;height:10px;border:0;border-radius:50%;vertical-align:-1px}
+  .gbaby{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+  .gchip{flex-shrink:0;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px}
+  .gchip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .gchip.add{border-style:dashed;color:var(--pri)}
+  .mrow{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+  .mrow:last-child{border-bottom:0}
+  .mrow .md{font-family:var(--fh);font-weight:700;font-size:13px}
+  .mrow .ms{font-size:11.5px;color:var(--muted)}
+  .mz{font-family:var(--fh);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .mact{margin-left:auto;display:flex;gap:6px}
+  .mact button{width:32px;height:32px;border:1px solid var(--line);background:#fff;border-radius:9px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .mact button:active{background:var(--pri-soft)}
+  .reminder{background:linear-gradient(135deg,#159FDC,#0E6C97);color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:11px;align-items:center;box-shadow:var(--sh)}
+  .reminder .ic{font-size:26px;flex-shrink:0}
+  .posmsg{background:var(--pri-soft);color:var(--pri);border-radius:12px;padding:11px 13px;font-size:12.5px;display:flex;gap:8px;align-items:flex-start;font-weight:500}
+  .posmsg .ic{font-size:19px;flex-shrink:0}
+  .zpill-ok{background:var(--health-soft);color:var(--ok)}.zpill-low{background:var(--warm-soft);color:var(--bad)}.zpill-high{background:var(--gold-soft);color:var(--warn)}.zpill-na{background:var(--pri-soft);color:var(--muted)}
+  .zbig{display:flex;gap:10px}.zbig>div{flex:1;background:var(--pri-soft);border-radius:12px;padding:11px}
+  .zbig .zt{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;font-family:var(--fh)}
+  .zbig .zv{font-family:var(--fh);font-weight:700;font-size:17px;margin:3px 0}
 </style>
 </head>
 <body>
@@ -426,7 +469,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 </script>
 <script>
 /* ===== ICON SET (SVG inline, offline) ===== */
-var IP={
+var IP={trending_up:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',child_care:'<circle cx="12" cy="9" r="4"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/>',monitor_weight:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 8l2 3h-4z" fill="currentColor" stroke="none"/><path d="M8 16h8"/>',straighten:'<rect x="3" y="8" width="18" height="8" rx="1"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/>',event:'<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/>',edit:'<path d="M4 20h4L18 10l-4-4L4 16z"/><path d="M14 6l4 4"/>',delete:'<path d="M5 7h14M9 7V5h6v2M6 7l1 13h10l1-13"/>',insights:'<path d="M4 4v16h16"/><path d="M7 14l3-4 3 3 4-6"/><circle cx="20" cy="6" r="1.5" fill="currentColor" stroke="none"/>',celebration:'<path d="M4 20l6-14 8 8z"/><path d="M14 4l1 2M18 6l2-1M17 10l2 1"/>',notifications:'<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 20a2 2 0 0 0 4 0"/>',warning:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',add:'<path d="M12 5v14M5 12h14"/>',stethoscope:'<path d="M6 3v5a4 4 0 0 0 8 0V3"/><path d="M6 3H4M14 3h2"/><path d="M10 15v2a4 4 0 0 0 8 0v-1"/><circle cx="18" cy="14" r="2"/>',
  stetho:'<path d="M3 12h3l2 5 4-12 2 8h2"/><circle cx="19" cy="13" r="2"/>',
  cup:'<path d="M6 3h12l-1.2 16a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 3z"/><path d="M6.5 8h11"/>',
  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
@@ -761,8 +804,171 @@ function setTab(t){ S.tab=t; if(t==="quiz")S.quiz=null; window.scrollTo(0,0); sh
 function newConsult(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=true;S.curSessionId=null;S._saved=false;S.tab="tuvan";window.scrollTo(0,0);render(); }
 var NAV=[{k:"home",ic:"home",l:"Trang chủ"},{k:"tuvan",ic:"stetho",l:"Tư vấn"},{c:1},{k:"sanpham",ic:"cup",l:"Sản phẩm"},{k:"hoidap",ic:"search",l:"Hỏi-Đáp"}];
 function renderTabbar(){ el("tabbar").innerHTML=NAV.map(function(t){ if(t.c) return '<div class="navc"><button onclick="newConsult()">'+ic("plus",24)+'</button></div>'; return '<button class="'+(S.tab===t.k?"on":"")+'" onclick="setTab(\''+t.k+'\')">'+ic(t.ic,22)+'<span>'+t.l+'</span></button>'; }).join(""); }
+
+/* ===== BIEU DO TANG TRUONG (port tu Nutritie, WHO 0-60m) ===== */
+if(typeof S!=='undefined'){if(!S.growth)S.growth={baby:'',tab:'w',all5:false,addingBaby:false,editBaby:null,edit:null};if(!S.bf)S.bf={};if(!S.gf)S.gf={};}
+var WHO={
+ wfaB:[[0.3487,3.3464,0.14602],[0.2297,4.4709,0.13395],[0.197,5.5675,0.12385],[0.1738,6.3762,0.11727],[0.1553,7.0023,0.11316],[0.1395,7.5105,0.1108],[0.1257,7.934,0.10958],[0.1134,8.297,0.10902],[0.1021,8.6151,0.10882],[0.0917,8.9014,0.10881],[0.082,9.1649,0.10891],[0.073,9.4122,0.10906],[0.0644,9.6479,0.10925],[0.0563,9.8749,0.10949],[0.0487,10.0953,0.10976],[0.0413,10.3108,0.11007],[0.0343,10.5228,0.11041],[0.0275,10.7319,0.11079],[0.0211,10.9385,0.11119],[0.0148,11.143,0.11164],[0.0087,11.3462,0.11211],[0.0029,11.5486,0.11261],[-0.0028,11.7504,0.11314],[-0.0083,11.9514,0.11369],[-0.0137,12.1515,0.11426],[-0.0189,12.3502,0.11485],[-0.024,12.5466,0.11544],[-0.0289,12.7401,0.11604],[-0.0337,12.9303,0.11664],[-0.0385,13.1169,0.11723],[-0.0431,13.3,0.11781],[-0.0476,13.4798,0.11839],[-0.052,13.6567,0.11896],[-0.0564,13.8309,0.11953],[-0.0606,14.0031,0.12008],[-0.0648,14.1736,0.12062],[-0.0689,14.3429,0.12116],[-0.0729,14.5113,0.12168],[-0.0769,14.6791,0.1222],[-0.0808,14.8466,0.12271],[-0.0846,15.014,0.12322],[-0.0883,15.1813,0.12373],[-0.092,15.3486,0.12425],[-0.0957,15.5158,0.12478],[-0.0993,15.6828,0.12531],[-0.1028,15.8497,0.12586],[-0.1063,16.0163,0.12643],[-0.1097,16.1827,0.127],[-0.1131,16.3489,0.12759],[-0.1165,16.515,0.12819],[-0.1198,16.6811,0.1288],[-0.123,16.8471,0.12943],[-0.1262,17.0132,0.13005],[-0.1294,17.1792,0.13069],[-0.1325,17.3452,0.13133],[-0.1356,17.5111,0.13197],[-0.1387,17.6768,0.13261],[-0.1417,17.8422,0.13325],[-0.1447,18.0073,0.13389],[-0.1477,18.1722,0.13453],[-0.1506,18.3366,0.13517]],
+ wfaG:[[0.3809,3.2322,0.14171],[0.1714,4.1873,0.13724],[0.0962,5.1282,0.13],[0.0402,5.8458,0.12619],[-0.005,6.4237,0.12402],[-0.043,6.8985,0.12274],[-0.0756,7.297,0.12204],[-0.1039,7.6422,0.12178],[-0.1288,7.9487,0.12181],[-0.1507,8.2254,0.12199],[-0.17,8.48,0.12223],[-0.1872,8.7192,0.12247],[-0.2024,8.9481,0.12268],[-0.2158,9.1699,0.12283],[-0.2278,9.387,0.12294],[-0.2384,9.6008,0.12299],[-0.2478,9.8124,0.12303],[-0.2562,10.0226,0.12306],[-0.2637,10.2315,0.12309],[-0.2703,10.4393,0.12315],[-0.2762,10.6464,0.12323],[-0.2815,10.8534,0.12335],[-0.2862,11.0608,0.1235],[-0.2903,11.2688,0.12369],[-0.2941,11.4775,0.1239],[-0.2975,11.6864,0.12414],[-0.3005,11.8947,0.12441],[-0.3032,12.1015,0.12472],[-0.3057,12.3059,0.12506],[-0.308,12.5073,0.12545],[-0.3101,12.7055,0.12587],[-0.312,12.9006,0.12633],[-0.3138,13.093,0.12683],[-0.3155,13.2837,0.12737],[-0.3171,13.4731,0.12794],[-0.3186,13.6618,0.12855],[-0.3201,13.8503,0.12919],[-0.3216,14.0385,0.12988],[-0.323,14.2265,0.13059],[-0.3243,14.414,0.13135],[-0.3257,14.601,0.13213],[-0.327,14.7873,0.13293],[-0.3283,14.9727,0.13376],[-0.3296,15.1573,0.1346],[-0.3309,15.341,0.13545],[-0.3322,15.524,0.1363],[-0.3335,15.7064,0.13716],[-0.3348,15.8882,0.138],[-0.3361,16.0697,0.13884],[-0.3374,16.2511,0.13968],[-0.3387,16.4322,0.14051],[-0.34,16.6133,0.14132],[-0.3414,16.7942,0.14213],[-0.3427,16.9748,0.14293],[-0.344,17.1551,0.14371],[-0.3453,17.3347,0.14448],[-0.3466,17.5136,0.14525],[-0.3479,17.6916,0.146],[-0.3492,17.8686,0.14675],[-0.3505,18.0445,0.14748],[-0.3518,18.2193,0.14821]],
+ hfaB:[[1,49.8842,0.03795],[1,54.7244,0.03557],[1,58.4249,0.03424],[1,61.4292,0.03328],[1,63.886,0.03257],[1,65.9026,0.03204],[1,67.6236,0.03165],[1,69.1645,0.03139],[1,70.5994,0.03124],[1,71.9687,0.03117],[1,73.2812,0.03118],[1,74.5388,0.03125],[1,75.7488,0.03137],[1,76.9186,0.03154],[1,78.0497,0.03174],[1,79.1458,0.03197],[1,80.2113,0.03222],[1,81.2487,0.0325],[1,82.2587,0.03279],[1,83.2418,0.0331],[1,84.1996,0.03342],[1,85.1348,0.03376],[1,86.0477,0.0341],[1,86.941,0.03445],[1,87.1161,0.03507],[1,87.972,0.03542],[1,88.8065,0.03576],[1,89.6197,0.0361],[1,90.412,0.03642],[1,91.1828,0.03674],[1,91.9327,0.03704],[1,92.6631,0.03733],[1,93.3753,0.03761],[1,94.0711,0.03787],[1,94.7532,0.03812],[1,95.4236,0.03836],[1,96.0835,0.03858],[1,96.7337,0.03879],[1,97.3749,0.039],[1,98.0073,0.03919],[1,98.631,0.03937],[1,99.2459,0.03954],[1,99.8515,0.03971],[1,100.4485,0.03986],[1,101.0374,0.04002],[1,101.6186,0.04016],[1,102.1933,0.04031],[1,102.7625,0.04045],[1,103.3273,0.04059],[1,103.8886,0.04073],[1,104.4473,0.04086],[1,105.0041,0.041],[1,105.5596,0.04113],[1,106.1138,0.04126],[1,106.6668,0.04139],[1,107.2188,0.04152],[1,107.7697,0.04165],[1,108.3198,0.04177],[1,108.8689,0.0419],[1,109.417,0.04202],[1,109.9638,0.04214]],
+ hfaG:[[1,49.1477,0.0379],[1,53.6872,0.0364],[1,57.0673,0.03568],[1,59.8029,0.0352],[1,62.0899,0.03486],[1,64.0301,0.03463],[1,65.7311,0.03448],[1,67.2873,0.03441],[1,68.7498,0.0344],[1,70.1435,0.03444],[1,71.4818,0.03452],[1,72.771,0.03464],[1,74.015,0.03479],[1,75.2176,0.03496],[1,76.3817,0.03514],[1,77.5099,0.03534],[1,78.6055,0.03555],[1,79.671,0.03576],[1,80.7079,0.03598],[1,81.7182,0.0362],[1,82.7036,0.03643],[1,83.6654,0.03666],[1,84.604,0.03688],[1,85.5202,0.03711],[1,85.7153,0.03764],[1,86.5904,0.03786],[1,87.4462,0.03808],[1,88.283,0.0383],[1,89.1004,0.03851],[1,89.8991,0.03872],[1,90.6797,0.03893],[1,91.443,0.03913],[1,92.1906,0.03933],[1,92.9239,0.03952],[1,93.6444,0.03971],[1,94.3533,0.03989],[1,95.0515,0.04006],[1,95.7399,0.04024],[1,96.4187,0.04041],[1,97.0885,0.04057],[1,97.7493,0.04073],[1,98.4015,0.04089],[1,99.0448,0.04105],[1,99.6795,0.0412],[1,100.3058,0.04135],[1,100.9238,0.0415],[1,101.5337,0.04164],[1,102.136,0.04179],[1,102.7312,0.04193],[1,103.3197,0.04206],[1,103.9021,0.0422],[1,104.4786,0.04233],[1,105.0494,0.04246],[1,105.6148,0.04259],[1,106.1748,0.04272],[1,106.7295,0.04285],[1,107.2788,0.04298],[1,107.8227,0.0431],[1,108.3613,0.04322],[1,108.8948,0.04334],[1,109.4233,0.04347]]
+};
+function lmsAt(tbl,age){if(age<=0)return tbl[0];if(age>=60)return tbl[60];var i=Math.floor(age),f=age-i,a=tbl[i],b=tbl[i+1];return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];}
+function zFrom(lms,x){var L=lms[0],M=lms[1],Sd=lms[2];return L===0?Math.log(x/M)/Sd:((Math.pow(x/M,L)-1)/(L*Sd));}
+function xAtZ(lms,z){var L=lms[0],M=lms[1],Sd=lms[2];return L===0?M*Math.exp(Sd*z):M*Math.pow(1+L*Sd*z,1/L);}
+var MS_MONTH=30.4375*86400000;
+function parseD(iso){if(!iso)return null;var d=new Date(iso);return isNaN(d.getTime())?null:d;}
+function nowISO(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function ageMo(birthISO,dateISO){var b=parseD(birthISO),d=parseD(dateISO);if(!b||!d)return null;return (d-b)/MS_MONTH;}
+function fmtDate(iso){var d=parseD(iso);if(!d)return esc(iso||"");return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();}
+function ageLabel(m){if(m==null)return "";var mm=Math.round(m);if(mm<0)mm=0;if(mm<24)return mm+" tháng tuổi";var y=Math.floor(mm/12),r=mm%12;return y+" tuổi"+(r?" "+r+" tháng":"");}
+var BB_KEY="nt_babies",MEA_KEY="nt_measures";
+function babies(){return lsGet(BB_KEY,[]);}
+function saveBabies(a){lsSet(BB_KEY,a);}
+function measures(){return lsGet(MEA_KEY,[]);}
+function saveMeasures(a){lsSet(MEA_KEY,a);}
+function babyById(id){var bs=babies();for(var i=0;i<bs.length;i++)if(bs[i].id===id)return bs[i];return null;}
+function babyMeasures(id){return measures().filter(function(m){return m.babyId===id;}).sort(function(a,b){return parseD(a.ngayDo)-parseD(b.ngayDo);});}
+function curBaby(){var bs=babies();if(!bs.length)return null;var b=null,id=S.growth.baby;for(var i=0;i<bs.length;i++)if(bs[i].id===id)b=bs[i];if(!b){b=bs[0];S.growth.baby=b.id;}return b;}
+function dueBabies(){var bs=babies(),now=Date.now(),out=[];bs.forEach(function(b){var ms=babyMeasures(b.id);if(ms.length){var last=parseD(ms[ms.length-1].ngayDo);if(last&&(now-last)/86400000>=30)out.push(b);}});return out;}
+var POS=["Tuyệt vời! Mẹ vừa thêm một cột mốc mới cho bé.","Đã lưu — theo dõi đều đặn giúp mẹ hiểu con hơn mỗi ngày.","Cảm ơn mẹ đã chăm chỉ cân đo cho bé!","Ghi nhận rồi ạ! Đường tăng trưởng của bé lại dài thêm một chút."];
+function zClass(z,type){if(z==null||!isFinite(z))return {lb:"Chưa đủ dữ liệu",cls:"na"};var w=(type==="w");if(z<-3)return {lb:w?"Suy dinh dưỡng nặng":"Thấp còi nặng",cls:"low"};if(z<-2)return {lb:w?"Nhẹ cân":"Thấp còi",cls:"low"};if(z<=2)return {lb:"Bình thường",cls:"ok"};if(z<=3)return {lb:w?"Cân nặng cao":"Cao hơn tuổi",cls:"high"};return {lb:w?"Thừa cân rõ rệt":"Rất cao",cls:"high"};}
+function selBaby(id){S.growth.baby=id;S.growth.edit=null;S.growth.editBaby=null;S.growth.addingBaby=false;S.gf={};render();}
+function submitBaby(){var f=S.bf||{},ten=(f.ten||"").trim(),ngay=f.ngaySinh||"",gt=f.gioiTinh||"Trai";
+ if(!ngay){toast("Nhập ngày sinh của bé (bắt buộc).");return;}var d=parseD(ngay);if(!d){toast("Ngày sinh không hợp lệ.");return;}if(d>new Date()){toast("Ngày sinh không thể ở tương lai.");return;}
+ var arr=babies();
+ if(S.growth.editBaby){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.editBaby){arr[i].ten=ten||arr[i].ten;arr[i].ngaySinh=ngay;arr[i].gioiTinh=gt;}S.growth.editBaby=null;toast("Đã cập nhật hồ sơ bé.");}
+ else{var id="B"+Date.now().toString(36);arr.push({id:id,ten:ten||"Bé",ngaySinh:ngay,gioiTinh:gt});S.growth.baby=id;toast("Đã thêm hồ sơ "+(ten||"bé")+"!");}
+ saveBabies(arr);S.bf={};S.growth.addingBaby=false;render();}
+function editBaby(id){var b=babyById(id);if(!b)return;S.bf={ten:b.ten,ngaySinh:b.ngaySinh,gioiTinh:b.gioiTinh};S.growth.editBaby=id;S.growth.addingBaby=true;render();}
+function delBaby(id){if(!confirm("Xóa hồ sơ bé này và toàn bộ số đo của bé?"))return;saveBabies(babies().filter(function(b){return b.id!==id;}));saveMeasures(measures().filter(function(m){return m.babyId!==id;}));if(S.growth.baby===id)S.growth.baby="";S.growth.editBaby=null;S.growth.addingBaby=false;toast("Đã xóa hồ sơ bé.");render();}
+function submitMeasure(){var b=curBaby();if(!b){toast("Chọn hồ sơ bé trước.");return;}var f=S.gf||{};
+ var date=f.ngayDo||nowISO();if(!parseD(date)){toast("Ngày đo không hợp lệ.");return;}if(parseD(date)>new Date()){toast("Ngày đo không thể ở tương lai.");return;}
+ var w=parseFloat(f.canNang);if(!isFinite(w)){toast("Nhập cân nặng (kg).");return;}if(w<1||w>60){toast("Cân nặng phải trong khoảng 1–60 kg.");return;}
+ var hRaw=(f.chieuCao!=null?String(f.chieuCao).trim():""),hh=hRaw!==""?parseFloat(hRaw):null;
+ if(hh!=null&&(!isFinite(hh)||hh<40||hh>180)){toast("Chiều cao phải trong khoảng 40–180 cm.");return;}
+ w=Math.round(w*10)/10;if(hh!=null)hh=Math.round(hh*10)/10;
+ var prevList=babyMeasures(b.id).filter(function(m){return m.id!==S.growth.edit;});
+ if(!S.growth.edit&&prevList.length){var prev=prevList[prevList.length-1];if(prev&&prev.canNang&&w<prev.canNang*0.9&&!f._confirm){S.gf._confirm=true;toast("⚠️ Cân giảm >10% so lần trước ("+prev.canNang+"kg). Bấm Lưu lần nữa để xác nhận.");render();return;}}
+ var arr=measures();
+ if(S.growth.edit){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.edit){arr[i].ngayDo=date;arr[i].canNang=w;arr[i].chieuCao=hh;arr[i].ghiChu=f.ghiChu||"";}S.growth.edit=null;toast("Đã cập nhật số đo.");}
+ else{arr.push({id:"M"+Date.now().toString(36),babyId:b.id,ngayDo:date,canNang:w,chieuCao:hh,ghiChu:f.ghiChu||""});toast(POS[Math.floor(Math.random()*POS.length)]);}
+ saveMeasures(arr);S.gf={};render();}
+function editMeasure(id){var arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id){S.gf={ngayDo:arr[i].ngayDo,canNang:arr[i].canNang,chieuCao:(arr[i].chieuCao!=null?arr[i].chieuCao:""),ghiChu:arr[i].ghiChu||""};S.growth.baby=arr[i].babyId;}S.growth.edit=id;render();}
+function delMeasure(id){if(!confirm("Xóa số đo này?"))return;saveMeasures(measures().filter(function(m){return m.id!==id;}));if(S.growth.edit===id){S.growth.edit=null;S.gf={};}toast("Đã xóa số đo.");render();}
+function growthPoint(id){var m=null,arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id)m=arr[i];if(!m)return;var b=babyById(m.babyId);if(!b)return;var am=ageMo(b.ngaySinh,m.ngayDo),boy=b.gioiTinh!=="Gái";var s=fmtDate(m.ngayDo)+" · "+ageLabel(am)+" · "+m.canNang+"kg";if(m.chieuCao)s+=" · "+m.chieuCao+"cm";if(am!=null&&am<=60){var zw=zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,am),m.canNang);s+=" · cân Z="+zw.toFixed(1)+" ("+zClass(zw,"w").lb+")";}toast(s);}
+function babyForm(){var f=S.bf||{},editing=!!S.growth.editBaby;
+ return '<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:4px"><div class="sec-ic">'+ic('child_care')+'</div><h3 style="font-size:15px">'+(editing?"Sửa hồ sơ bé":"Hồ sơ bé mới")+'</h3></div>'
+ +'<label>Tên gọi của bé</label><input value="'+esc(f.ten||"")+'" oninput="S.bf.ten=this.value" placeholder="VD: Bé Bo">'
+ +'<label>Ngày sinh *</label><input type="date" value="'+esc(f.ngaySinh||"")+'" max="'+nowISO()+'" oninput="S.bf.ngaySinh=this.value">'
+ +'<label>Giới tính *</label><div class="chips">'+["Trai","Gái"].map(function(g){return '<div class="chip'+(((f.gioiTinh||"Trai")===g)?" on":"")+'" onclick="S.bf.gioiTinh=\''+g+'\';render()">'+g+'</div>';}).join('')+'</div>'
+ +'<div class="btnrow" style="margin-top:14px"><button class="btn sec" onclick="S.growth.addingBaby=false;S.growth.editBaby=null;S.bf={};render()">Hủy</button><button class="btn" onclick="submitBaby()">'+ic('check')+(editing?"Lưu":"Thêm bé")+'</button></div></div>';}
+function measureForm(b){var f=S.gf||{},editing=!!S.growth.edit;
+ return '<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:4px"><div class="sec-ic">'+ic('add')+'</div><h3 style="font-size:15px">'+(editing?"Sửa số đo":"Thêm số đo cho "+esc(b.ten||"bé"))+'</h3></div>'
+ +'<label>Ngày đo *</label><input type="date" value="'+esc(f.ngayDo||nowISO())+'" max="'+nowISO()+'" oninput="S.gf.ngayDo=this.value">'
+ +'<div class="row"><div><label>Cân nặng (kg) *</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.canNang!=null?f.canNang:"")+'" oninput="S.gf.canNang=this.value" placeholder="VD: 9.5"></div><div><label>Chiều cao (cm)</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.chieuCao!=null?f.chieuCao:"")+'" oninput="S.gf.chieuCao=this.value" placeholder="VD: 74"></div></div>'
+ +'<label>Ghi chú</label><input value="'+esc(f.ghiChu||"")+'" oninput="S.gf.ghiChu=this.value" placeholder="VD: bé mọc răng, biếng ăn...">'
+ +'<div class="btnrow" style="margin-top:14px">'+(editing?'<button class="btn sec" onclick="S.growth.edit=null;S.gf={};render()">Hủy</button>':'')+'<button class="btn" onclick="submitMeasure()">'+ic('check')+(editing?"Cập nhật":"Lưu số đo")+'</button></div></div>';}
+function growthLegend(){var items=[['#1F2D6B','Bé','dot'],['#16A34A','Trung vị','solid'],['#C9932E','±2SD','dash']];if(S.growth.all5)items.push(['#E01F26','±3SD','dash']);return '<div class="glegend">'+items.map(function(it){var cls=it[2]==='dot'?'gc-sw-dot':(it[2]==='dash'?'gc-sw-dash':'');var st=it[2]==='dot'?('background:'+it[0]):('border-top-color:'+it[0]);return '<span><i class="'+cls+'" style="'+st+'"></i>'+it[1]+'</span>';}).join('')+'</div>';}
+function growthChart(b,ms,tab){
+ var boy=b.gioiTinh!=="Gái",isW=(tab!=="h"),tbl=isW?(boy?WHO.wfaB:WHO.wfaG):(boy?WHO.hfaB:WHO.hfaG);
+ var accent=boy?"#1D6FE0":"#E0559B";
+ var pts=[];ms.forEach(function(m){var v=isW?m.canNang:m.chieuCao;if(v==null||!isFinite(v))return;var am=ageMo(b.ngaySinh,m.ngayDo);if(am==null||am<0)return;pts.push({am:Math.min(am,60),v:v,id:m.id,over:am>60});});
+ var nowA=ageMo(b.ngaySinh,nowISO())||0;
+ var maxA=pts.length?pts[pts.length-1].am:nowA;
+ var x0=pts.length?Math.max(0,Math.floor(pts[0].am)):0;
+ var x1=Math.min(60,Math.ceil(Math.max(nowA,maxA))+3);if(x1<=x0)x1=Math.min(60,x0+6);if(x1<=x0)x1=60;
+ var xs=[];for(var mm=Math.ceil(x0);mm<x1;mm++)xs.push(mm);xs.unshift(x0);xs.push(x1);
+ var ymin=Infinity,ymax=-Infinity;xs.forEach(function(mo){var lo=xAtZ(lmsAt(tbl,mo),-3),hi=xAtZ(lmsAt(tbl,mo),3);if(lo<ymin)ymin=lo;if(hi>ymax)ymax=hi;});
+ pts.forEach(function(p){if(p.v<ymin)ymin=p.v;if(p.v>ymax)ymax=p.v;});
+ if(!isFinite(ymin)){ymin=0;ymax=isW?20:120;}
+ var pad=((ymax-ymin)*0.06)||1;ymin=Math.max(0,ymin-pad);ymax=ymax+pad;
+ var W=364,H=284,L=40,R=42,T=20,B=34,pw=W-L-R,ph=H-T-B;
+ function sx(m){return (L+(m-x0)/(x1-x0)*pw).toFixed(1);}
+ function sy(v){return (T+(ymax-v)/(ymax-ymin)*ph).toFixed(1);}
+ function zLine(z){return xs.map(function(mo){return sx(mo)+','+sy(xAtZ(lmsAt(tbl,mo),z));});}
+ var g=[],yt=5;
+ /* -- Vung: binh thuong (-2..+2) xanh; ngoai bien (khi bat 5 duong) do nhat -- */
+ var up2=zLine(2),lo2=zLine(-2);
+ if(S.growth.all5){var up3=zLine(3),lo3=zLine(-3);
+  g.push('<polygon class="gc-band" points="'+up3.concat(up2.slice().reverse()).join(' ')+'" fill="#E11D48" fill-opacity=".055"/>');
+  g.push('<polygon class="gc-band" points="'+lo2.concat(lo3.slice().reverse()).join(' ')+'" fill="#E11D48" fill-opacity=".055"/>');}
+ g.push('<polygon class="gc-band" points="'+up2.concat(lo2.slice().reverse()).join(' ')+'" fill="#16A34A" fill-opacity=".10"/>');
+ /* -- Luoi ngang + nhan truc tung -- */
+ for(var i=0;i<=yt;i++){var vv=ymin+(ymax-ymin)*i/yt,yy=sy(vv);g.push('<line x1="'+L+'" y1="'+yy+'" x2="'+(L+pw)+'" y2="'+yy+'" stroke="#EAEFF6" stroke-width="1"/>');g.push('<text x="'+(L-6)+'" y="'+(parseFloat(yy)+3.2)+'" text-anchor="end" font-size="9" fill="#7B8698" font-weight="500">'+vv.toFixed(isW?1:0)+'</text>');}
+ /* -- Luoi doc + nhan thang tuoi -- */
+ var step=Math.max(1,Math.round((x1-x0)/6));for(var mo2=Math.ceil(x0/step)*step;mo2<=x1;mo2+=step){g.push('<line x1="'+sx(mo2)+'" y1="'+T+'" x2="'+sx(mo2)+'" y2="'+(T+ph)+'" stroke="#F1F5FA" stroke-width="1"/>');g.push('<text x="'+sx(mo2)+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="9" fill="#7B8698" font-weight="500">'+mo2+'</text>');}
+ /* -- Vach "hom nay" (tuoi hien tai) -- */
+ if(nowA>x0&&nowA<=x1){var nx=sx(Math.min(nowA,x1));g.push('<line x1="'+nx+'" y1="'+(T+1)+'" x2="'+nx+'" y2="'+(T+ph)+'" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2 3"/>');g.push('<text x="'+nx+'" y="'+(T-6)+'" text-anchor="middle" font-size="7.5" fill="#94A3B8" font-weight="700">hôm nay</text>');}
+ /* -- Khung truc -- */
+ g.push('<line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
+ g.push('<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
+ /* -- Tieu de truc -- */
+ g.push('<text x="'+(L+pw/2)+'" y="'+(H-4)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600">Tháng tuổi</text>');
+ g.push('<text x="12" y="'+(T+ph/2)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600" transform="rotate(-90 12 '+(T+ph/2)+')">'+(isW?"Cân nặng (kg)":"Chiều cao (cm)")+'</text>');
+ /* -- Duong chuan WHO: TV lien xanh, +/-SD net dut -- */
+ var zset=S.growth.all5?[[3,'#E11D48','2 3','+3'],[2,'#C2691A','5 3','+2'],[0,'#0F9A6A','','TV'],[-2,'#C2691A','5 3','-2'],[-3,'#E11D48','2 3','-3']]:[[2,'#C2691A','5 3','+2'],[0,'#0F9A6A','','TV'],[-2,'#C2691A','5 3','-2']];
+ var labs=[];
+ zset.forEach(function(zz){var pl=zLine(zz[0]).join(' ');g.push('<polyline class="gc-line" points="'+pl+'" fill="none" stroke="'+zz[1]+'" stroke-width="'+(zz[0]===0?2:1.2)+'" stroke-linejoin="round"'+(zz[2]?' stroke-dasharray="'+zz[2]+'"':'')+'/>');labs.push({y:parseFloat(sy(xAtZ(lmsAt(tbl,x1),zz[0]))),txt:(zz[0]===0?'TV':zz[3]+'SD'),col:zz[1]});});
+ /* -- Chip nhan mep phai, tu ne chong -- */
+ labs.sort(function(a,b){return a.y-b.y;});
+ for(var li=1;li<labs.length;li++){if(labs[li].y-labs[li-1].y<13)labs[li].y=labs[li-1].y+13;}
+ labs.forEach(function(l){var w=l.txt.length*4.9+11,cx=L+pw+4,yy=Math.max(T+7,Math.min(T+ph-1,l.y));g.push('<g class="gc-line"><rect x="'+cx+'" y="'+(yy-7).toFixed(1)+'" rx="6.5" width="'+w.toFixed(1)+'" height="14" fill="#fff" stroke="'+l.col+'" stroke-width="1"/><text x="'+(cx+w/2).toFixed(1)+'" y="'+(yy+2.7).toFixed(1)+'" text-anchor="middle" font-size="7.6" fill="'+l.col+'" font-weight="700">'+l.txt+'</text></g>');});
+ /* -- Du lieu cua be: duong + cham theo gioi tinh + callout gia tri moi nhat -- */
+ if(pts.length){if(pts.length>1){var cl=pts.map(function(p){return sx(p.am)+','+sy(p.v);}).join(' ');g.push('<polyline class="gc-path" pathLength="1" points="'+cl+'" fill="none" stroke="'+accent+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>');}
+  pts.forEach(function(p,idx){var last=idx===pts.length-1;g.push('<circle class="gc-pt" cx="'+sx(p.am)+'" cy="'+sy(p.v)+'" r="'+(last?5:3.6)+'" fill="'+accent+'" stroke="#fff" stroke-width="'+(last?2.4:1.8)+'" style="cursor:pointer;animation-delay:'+(0.15+idx*0.05).toFixed(2)+'s" onclick="growthPoint(\''+p.id+'\')"/>');});
+  var lp=pts[pts.length-1],lx=parseFloat(sx(lp.am)),ly=parseFloat(sy(lp.v)),vtxt=(isW?lp.v.toFixed(1)+' kg':lp.v+' cm'),cw=vtxt.length*5.1+14,cxx=lx+9,cyy=ly-20;
+  if(cxx+cw>L+pw)cxx=lx-9-cw;if(cxx<L)cxx=L;if(cyy<T+1)cyy=ly+10;
+  g.push('<g class="gc-callout"><rect x="'+cxx.toFixed(1)+'" y="'+cyy.toFixed(1)+'" rx="7" width="'+cw.toFixed(1)+'" height="16" fill="'+accent+'"/><text x="'+(cxx+cw/2).toFixed(1)+'" y="'+(cyy+10.8).toFixed(1)+'" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">'+vtxt+'</text></g>');}
+ return '<svg class="gchart" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg"><rect width="'+W+'" height="'+H+'" rx="14" fill="#fff"/><rect x="'+(L-0.5)+'" y="'+(T-0.5)+'" width="'+(pw+1)+'" height="'+(ph+1)+'" fill="#FCFDFE" stroke="#EEF2F8" stroke-width="1"/>'+g.join('')+'</svg>';}
+function growthAssess(b,ms){
+ var boy=b.gioiTinh!=="Gái";
+ var wm=ms.filter(function(m){return m.canNang!=null&&isFinite(m.canNang);});
+ var hm=ms.filter(function(m){return m.chieuCao!=null&&isFinite(m.chieuCao);});
+ if(!wm.length)return '';
+ var lw=wm[wm.length-1],awm=ageMo(b.ngaySinh,lw.ngayDo);
+ var zW=(awm!=null&&awm<=60)?zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,awm),lw.canNang):null,cW=zClass(zW,"w");
+ var lh=hm.length?hm[hm.length-1]:null,ahm=lh?ageMo(b.ngaySinh,lh.ngayDo):null;
+ var zH=(lh&&ahm!=null&&ahm<=60)?zFrom(lmsAt(boy?WHO.hfaB:WHO.hfaG,ahm),lh.chieuCao):null,cH=zClass(zH,"h");
+ var h='<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:10px"><div class="sec-ic">'+ic('insights')+'</div><h3 style="font-size:15px">Nhận định (lần đo gần nhất)</h3></div>';
+ h+='<div class="zbig"><div><div class="zt">Cân nặng / tuổi</div><div class="zv">'+(zW!=null?"Z "+zW.toFixed(1):"—")+'</div><span class="mz zpill-'+cW.cls+'">'+cW.lb+'</span></div>'
+  +'<div><div class="zt">Chiều cao / tuổi</div><div class="zv">'+(zH!=null?"Z "+zH.toFixed(1):"—")+'</div><span class="mz zpill-'+(lh?cH.cls:"na")+'">'+(lh?cH.lb:"Chưa đo cao")+'</span></div></div>';
+ var msg=cW.cls==="ok"?"Cân nặng của bé đang trong vùng bình thường theo chuẩn WHO. Mẹ duy trì chế độ ăn hiện tại và cân đo đều đặn nhé!":cW.cls==="low"?"Cân nặng của bé đang dưới chuẩn. Mẹ nên chú ý tăng cường dinh dưỡng và theo dõi sát hơn.":"Cân nặng của bé nhỉnh hơn chuẩn. Mẹ cân đối khẩu phần và tăng vận động cho bé nhé.";
+ h+='<div class="posmsg" style="margin-top:11px">'+ic('child_care')+'<div>'+msg+'</div></div>';
+ var cham=false;if(wm.length>=2){var last=wm[wm.length-1];for(var i=wm.length-2;i>=0;i--){var dd=(parseD(last.ngayDo)-parseD(wm[i].ngayDo))/86400000;if(dd>=75){if(last.canNang<=wm[i].canNang+0.1)cham=true;break;}}}
+ if(cham)h+='<div class="warn" style="margin-top:11px">'+ic('warning')+'<div><b>Bé chậm tăng cân khoảng 3 tháng liền.</b> Đây có thể là dấu hiệu cần hỗ trợ dinh dưỡng cho bé.</div></div>'
+  +'<button class="btn btnP press" style="margin-top:10px" onclick="newConsult()">'+ic('stethoscope')+'Tư vấn sản phẩm cho bé</button>';
+ var needDoc=(zW!=null&&(zW<-2||zW>3))||(zH!=null&&zH<-2);
+ if(needDoc)h+='<div class="danger" style="margin-top:11px;display:flex;gap:8px"><span style="flex-shrink:0">'+ic('warning')+'</span><div>Chỉ số của bé đang ngoài vùng an toàn (dưới −2SD hoặc trên +3SD). Mẹ nên đưa bé đi khám chuyên gia dinh dưỡng để được đánh giá kỹ hơn. <i>Thông tin trong app chỉ để tham khảo, không thay thế chẩn đoán y khoa.</i></div></div>';
+ return h+'</div>';}
+function renderGrowth(){
+ var bs=babies();
+ var head='<div class="sec" style="margin-bottom:12px"><div class="sec-l"><div class="sec-ic">'+ic('trending_up')+'</div><div><h3>Biểu đồ tăng trưởng</h3><div class="sub">Chuẩn WHO 0–5 tuổi · lưu tại máy</div></div></div></div>';
+ if(!bs.length)return head+'<div class="card" style="text-align:center;padding:30px 22px"><div class="gr-emy">'+ic('child_care')+'<span class="gr-emy-tr">'+ic('trending_up')+'</span></div><div style="font-family:var(--fd);font-weight:700;font-size:16px">Tạo hồ sơ cho bé</div><div style="font-size:12.5px;color:var(--on-var);margin-top:5px;line-height:1.6">Thêm bé để bắt đầu lưu số đo và vẽ đường tăng trưởng theo tháng.</div></div>'+babyForm();
+ var b=curBaby(),ms=babyMeasures(b.id),nowA=ageMo(b.ngaySinh,nowISO());
+ var h=head;
+ h+='<div class="gbaby" style="margin-bottom:12px">'+bs.map(function(x){return '<div class="gchip'+(x.id===b.id?' on':'')+'" onclick="selBaby(\''+x.id+'\')">'+ic('child_care')+esc(x.ten||"Bé")+'</div>';}).join('')+'<div class="gchip add" onclick="S.growth.addingBaby=true;S.growth.editBaby=null;S.bf={};render()">'+ic('add')+'Bé</div></div>';
+ if(S.growth.addingBaby)h+=babyForm();
+ h+='<div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:10px"><div class="sec-ic" style="background:var(--sec-fx);color:var(--on-sec-fx)">'+ic('child_care')+'</div><div style="flex:1;min-width:0"><div style="font-family:var(--fd);font-weight:700;font-size:14px">'+esc(b.ten||"Bé")+' · '+esc(b.gioiTinh||"Trai")+'</div><div style="font-size:11.5px;color:var(--on-var)">Sinh '+fmtDate(b.ngaySinh)+' · '+ageLabel(nowA)+'</div></div><div class="mact"><button onclick="editBaby(\''+b.id+'\')">'+ic('edit')+'</button><button onclick="delBaby(\''+b.id+'\')">'+ic('delete')+'</button></div></div>';
+ var lastM=ms.length?ms[ms.length-1]:null,dueDays=lastM?Math.floor((Date.now()-parseD(lastM.ngayDo))/86400000):null;
+ if(dueDays!=null&&dueDays>=30)h+='<div class="reminder" style="margin-top:12px">'+ic('notifications')+'<div><b>Đến hẹn cân đo cho bé</b><div style="font-size:11.5px;opacity:.95">Đã '+dueDays+' ngày kể từ lần đo gần nhất — cập nhật để đường tăng trưởng luôn chính xác.</div></div></div>';
+ if(nowA!=null&&nowA>60)h+='<div class="warn" style="margin-top:12px">'+ic('warning')+'<div>Bé đã ngoài phạm vi biểu đồ 0–5 tuổi (WHO 0–60 tháng). Biểu đồ chỉ hiển thị đến mốc 60 tháng; mẹ vẫn có thể lưu số đo để tham khảo.</div></div>';
+ h+='<div class="card" style="margin-top:12px"><div class="gv-tabs"><div class="gv-tab'+(S.growth.tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">'+ic('monitor_weight')+'Cân nặng</div><div class="gv-tab'+(S.growth.tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">'+ic('straighten')+'Chiều cao</div></div>';
+ var plot=ms.filter(function(m){return S.growth.tab==="h"?(m.chieuCao!=null):(m.canNang!=null);});
+ if(!plot.length)h+='<div style="text-align:center;color:var(--on-var);font-size:12.5px;padding:26px 8px">Chưa có số đo '+(S.growth.tab==="h"?"chiều cao":"cân nặng")+'. Thêm số đo bên dưới để vẽ biểu đồ.</div>';
+ else h+=growthChart(b,ms,S.growth.tab)+growthLegend();
+ h+='<label style="display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11.5px;color:var(--on-var);cursor:pointer;font-weight:600;margin:8px 0 0"><input type="checkbox" style="width:auto;height:auto" '+(S.growth.all5?"checked":"")+' onchange="S.growth.all5=this.checked;render()">Hiện đủ 5 đường (±3SD)</label></div>';
+ h+=growthAssess(b,ms);
+ h+='<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:2px"><div class="sec-ic">'+ic('event')+'</div><h3 style="font-size:15px">Lịch sử đo ('+ms.length+')</h3></div>';
+ if(!ms.length)h+='<div style="color:var(--on-var);font-size:12.5px;padding:8px 0">Chưa có số đo nào cho bé.</div>';
+ else h+=ms.slice().reverse().map(function(m){var am=ageMo(b.ngaySinh,m.ngayDo),boy=b.gioiTinh!=="Gái";var zw=(am!=null&&am<=60)?zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,am),m.canNang):null,zc=zClass(zw,"w");return '<div class="mrow"><div style="flex:1;min-width:0"><div class="md">'+fmtDate(m.ngayDo)+' · '+m.canNang+' kg'+(m.chieuCao?' · '+m.chieuCao+' cm':'')+'</div><div class="ms">'+ageLabel(am)+(m.ghiChu?' · '+esc(m.ghiChu):'')+'</div></div>'+(zw!=null?'<span class="mz zpill-'+zc.cls+'">Z '+zw.toFixed(1)+'</span>':'')+'<div class="mact"><button onclick="editMeasure(\''+m.id+'\')">'+ic('edit')+'</button><button onclick="delMeasure(\''+m.id+'\')">'+ic('delete')+'</button></div></div>';}).join('');
+ h+='</div>';
+ h+=measureForm(b);
+ if(ms.length<2)h+='<div class="posmsg" style="margin-top:12px">'+ic('celebration')+'<div>Mẹ ơi, hãy quay lại nhập số đo vào tháng sau để nhìn thấy đường tăng trưởng của bé rõ hơn nhé!</div></div>';
+ return h;}
+
 function render(){ el("topmascot").innerHTML=curMascot(); var tb=el("topbar"); if(tb) tb.style.display=(S.tab==="home"?"none":"flex"); var ta=el("topactions"); if(ta) ta.innerHTML=topActions(true); var hb=document.querySelector(".top .hbtn"); if(hb&&!hb.innerHTML) hb.innerHTML=ic("menu",20); renderTabbar(); var v=el("view");
- v.innerHTML = S.tab==="home"?renderHome(): S.tab==="profile"?renderProfile(): S.tab==="stats"?renderStats(): S.tab==="orders"?renderOrders(): S.tab==="makeorder"?renderMakeOrder(): S.tab==="rank"?renderRank(): S.tab==="tuvan"?renderTuVan(): S.tab==="sanpham"?renderProducts(): S.tab==="hoidap"?renderQA(): S.tab==="quiz"?renderQuiz(): S.tab==="km"?renderPromo(): S.tab==="feedback"?renderFeedback(): S.tab==="docs"?renderDocs():renderCSR(); v.style.animation='none';void v.offsetHeight;v.style.animation=''; }
+ v.innerHTML = S.tab==="home"?renderHome(): S.tab==="profile"?renderProfile(): S.tab==="stats"?renderStats(): S.tab==="orders"?renderOrders(): S.tab==="makeorder"?renderMakeOrder(): S.tab==="rank"?renderRank(): S.tab==="tuvan"?renderTuVan(): S.tab==="sanpham"?renderProducts(): S.tab==="hoidap"?renderQA(): S.tab==="quiz"?renderQuiz(): S.tab==="km"?renderPromo(): S.tab==="feedback"?renderFeedback(): S.tab==="docs"?renderDocs(): S.tab==="growth"?renderGrowth():renderCSR(); v.style.animation='none';void v.offsetHeight;v.style.animation=''; }
 
 /* ===== TAB 1: WIZARD ===== */
 var RELS=["Ông","Bà","Cha","Mẹ","Con","Cháu","Em","Người quen","Bản thân"];
@@ -1625,7 +1831,7 @@ function presRender(){ var o=el('ovl'); if(!o)return;
  o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:linear-gradient(160deg,#10357A,#1D4ED8);display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;padding:14px 14px 8px"><div style="flex:1;color:#fff;font-weight:800;font-family:var(--fh);font-size:16px">Wintop · Dinh dưỡng cho cả nhà</div><button onclick="closeOvl()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:17px;cursor:pointer">✕</button></div><div style="display:flex;gap:4px;background:rgba(255,255,255,.15);margin:0 12px;border-radius:12px;padding:4px">'+nav+'</div><div style="flex:1;overflow:auto;padding:14px">'+body+'</div></div>';
 }
 function renderHome(){ var hr=new Date().getHours(); var greet=hr<11?'Chào buổi sáng':hr<14?'Chào buổi trưa':hr<18?'Chào buổi chiều':'Chào buổi tối';
- var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'cart',l:'Lên đơn',t:'makeorder',bg:'#FFF1DC',c:'#C2691A'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
+ var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'cart',l:'Lên đơn',t:'makeorder',bg:'#FFF1DC',c:'#C2691A'},{ic:'trending_up',l:'Tăng trưởng',t:'growth',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
  return '<div class="home-greet"><div class="home-av">'+curMascot()+'</div><div style="flex:1"><div class="muted">'+greet+' 👋</div><div style="font-size:16px;font-weight:600;font-family:var(--fh)">Tư vấn viên Wintop</div></div>'+topActions(false)+'</div>'+
  '<div class="start-cta" onclick="newConsult()"><span style="width:40px;height:40px;border-radius:13px;color:#fff;background:linear-gradient(145deg,#34D0B4,#0F9A6A);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(15,154,106,.3)">'+ic('stetho',21)+'</span><div style="flex:1"><div style="font-weight:600;font-size:15px">Bắt đầu tư vấn khách</div><div class="faint">Đo chỉ số · gợi ý sản phẩm trong 3 phút</div></div>'+ic('arrow',20)+'</div>'+
  dailyCardHTML()+weeklyCardHTML()+
