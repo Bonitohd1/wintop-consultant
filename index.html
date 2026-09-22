@@ -451,6 +451,7 @@
   .zbig{display:flex;gap:10px}.zbig>div{flex:1;background:var(--pri-soft);border-radius:12px;padding:11px}
   .zbig .zt{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;font-family:var(--fh)}
   .zbig .zv{font-family:var(--fh);font-weight:700;font-size:17px;margin:3px 0}
+ #gamefab{display:none !important;}
 </style>
 </head>
 <body>
@@ -1683,7 +1684,7 @@ function allNotifs(){ var dyn=dynNotifs(); var sta=NOTIFS.map(function(n){return
 function unread(){ return allNotifs().filter(function(n){return !n.read;}).length; }
 function topActions(onDark){ var col=onDark?"#fff":"#0F1B2D"; var bg=onDark?"rgba(255,255,255,.16)":"#fff"; var sh=onDark?"none":"0 3px 10px rgba(20,40,80,.08)"; var u=unread();
  var ini=(S.acc.name||"T").trim().charAt(0).toUpperCase();
- return '<button class="hbtn'+(u>0?' ring':'')+'" style="background:'+bg+';color:'+col+';box-shadow:'+sh+'" onclick="openNoti()">'+ic("bell",20)+(u>0?'<span class="hbadge">'+u+'</span>':"")+'</button>'+
+ return '<button class="hbtn" style="background:linear-gradient(135deg,#A78BFA,#7C3AED);color:#fff;box-shadow:0 5px 13px rgba(124,58,237,.42);position:relative" onclick="openGame()">'+ic("gift",20)+'<span style="position:absolute;top:-3px;right:-4px;background:#E11D48;color:#fff;font-size:7.5px;font-weight:800;line-height:1;padding:2px 5px;border-radius:999px;box-shadow:0 2px 5px rgba(0,0,0,.2)">MỚI</span></button>'+'<button class="hbtn'+(u>0?' ring':'')+'" style="background:'+bg+';color:'+col+';box-shadow:'+sh+'" onclick="openNoti()">'+ic("bell",20)+(u>0?'<span class="hbadge">'+u+'</span>':"")+'</button>'+
   '<button class="hbtn" style="background:'+bg+';box-shadow:'+sh+';padding:0" onclick="setTab(\'profile\')"><span class="av-ini">'+ini+'</span></button>'; }
 function closeOvl(){ S.notiOpen=false; S.accOpen=false; el("ovl").innerHTML=""; }
 function activateNpp(){ var tn=(el("ac_tenant")?el("ac_tenant").value.trim():""), tk=(el("ac_token")?el("ac_token").value.trim():""); if(!tn){ toast("Nhập Mã NPP để kết nối."); return; } try{ localStorage.setItem("wt_tenant",JSON.stringify(tn)); if(tk)localStorage.setItem("wt_npp_token",JSON.stringify(tk)); }catch(e){} toast("✅ Đã kết nối NPP "+tn+" — bắt đầu đồng bộ dữ liệu.","ok"); try{ if(typeof pullStockAuto==="function")pullStockAuto(); if(typeof flushOrders==="function"&&navigator.onLine)flushOrders(true); }catch(e){} openAcc(); }
