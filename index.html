@@ -1443,9 +1443,37 @@ function openDoc(id){ var url="assets/docs/"+id+".pdf", name=(typeof TDOC!=="und
  });
 }
 function docFull(btn){ var c=btn.closest(".docview"); if(!c) return; var m=c.parentElement; var full=c.classList.toggle("full"); if(full){ if(m)m.style.padding="0"; c.style.cssText="max-width:100vw;width:100vw;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:0;overflow:hidden;border-radius:0;margin:0"; btn.innerHTML="⤡ Thu nhỏ"; } else { if(m)m.style.padding=""; c.style.cssText="max-width:920px;width:96vw;height:90vh;display:flex;flex-direction:column;padding:0;overflow:hidden"; btn.innerHTML="⤢ Toàn màn hình"; } }
+/* Bài nghe đào tạo do Studio (Phòng thu giọng) duyệt đẩy sang — GET /training-audio (cùng khoá với /catalog).
+   Mất mạng: hiện danh sách đã lưu. Lỗi mà chưa có bản lưu: báo lỗi + Thử lại — KHÔNG hiện "chưa có bài"
+   như thể danh sách rỗng thật (PG tưởng không có gì để học). */
+var TRAIN_KEY="wt_train_audio_v1";
+function trainFmt(s){ s=Math.round(s||0); return s>=60?(Math.floor(s/60)+" phút "+(s%60)+" giây"):(s+" giây"); }
+function trainHtml(items){
+ if(!items.length) return '<div class="faint" style="margin:0 2px 12px">Chưa có bài nghe nào — phòng Marketing sẽ cập nhật.</div>';
+ var groups={}, order=[]; items.forEach(function(a){ var g=a.category_label||"Khác"; if(!groups[g]){groups[g]=[];order.push(g);} groups[g].push(a); });
+ return order.map(function(g){ return '<div class="faint" style="font-weight:700;margin:6px 2px">'+esc(g)+'</div>'+groups[g].map(function(a){
+   var ok=/^https?:\/\//.test(a.url||"");
+   return '<div class="card" style="margin-bottom:8px"><div style="font-weight:600;font-size:13.5px">'+esc(a.title)+'</div><div class="faint" style="margin:2px 0 7px">🎧 Bài nghe'+(a.seconds?' · '+trainFmt(a.seconds):'')+'</div>'
+     +(ok?'<audio controls preload="none" src="'+esc(a.url)+'" style="width:100%"></audio>':'<span class="pill">Link lỗi — báo phòng Marketing</span>')+'</div>'; }).join(""); }).join("");
+}
+function loadTrainAudio(){
+ var box=el("wt-train-audio"); if(!box) return;
+ var cached=null; try{ cached=JSON.parse(localStorage.getItem(TRAIN_KEY)||"null"); }catch(e){}
+ if(cached) box.innerHTML=trainHtml(cached);
+ fetch(WINTOP_API+"/training-audio",{headers:wtHeaders()}).then(function(r){ if(!r.ok){ var er=new Error("HTTP "+r.status); er.status=r.status; throw er; } return r.json(); })
+  .then(function(d){ var items=d.items||[]; try{ localStorage.setItem(TRAIN_KEY,JSON.stringify(items)); }catch(e){} var b=el("wt-train-audio"); if(b) b.innerHTML=trainHtml(items); })
+  .catch(function(err){ var b=el("wt-train-audio"); if(!b) return;
+    // 404 = máy chủ chưa có tính năng này (App Sale lên trước khi cập nhật máy chủ) -> ẩn khối, KHÔNG báo "cần mạng"
+    if(err&&err.status===404&&!cached){ var w=el("wt-train-wrap"); if(w) w.style.display="none"; return; }
+    var why = err&&(err.status===401||err.status===403) ? 'Chưa có quyền tải bài nghe — báo quản trị kiểm tra khoá/đăng nhập NPP.' : 'Chưa tải được bài nghe (cần mạng).';
+    b.innerHTML = cached ? '<div class="faint" style="margin:0 2px 8px">⚠ Chưa cập nhật được — đang hiện danh sách đã lưu; nghe bài cần có mạng.</div>'+trainHtml(cached)
+      : '<div class="card" style="margin-bottom:12px">'+why+' <button class="btn sec" style="width:auto;padding:6px 11px;font-size:12px;margin-left:6px" onclick="loadTrainAudio()">Thử lại</button></div>'; });
+}
 function renderDocs(){
  var KIND={video:"🎬 Video",pdf:"📄 PDF",doc:"📝 Tài liệu",img:"🖼️ Ảnh"};
+ setTimeout(loadTrainAudio,0);   // khung đã vào trang (renderDocs chỉ trả chuỗi HTML) -> mới tải bài nghe điền vào
  return '<h2>Tài liệu</h2><div class="muted" style="margin:-6px 2px 13px">Tài liệu đào tạo & kiến thức. PDF đào tạo mở trực tiếp trong app; video mở trên YouTube (cần mạng).</div>'+
+  '<div id="wt-train-wrap">'+secT("school","var(--pri-soft)","var(--pri)","Bài nghe đào tạo")+'<div id="wt-train-audio"><div class="faint" style="margin:0 2px 12px">Đang tải bài nghe…</div></div></div>'+
   TAILIEU.map(function(g){ return secT(g.ic,"var(--pri-soft)","var(--pri)",g.cat)+
     g.items.map(function(it){
       var has=it.url&&it.url!=="";
