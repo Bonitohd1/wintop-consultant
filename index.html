@@ -736,7 +736,7 @@ CSR.push(
 );
 
 /* ===== TRẠNG THÁI (RAM-only) ===== */
-var S={ tab:"home", step:1, buyer:{name:"",phone:"",addr:"",rel:""}, user:{name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""}, m:{}, cls:null, needs:[], rec:null, quiz:null, promoYear:"2026", qaTerm:"", qaOpen:-1, openProd:null, mascotId:"lion", acc:{name:"Tư vấn viên Wintop",area:"Điểm bán Wintop",tier:"",code:"",parent:""}, scanState:"done", notiOpen:false, accOpen:false, consent:true, curSessionId:null, _saved:false, adminOpen:false, adminAuthed:false, adminData:null, stockOpen:false, cart:{}, orderBuyer:{name:"",phone:""} };
+var S={ tab:"home", step:1, buyer:{name:"",phone:"",addr:"",rel:""}, user:{name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""}, m:{}, cls:null, needs:[], rec:null, quiz:null, promoYear:"2026", qaTerm:"", qaOpen:-1, openProd:null, mascotId:"lion", acc:{name:"Tư vấn viên Wintop",area:"Điểm bán Wintop",tier:"",code:"",parent:""}, scanState:"done", notiOpen:false, accOpen:false, consent:null, curSessionId:null, _saved:false, adminOpen:false, adminAuthed:false, adminData:null, stockOpen:false, cart:{}, orderBuyer:{name:"",phone:""} };
 try{ var _pgn=localStorage.getItem("wt_pg"); if(_pgn) S.acc.name=JSON.parse(_pgn); var _pga=localStorage.getItem("wt_area"); if(_pga) S.acc.area=JSON.parse(_pga); }catch(e){}
 try{ var _npp=localStorage.getItem("wt_npp"); if(_npp){ var _o=JSON.parse(_npp); S.acc.tier=_o.tier||""; S.acc.code=_o.code||""; S.acc.parent=_o.parent||""; } }catch(e){}
 function saveNpp(){ try{ localStorage.setItem("wt_npp", JSON.stringify({tier:(S.acc.tier||""),code:(S.acc.code||""),parent:(S.acc.parent||"")})); }catch(e){} }
@@ -802,7 +802,7 @@ function openGuide(){ var o=el('ovl'); if(!o)return; var steps=[['stetho','Bắt
 function showLoader(msg){ var l=el("loader"); if(!l)return; l.innerHTML='<div class="ldbox"><div class="ld-spin"><div class="ld-ring"></div><div class="ld-mas">'+curMascot()+'</div></div><div class="ld-txt">'+(msg||"Đang tải…")+'</div></div>'; l.classList.add("show"); }
 function hideLoader(){ var l=el("loader"); if(l) l.classList.remove("show"); }
 function setTab(t){ S.tab=t; if(t==="quiz")S.quiz=null; window.scrollTo(0,0); showLoader(); render(); pageFade(); setTimeout(hideLoader,280); }
-function newConsult(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=true;S.curSessionId=null;S._saved=false;S.tab="tuvan";window.scrollTo(0,0);render(); }
+function newConsult(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=null;S.curSessionId=null;S._saved=false;S.tab="tuvan";window.scrollTo(0,0);render(); }
 var NAV=[{k:"home",ic:"home",l:"Trang chủ"},{k:"tuvan",ic:"stetho",l:"Tư vấn"},{c:1},{k:"sanpham",ic:"cup",l:"Sản phẩm"},{k:"hoidap",ic:"search",l:"Hỏi-Đáp"}];
 function renderTabbar(){ el("tabbar").innerHTML=NAV.map(function(t){ if(t.c) return '<div class="navc"><button onclick="newConsult()">'+ic("plus",24)+'</button></div>'; return '<button class="'+(S.tab===t.k?"on":"")+'" onclick="setTab(\''+t.k+'\')">'+ic(t.ic,22)+'<span>'+t.l+'</span></button>'; }).join(""); }
 
@@ -992,16 +992,23 @@ function step1(){ var u=S.user, dyn="";
   dyn+='<label>Sản phẩm đang dùng (nếu có)</label><input value="'+esc(u.cur)+'" oninput="S.user.cur=this.value" placeholder="Tên sữa đang dùng..."/>'; }
  return stepBar()+
  '<div class="card" style="background:var(--pri-soft);border-color:#cfe0fb"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#fff;color:var(--pri)">'+ic("userplus",16)+'</span>Thông tin người mua</div>'+
- '<label>Tên người mua *</label><input value="'+esc(S.buyer.name)+'" oninput="S.buyer.name=this.value" placeholder="Họ tên"/>'+
- '<label>Số điện thoại *</label><input type="tel" value="'+esc(S.buyer.phone)+'" oninput="S.buyer.phone=this.value" placeholder="SĐT"/>'+
- '<label>Địa chỉ</label><input value="'+esc(S.buyer.addr)+'" oninput="S.buyer.addr=this.value" placeholder="(tùy chọn)"/>'+
+ /* XIN ĐỒNG Ý TRƯỚC KHI LƯU. Trước 30/09/2026 app gán sẵn consent=true và không hỏi ai — lưu tên/SĐT khách
+    mà khách không hề được hỏi. Giờ PG BẮT BUỘC chọn 1 trong 2 (không có mặc định): bỏ qua là không đi tiếp được. */
+ '<label>Hỏi khách trước khi lưu thông tin *</label>'+
+ '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và kết quả tư vấn hôm nay để chăm sóc và nhắc lịch cho anh/chị. Anh/chị đồng ý không ạ?”</div>'+
+ '<div class="chips" style="margin-bottom:11px">'+[["Khách đồng ý",true],["Khách không đồng ý",false]].map(function(x){return '<div class="chip '+(S.consent===x[1]?"on":"")+'" onclick="S.consent='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'+
+ (S.consent===false
+  ? '<div class="faint" style="font-size:12.5px;line-height:1.55;background:#fff;border:1px dashed #cfe0fb;border-radius:10px;padding:9px 11px;margin-bottom:10px">Không lưu tên và số điện thoại của khách này. Vẫn tư vấn bình thường.</div>'
+  : '<label>Tên người mua *</label><input value="'+esc(S.buyer.name)+'" oninput="S.buyer.name=this.value" placeholder="Họ tên"/>'+
+    '<label>Số điện thoại *</label><input type="tel" value="'+esc(S.buyer.phone)+'" oninput="S.buyer.phone=this.value" placeholder="SĐT"/>'+
+    '<label>Địa chỉ</label><input value="'+esc(S.buyer.addr)+'" oninput="S.buyer.addr=this.value" placeholder="(tùy chọn)"/>')+
  '<label>Mua cho ai?</label><div class="chips">'+RELS.map(function(r){return '<div class="chip '+(S.buyer.rel===r?"on":"")+'" onclick="S.buyer.rel=\''+r+'\';render()">'+r+'</div>';}).join("")+'</div>'+
  '</div>'+
  '<div class="card" style="background:#FFF6EE;border-color:#f6dcc4"><div class="sec-title" style="margin-top:0;color:#b45309"><span class="ico" style="background:#fff;color:var(--warm)">'+ic("heart",16)+'</span>Người dùng sản phẩm</div>'+
- '<label>Tên người dùng</label><input value="'+esc(S.user.name)+'" oninput="S.user.name=this.value" placeholder="Họ tên người dùng"/>'+
+ (S.consent===false?'':'<label>Tên người dùng</label><input value="'+esc(S.user.name)+'" oninput="S.user.name=this.value" placeholder="Họ tên người dùng"/>')+
  '<label>Đối tượng sử dụng *</label><div class="chips">'+OBJS.map(function(o){return '<div class="chip '+(u.obj===o.v?"on":"")+'" onclick="S.user.obj=\''+o.v+'\';render()">'+o.l+'</div>';}).join("")+'</div>'+dyn+'</div>'+
  '<button class="btn" onclick="next1()">Tiếp tục '+ic("arrow",18)+'</button>'; }
-function next1(){ if(!S.buyer.name||!S.buyer.phone){toast("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){toast("Chọn đối tượng sử dụng.");return;} if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
+function next1(){ if(S.consent==null){toast("Hỏi khách trước: có đồng ý cho lưu thông tin không?");return;} if(S.consent&&(!S.buyer.name||!S.buyer.phone)){toast("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){toast("Chọn đối tượng sử dụng.");return;} if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
 
 function numIn(k,ph){ return '<input type="number" inputmode="decimal" value="'+(S.m[k]!=null?S.m[k]:"")+'" oninput="setM(\''+k+'\',this.value)" placeholder="'+ph+'"/>'; }
 function step2(){ var o=S.user.obj,f="";
@@ -1390,7 +1397,7 @@ function step4(){ if(S.scanState==='scanning') return stepBar()+scanLoader(); va
  (r.freeze?"":(sh("star","Giải pháp dinh dưỡng cho bạn","var(--gold)","var(--gold-soft)")+prodCards))+
  summaryCard()+
  actionCard(); }
-function resetTV(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=true;S.curSessionId=null;S._saved=false;window.scrollTo(0,0);render(); }
+function resetTV(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=null;S.curSessionId=null;S._saved=false;window.scrollTo(0,0);render(); }
 function exportCSV(){ var r=S.rec||{},c=S.cls||{},prods=(r.prods||[]).map(function(id){return P(id).name;}).join(" + "); var rows=[["Thời gian",new Date().toLocaleString("vi-VN")],["Người mua",S.buyer.name],["SĐT",S.buyer.phone],["Địa chỉ",S.buyer.addr],["Mua cho",S.buyer.rel],["Người dùng",S.user.name],["Đối tượng",(OBJS.filter(function(o){return o.v===S.user.obj;})[0]||{}).l||""],["Giới tính",S.user.gender],["Tiền sử",S.user.hist.join("; ")],["Chỉ số",c.metric||""],["Trạng thái",c.label||""],["Nhu cầu",S.needs.join("; ")],["Khuyến nghị",r.freeze?"ĐÓNG BĂNG - chuyển khám bác sĩ":prods]]; var csv="﻿"+rows.map(function(x){return '"'+(""+x[0]).replace(/"/g,'""')+'","'+(""+(x[1]||"")).replace(/"/g,'""')+'"';}).join("\n"); var a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);a.download="tu_van_"+(S.buyer.phone||"kh")+".csv";document.body.appendChild(a);a.click();a.remove(); }
 
 /* ===== TAB 2: SẢN PHẨM ===== */
@@ -1641,6 +1648,8 @@ function renderProfile(){ var ct=counters(); var me=ct.total||0; var lvi=0; for(
   '<div class="rhead"><span class="rh-ic" style="background:var(--gold-soft);color:var(--gold)">'+ic("trophy",16)+'</span>Bộ sưu tập huy hiệu</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+badges+'</div>'+
   '<div class="card" style="margin-top:13px;display:flex;align-items:center;gap:12px;cursor:pointer;background:linear-gradient(135deg,#EAF2FF,#F3F8FF);border:1px solid #DCE7FF" onclick="setTab(\'stats\')"><div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#3FB6E8,#1D4ED8);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("calc",22)+'</div><div style="flex:1"><div style="font-weight:700;font-family:var(--fh);font-size:14px">Thống kê của tôi</div><div class="muted" style="font-size:12px">Khách theo ngày · tỉ lệ chốt · đối tượng · top SP</div></div>'+ic("arrow",20)+'</div>'+
   '<div class="card" style="margin-top:13px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="setTab(\'orders\')"><div style="width:44px;height:44px;border-radius:13px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("cart",22)+'</div><div style="flex:1"><div style="font-weight:700;font-family:var(--fh);font-size:14px">Đơn của tôi</div><div class="muted" style="font-size:12px">'+orderQueue().length+' đơn'+(pend?(' · <b style="color:#C2691A">'+pend+' chờ đồng bộ</b>'):'')+'</div></div>'+ic("arrow",20)+'</div>'+
+   /* Phiên tư vấn chưa về hệ thống: phải NHÌN THẤY được (trước đây gửi hỏng là im lặng). Bấm để thử gửi lại ngay. */
+   (sessStatusLine()?('<div class="card" style="margin-top:10px;background:#FFF4E5;border-color:#F2D3A6;color:#9A5B13;font-size:12.5px;line-height:1.55;cursor:pointer" onclick="S._sessWarned=false;flushSessions();toast(\'Đang thử gửi lại...\');setTimeout(render,2500)">⚠ '+esc(sessStatusLine())+'. Bấm để thử gửi lại.</div>'):'')+
   '<div class="rhead"><span class="rh-ic">'+ic("user",16)+'</span>Hồ sơ tư vấn viên</div>'+
   '<div class="card" style="padding:2px 14px">'+
    '<div style="display:flex;align-items:center;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)"><div style="width:40px;height:40px;border-radius:12px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic("user",19)+'</div><div style="flex:1;min-width:0"><div style="font-size:10.5px;color:#94A3B8;font-weight:700;letter-spacing:.3px">TÊN TƯ VẤN VIÊN</div><input value="'+esc(S.acc.name)+'" oninput="S.acc.name=this.value" placeholder="Nhập tên..." style="width:100%;border:none;padding:2px 0 0;font-size:15px;font-weight:600;color:#0F1B2D;background:transparent"/></div></div>'+
@@ -2041,8 +2050,10 @@ function encSession(obj){
 function saveSessionEnc(obj){
  if(!cryptoOK()) return Promise.reject(new Error("Trình duyệt không hỗ trợ mã hoá"));
  return encSession(obj).then(function(enc){
-  var arr=lsGet(SS_KEY,[]); var id="S"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36);
-  enc.id=id; enc.t=Date.now(); arr.push(enc); lsSet(SS_KEY,arr); return id;
+  /* Dùng ĐÚNG mã phiên đã sinh trong buildSession (sid): bản lưu trên máy và bản gửi về hệ thống phải chung 1 mã,
+     thì máy chủ mới nhận ra "phiên này có rồi" khi quản trị bấm Đồng bộ lại. */
+  var arr=lsGet(SS_KEY,[]); var id=(obj&&obj.sid)||newSessionId();
+  enc.id=id; enc.t=Date.now(); arr.push(enc); if(!lsSet(SS_KEY,arr)) throw new Error("Bộ nhớ máy đầy — không lưu được phiên"); return id;
  });
 }
 function replaceSessionEnc(id,obj){
@@ -2053,7 +2064,20 @@ function replaceSessionEnc(id,obj){
 }
 
 /* ---------- HOÀN TẤT 1 PHIÊN TƯ VẤN ---------- */
+var CONSENT_V="v1-2026-09-30"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
+function newSessionId(){ return "S"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36); }
 function buildSession(){
+ var s=buildSessionFull();
+ s.sid=newSessionId(); s.consent=(S.consent===true); s.consentV=CONSENT_V; s.consentAt=s.consent?new Date().toISOString():"";
+ if(!s.consent){
+  /* Khách KHÔNG đồng ý: bỏ mọi thứ nhận ra được người (tên, SĐT, địa chỉ, số đo, bệnh sử). Chỉ giữ phần không
+     định danh (PG, điểm bán, đối tượng, SP gợi ý) để vẫn đếm đúng số lượt tư vấn của PG. */
+  s.buyerName=""; s.phone=""; s.addr=""; s.userName=""; s.birth=""; s.deliv="";
+  s.weight=""; s.height=""; s.week=""; s.gainActual=""; s.gainEval=""; s.metric=""; s.hist=[]; s.cur="";
+ }
+ return s;
+}
+function buildSessionFull(){
  var r=S.rec||{}, c=S.cls||{};
  var objL=objLabel(S.user.obj);
  var prods=(r.prods||[]).map(function(id){var p=P(id);return p?p.name:id;});
@@ -2072,12 +2096,73 @@ function buildSession(){
   warn:r.freeze?"ĐÓNG BĂNG — yếu tố tiểu đường thai kỳ, chuyển khám bác sĩ":"",
   ordered:false, orderQty:"", orderTime:"", date:dt.toLocaleDateString("vi-VN"), time:dt.toLocaleTimeString("vi-VN") };
 }
-function autoPushSession(sess){ if(!navigator.onLine) return; try{ var body={ tenant:wtTenant(), source:"wintop-consultant", sessions:[wtMapSession(sess||{})] }; fetch(WT_DEF.sessions,{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)}).catch(function(){}); }catch(e){} }
+/* ---------- HÀNG CHỜ GỬI PHIÊN TƯ VẤN VỀ HỆ THỐNG ----------
+ * Trước 30/09/2026: gửi 1 lần, hỏng thì `.catch(function(){})` nuốt mất — mất mạng đúng lúc chốt tư vấn là phiên đó
+ * KHÔNG BAO GIỜ về tới hệ thống mà không ai biết. Giờ: xếp vào hàng chờ, gửi được mới xoá; hỏng thì giữ lại, tự gửi
+ * lại khi mở app / có mạng / mỗi phút (cùng nhịp với hàng chờ đơn), và hiện số phiên đang chờ ở tab Tôi + Cổng Quản trị.
+ * Lưu ý: phiên trong hàng chờ nằm ở dạng đọc được cho tới khi gửi xong (giống hàng chờ đơn) — gửi xong là xoá. */
+var SQ_KEY="wt_sess_queue_v1", SQ_MAX=300, _sessFlushing=false;
+function sessQueue(){ return lsGet(SQ_KEY,[]); }
+function sessPending(){ return sessQueue().length; }
+function queueSession(sess){
+ var q=sessQueue(); q.push({id:sess.sid, at:Date.now(), tries:0, body:wtMapSession(sess)});
+ if(q.length>SQ_MAX) q=q.slice(q.length-SQ_MAX); /* máy kẹt lâu ngày: bỏ bản cũ nhất — bản mã hoá trên máy vẫn còn, quản trị Đồng bộ lại được */
+ if(!lsSet(SQ_KEY,q)) toast("Bộ nhớ máy đầy — phiên này chưa xếp được vào hàng chờ gửi.");
+}
+function flushSessions(silent){
+ var q=sessQueue(); if(!q.length||_sessFlushing) return;
+ if(!navigator.onLine){ S._sessErr="đang không có mạng"; return; }
+ _sessFlushing=true;
+ /* Bình thường gửi theo lô 50. Nếu máy chủ TỪ CHỐI NỘI DUNG (400/413/422) thì chuyển sang gửi từng phiên, để 1 phiên
+    hỏng không kéo cả lô kẹt mãi; phiên bị từ chối 3 lần thì chuyển sang ngăn "bị từ chối" (vẫn giữ, có đếm) chứ không xoá. */
+ var batch=q.slice(0,S._sessSingle?1:50), ids={}; batch.forEach(function(x){ ids[x.id]=1; });
+ var ctl=("AbortController" in window)?new AbortController():null; var tm=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},15000):null;
+ var body={ tenant:wtTenant(), source:"wintop-consultant", sessions:batch.map(function(x){return x.body;}) };
+ var again=false;
+ fetch(WT_DEF.sessions,{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
+  .then(function(r){ if(!r.ok){ var er=new Error("máy chủ trả lỗi "+r.status); er.status=r.status; throw er; } })
+  .then(function(){
+    /* Đọc LẠI hàng chờ rồi mới lọc: trong lúc đang gửi có thể đã có phiên mới xếp thêm vào. */
+    var left=sessQueue().filter(function(x){ return !ids[x.id]; }); lsSet(SQ_KEY,left);
+    S._sessErr=null; S._sessWarned=false; if(!left.length) S._sessSingle=false; again=left.length>0;
+  })
+  .catch(function(e){
+    var st=e&&e.status, rejected=(st===400||st===413||st===422);
+    var q2=sessQueue(), dead=[];
+    q2.forEach(function(x){ if(ids[x.id]) x.tries=(x.tries||0)+1; });
+    if(rejected){
+      if(batch.length>1){ S._sessSingle=true; again=true; }
+      else { q2=q2.filter(function(x){ if(ids[x.id]&&x.tries>=3){ x.err=st; dead.push(x); return false; } return true; }); again=dead.length>0&&q2.length>0; }
+    }
+    lsSet(SQ_KEY,q2);
+    if(dead.length){ var d=lsGet(SQ_DEAD_KEY,[]).concat(dead); if(d.length>SQ_MAX)d=d.slice(d.length-SQ_MAX); lsSet(SQ_DEAD_KEY,d); }
+    /* Lỗi mạng của trình duyệt là chữ tiếng Anh ("Failed to fetch") — PG không hiểu, đổi sang câu tiếng Việt. */
+    S._sessErr=(e&&e.name==="AbortError")?"quá thời gian chờ":((e&&e.status)?e.message:"không kết nối được máy chủ");
+    console.warn("Gửi phiên tư vấn lỗi:",S._sessErr,"— còn",q2.length,"phiên chờ",dead.length?("; "+dead.length+" phiên bị máy chủ từ chối"):"");
+    /* Báo 1 lần cho mỗi đợt hỏng (không báo lại mỗi phút). */
+    if(!S._sessWarned){ S._sessWarned=true; toast("Chưa gửi được phiên tư vấn về hệ thống ("+S._sessErr+"). App giữ lại và tự gửi sau.");
+      /* Toast trôi mất sau vài giây — ghi thêm vào chuông để PG xem lại được; chi tiết nằm ở tab Tôi. */
+      try{ if(typeof pushNotif==="function") pushNotif("info","Phiên tư vấn chưa gửi được","Lý do: "+S._sessErr+". App giữ lại và tự gửi khi có mạng. Xem ở tab Tôi."); }catch(_e){} }
+  })
+  .then(function(){ if(tm)clearTimeout(tm); _sessFlushing=false; if(again) flushSessions(true); });
+}
+var SQ_DEAD_KEY="wt_sess_rejected_v1";
+function sessRejected(){ return lsGet(SQ_DEAD_KEY,[]).length; }
+/* 1 dòng trạng thái dùng chung cho tab Tôi + Cổng Quản trị. Rỗng = mọi phiên đã về hệ thống. */
+function sessStatusLine(){
+ var n=sessPending(), d=sessRejected(); if(!n&&!d) return "";
+ var s=[]; if(n) s.push(n+" phiên tư vấn chưa gửi được về hệ thống"+(S._sessErr?(" ("+S._sessErr+")"):"")+" — app tự gửi lại");
+ if(d) s.push(d+" phiên bị máy chủ từ chối — báo quản trị");
+ return s.join(" · ");
+}
 function finishConsult(){
  if(S._saved) return; S._saved=true;
  bumpConsult(S.rec);
  logConsult();
- if(S.consent){ var _ss=buildSession(); saveSessionEnc(_ss).then(function(id){ S.curSessionId=id; }).catch(function(e){ console.warn("Lưu phiên lỗi:",e); }); try{ autoPushSession(_ss); }catch(e){} }
+ var _ss=buildSession(); S.curSessionId=_ss.sid;
+ /* Bản có tên/SĐT chỉ lưu trên máy khi khách ĐỒNG Ý. Khách không đồng ý: chỉ gửi bản không định danh (xem buildSession). */
+ if(_ss.consent){ saveSessionEnc(_ss).catch(function(e){ console.warn("Lưu phiên lỗi:",e); toast("Không lưu được phiên trên máy này: "+((e&&e.message)||"lỗi")+"."); }); }
+ queueSession(_ss); flushSessions(true);
 }
 /* ===== THỐNG KÊ CÁ NHÂN (nhật ký cục bộ) ===== */
 var STATS_KEY="wt_stats_v1";
@@ -2160,10 +2245,10 @@ function adminChangePass(oldP,newP){
 }
 
 /* ---------- XUẤT CSV / XLSX (offline thuần) ---------- */
-var ADMIN_HEAD=["ID Phiên","Mã NV/PG","Điểm bán","Tên người mua","SĐT","Địa chỉ","Mối quan hệ","Tên người dùng","Đối tượng","Giới tính","Con thứ","Sinh thường/mổ","Tuổi","Cân nặng (kg)","Chiều cao (cm)","Tuần thai","Tăng cân TK (kg)","Đánh giá TK","Chỉ số BMI/Z-score","Phân loại","Nhu cầu/Bệnh lý","Tiền sử","SP đang dùng","SKU ưu tiên","SKU kết hợp","Liều/ngày","Số lon/tháng","Tạm tính (đ)","Đã lên đơn","SL đặt (lon)","Giờ chốt đơn","Cảnh báo y khoa","Ngày tư vấn","Giờ tư vấn"];
+var ADMIN_HEAD=["ID Phiên","Mã NV/PG","Điểm bán","Tên người mua","SĐT","Địa chỉ","Mối quan hệ","Tên người dùng","Đối tượng","Giới tính","Con thứ","Sinh thường/mổ","Tuổi","Cân nặng (kg)","Chiều cao (cm)","Tuần thai","Tăng cân TK (kg)","Đánh giá TK","Chỉ số BMI/Z-score","Phân loại","Nhu cầu/Bệnh lý","Tiền sử","SP đang dùng","SKU ưu tiên","SKU kết hợp","Liều/ngày","Số lon/tháng","Tạm tính (đ)","Đã lên đơn","SL đặt (lon)","Giờ chốt đơn","Cảnh báo y khoa","Ngày tư vấn","Giờ tư vấn","Khách đồng ý lưu","Thời điểm đồng ý"];
 function adminAOA(){
  var rows=S.adminData||[]; var aoa=[ADMIN_HEAD.slice()];
- rows.forEach(function(r){ aoa.push([ r._id||"", r.pg, r.area, r.buyerName, r.phone, r.addr, r.rel, r.userName, r.obj, r.gender, r.birth, r.deliv, r.age, r.weight, r.height, r.week, r.gainActual, r.gainEval, r.metric, r.status, (r.needs||[]).join("; "), (r.hist||[]).join("; "), r.cur, r.skuMain, r.skuCombo, r.dose, r.qtyMonth, r.estAmount, r.ordered?"Có":"Không", r.orderQty||"", r.orderTime||"", r.warn, r.date, r.time ]); });
+ rows.forEach(function(r){ aoa.push([ r._id||"", r.pg, r.area, r.buyerName, r.phone, r.addr, r.rel, r.userName, r.obj, r.gender, r.birth, r.deliv, r.age, r.weight, r.height, r.week, r.gainActual, r.gainEval, r.metric, r.status, (r.needs||[]).join("; "), (r.hist||[]).join("; "), r.cur, r.skuMain, r.skuCombo, r.dose, r.qtyMonth, r.estAmount, r.ordered?"Có":"Không", r.orderQty||"", r.orderTime||"", r.warn, r.date, r.time, (r.consent===true?"Có":(r.consent===false?"Không":"Chưa hỏi (phiên cũ)")), r.consentAt||"" ]); });
  return aoa;
 }
 function dlBlob(bytes,type,fname){ var blob=new Blob([bytes],{type:type}); var url=URL.createObjectURL(blob); var a=document.createElement("a"); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},2000); }
@@ -2273,14 +2358,23 @@ if(typeof window!=='undefined'){
 /* ---------- ĐỒNG BỘ STUDIO (hook, cấu hình URL) ---------- */
 function syncCfg(){ var c=lsGet(SYNC_KEY,{url:""}); if(!c.url)c.url=WT_DEF.sessions; return c; }
 function adminSaveSyncUrl(u){ var c=syncCfg(); c.url=(u||"").trim(); lsSet(SYNC_KEY,c); }
-function wtMapSession(x){ x=x||{}; return {
-   client_id:(x.id||x.sid||x.sessionId||x.curSessionId||null),
-   pg_name:((x.acc&&x.acc.name)||x.pg||x.pg_name||null),
-   area:((x.acc&&x.acc.area)||x.area||null),
-   buyer_name:((x.buyer&&x.buyer.name)||x.buyer_name||(x.user&&x.user.name)||null),
-   buyer_phone:((x.buyer&&x.buyer.phone)||x.phone||null),
-   objective:((x.user&&x.user.obj)||x.objective||null),
-   recommended:(x.recommended||(x.rec&&x.rec.prods?x.rec.prods.join(","):null)||null),
+/* Đổi 1 phiên (dạng buildSession ghi) sang dạng máy chủ nhận.
+ * LỖI CŨ (tới 30/09/2026): hàm này đọc x.buyer.name / x.user.obj / x.rec.prods / x.id, trong khi buildSession ghi
+ * buyerName / obj / skuMain / (không có id) → tên người mua, đối tượng, SP gợi ý và mã phiên LUÔN về tới máy chủ là
+ * rỗng. Không có mã phiên thì máy chủ không chống trùng được: mỗi lần quản trị bấm Đồng bộ là thêm một bộ trùng.
+ * Mã phiên: sid (phiên mới) hoặc _id (phiên cũ, decryptAll gắn từ mã lưu trên máy).
+ * Cắt độ dài theo cột của máy chủ — dài quá là máy chủ báo lỗi cả lô. */
+function wtMapSession(x){ x=x||{};
+ function cut(v,n){ v=(v==null?"":(""+v)).trim(); return v?v.slice(0,n):null; }
+ var rec=[x.skuMain,x.skuCombo].filter(function(v){return !!v;}).join(" + ");
+ return {
+   client_id:cut(x.sid||x._id||x.id||x.sessionId||x.curSessionId,120),
+   pg_name:cut((x.acc&&x.acc.name)||x.pg||x.pg_name,160),
+   area:cut((x.acc&&x.acc.area)||x.area,200),
+   buyer_name:cut(x.buyerName||(x.buyer&&x.buyer.name)||x.buyer_name,160),
+   buyer_phone:cut(x.phone||(x.buyer&&x.buyer.phone)||x.buyer_phone,40),
+   objective:cut(x.obj||(x.user&&x.user.obj)||x.objective,60),
+   recommended:cut(x.recommended||rec||(x.rec&&x.rec.prods?x.rec.prods.join(","):""),300),
    payload:x }; }
 function adminSync(){
  var c=syncCfg();
@@ -2288,7 +2382,11 @@ function adminSync(){
  var btn=el("syncbtn"); if(btn){btn.textContent="Đang đồng bộ...";btn.disabled=true;}
  var body={ tenant:wtTenant(), source:"wintop-consultant", sessions:S.adminData.map(wtMapSession) };
  fetch(c.url,{method:"POST",headers:wtHeaders(true),body:JSON.stringify(body)})
-  .then(function(r){ if(r.ok) toast("✅ Đồng bộ thành công "+S.adminData.length+" phiên về hệ thống."); else toast("Đồng bộ lỗi: HTTP "+r.status+". Kiểm tra endpoint/khoá."); })
+  .then(function(r){ if(!r.ok){ toast("Đồng bộ lỗi: HTTP "+r.status+". Kiểm tra endpoint/khoá."); return; }
+    /* Máy chủ trả {saved, skipped}: nói thật bao nhiêu phiên MỚI, bao nhiêu phiên đã có sẵn (không ghi trùng). */
+    return r.json().then(function(j){ var sv=(j&&j.saved!=null)?j.saved:null, sk=(j&&j.skipped)||0;
+      toast(sv==null?("✅ Đã gửi "+S.adminData.length+" phiên về hệ thống."):("✅ Đồng bộ xong: "+sv+" phiên mới"+(sk?(", "+sk+" phiên hệ thống đã có sẵn"):"")+".")); })
+     .catch(function(){ toast("✅ Đã gửi "+S.adminData.length+" phiên về hệ thống."); }); })
   .catch(function(e){ toast("Không kết nối được hệ thống: "+e.message+" (App vẫn giữ dữ liệu mã hoá cục bộ)."); })
   .then(function(){ var b=el("syncbtn"); if(b){b.textContent="Đồng bộ về hệ thống";b.disabled=false;} });
 }
@@ -2643,7 +2741,9 @@ function renderAdmin(){
   '<div style="display:flex;gap:10px;margin-bottom:12px"><div style="flex:1;background:var(--pri-soft);border-radius:12px;padding:11px;text-align:center"><div style="font-size:22px;font-weight:700;font-family:var(--fh);color:var(--pri)">'+rows.length+'</div><div class="faint" style="font-size:11px">Phiên đã lưu</div></div><div style="flex:1;background:#FFF1DC;border-radius:12px;padding:11px;text-align:center"><div style="font-size:22px;font-weight:700;font-family:var(--fh);color:#C2691A">'+rows.filter(function(r){return r.ordered;}).length+'</div><div class="faint" style="font-size:11px">Đã lên đơn</div></div></div>'+
   (rows.length?('<div style="border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:12px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#F1F5F9;color:#475569"><th style="padding:7px 8px;text-align:left">Ngày</th><th style="padding:7px 8px;text-align:left">Khách</th><th style="padding:7px 8px;text-align:left">SĐT</th><th style="padding:7px 8px;text-align:left">SKU</th></tr></thead><tbody>'+preview+'</tbody></table>'+(rows.length>8?'<div class="faint" style="padding:7px 8px;font-size:11px;background:#F8FAFC">… và '+(rows.length-8)+' phiên nữa trong file tải về.</div>':"")+'</div>'):'<div class="muted" style="text-align:center;padding:18px">Chưa có phiên nào được lưu (khách chưa đồng ý lưu, hoặc chưa tư vấn).</div>')+
   '<div style="display:flex;gap:9px;margin-bottom:10px"><button class="btn sec" onclick="adminExportCSV()">'+ic("download",16)+'Tải CSV</button><button class="btn" onclick="adminExportXLSX()">'+ic("download",16)+'Tải Excel</button></div>'+
-  '<div class="faint" style="font-size:11px;line-height:1.6;margin-top:2px">Dữ liệu được mã hoá đầu-cuối; chỉ mở bằng mật khẩu quản trị. Bản CSV/Excel tải về đã được giải mã để báo cáo.</div>'+
+  /* Câu cũ ghi "mã hoá đầu-cuối" — SAI: chỉ bản lưu TRÊN MÁY là mã hoá; bản gửi về hệ thống đi qua HTTPS và hệ thống đọc được. */
+  '<div class="faint" style="font-size:11px;line-height:1.6;margin-top:2px">Trên máy này, thông tin khách được mã hoá và chỉ mở bằng mật khẩu quản trị. Khi có mạng, phiên tư vấn được gửi về hệ thống Wintop qua kết nối bảo mật (HTTPS) để NPP và công ty chăm sóc khách — hệ thống đọc được nội dung này. Bản CSV/Excel tải về đã được giải mã để báo cáo.</div>'+
+  (sessStatusLine()?('<div style="font-size:11.5px;line-height:1.55;margin-top:8px;padding:8px 10px;border-radius:10px;background:#FFF4E5;color:#9A5B13">⚠ '+esc(sessStatusLine())+'</div>'):'')+
   '<div style="border-top:1px solid var(--line);margin:12px 0;padding-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:#0E3D2E;color:#12B981">'+ic("cart",16)+'</span>Quản trị Nhà Phân Phối</div>'+
   '<div style="display:flex;gap:9px"><button class="btn sec" style="flex:1" onclick="openStock()">'+ic("box",16)+'Tồn kho</button><button class="btn ok" style="flex:1" onclick="openRestock()">'+ic("cart",16)+'Đặt hàng công ty</button></div>'+
   '<button class="btn sec" style="margin-top:9px;width:100%" onclick="openRestockOrders()">'+ic("box",16)+'Đơn đã đặt & trạng thái duyệt</button>'+
@@ -2668,7 +2768,9 @@ function renderAdmin(){
   }catch(e){}
   // Deep-link mở thẳng 1 sản phẩm qua #sp=<id> (vd từ QR/tin nhắn) — nối lúc mở & khi hash đổi.
   try{ if(typeof checkDeepLink==="function"){ checkDeepLink(); window.addEventListener("hashchange", checkDeepLink); } }catch(e){}
-  function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){} }
+  function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){}
+    /* Hàng chờ phiên tư vấn đi cùng nhịp với hàng chờ đơn (mở app / có mạng / mỗi phút). */
+    try{ if(typeof flushSessions==="function") flushSessions(true); }catch(e){ console.warn("flushSessions lỗi:",e); } }
   function autoStock(){ try{ if(typeof pullStockAuto==="function") pullStockAuto(); }catch(e){} }
   window.addEventListener("load",function(){ setTimeout(function(){ autoFlush(); autoStock(); },2500); });
   window.addEventListener("online",function(){ if(typeof toast==="function")toast("Đã có mạng — đang đồng bộ."); autoFlush(); autoStock(); });
