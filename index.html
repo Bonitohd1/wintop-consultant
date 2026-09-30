@@ -838,11 +838,11 @@ function selBaby(id){S.growth.baby=id;S.growth.edit=null;S.growth.editBaby=null;
 function submitBaby(){var f=S.bf||{},ten=(f.ten||"").trim(),ngay=f.ngaySinh||"",gt=f.gioiTinh||"Trai";
  if(!ngay){toast("Nhập ngày sinh của bé (bắt buộc).");return;}var d=parseD(ngay);if(!d){toast("Ngày sinh không hợp lệ.");return;}if(d>new Date()){toast("Ngày sinh không thể ở tương lai.");return;}
  var arr=babies();
- if(S.growth.editBaby){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.editBaby){arr[i].ten=ten||arr[i].ten;arr[i].ngaySinh=ngay;arr[i].gioiTinh=gt;}S.growth.editBaby=null;toast("Đã cập nhật hồ sơ bé.");}
+ var _edId=null,_edKey="";if(S.growth.editBaby){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.editBaby){_edId=arr[i].id;_edKey=kidKey(arr[i].ten);arr[i].ten=ten||arr[i].ten;arr[i].ngaySinh=ngay;arr[i].gioiTinh=gt;}S.growth.editBaby=null;toast("Đã cập nhật hồ sơ bé.");}
  else{var id="B"+Date.now().toString(36);arr.push({id:id,ten:ten||"Bé",ngaySinh:ngay,gioiTinh:gt});S.growth.baby=id;toast("Đã thêm hồ sơ "+(ten||"bé")+"!");}
- saveBabies(arr);S.bf={};S.growth.addingBaby=false;render();}
+ saveBabies(arr);if(_edId){growthOnEditBaby(_edId,_edKey);growthFlush();}S.bf={};S.growth.addingBaby=false;render();}
 function editBaby(id){var b=babyById(id);if(!b)return;S.bf={ten:b.ten,ngaySinh:b.ngaySinh,gioiTinh:b.gioiTinh};S.growth.editBaby=id;S.growth.addingBaby=true;render();}
-function delBaby(id){if(!confirm("Xóa hồ sơ bé này và toàn bộ số đo của bé?"))return;saveBabies(babies().filter(function(b){return b.id!==id;}));saveMeasures(measures().filter(function(m){return m.babyId!==id;}));if(S.growth.baby===id)S.growth.baby="";S.growth.editBaby=null;S.growth.addingBaby=false;toast("Đã xóa hồ sơ bé.");render();}
+function delBaby(id){if(!confirm("Xóa hồ sơ bé này và toàn bộ số đo của bé?"))return;growthOnDelBaby(id);setTimeout(growthFlush,0);saveBabies(babies().filter(function(b){return b.id!==id;}));saveMeasures(measures().filter(function(m){return m.babyId!==id;}));if(S.growth.baby===id)S.growth.baby="";S.growth.editBaby=null;S.growth.addingBaby=false;toast("Đã xóa hồ sơ bé.");render();}
 function submitMeasure(){var b=curBaby();if(!b){toast("Chọn hồ sơ bé trước.");return;}var f=S.gf||{};
  var date=f.ngayDo||nowISO();if(!parseD(date)){toast("Ngày đo không hợp lệ.");return;}if(parseD(date)>new Date()){toast("Ngày đo không thể ở tương lai.");return;}
  var w=parseFloat(f.canNang);if(!isFinite(w)){toast("Nhập cân nặng (kg).");return;}if(w<1||w>60){toast("Cân nặng phải trong khoảng 1–60 kg.");return;}
@@ -852,11 +852,11 @@ function submitMeasure(){var b=curBaby();if(!b){toast("Chọn hồ sơ bé trư�
  var prevList=babyMeasures(b.id).filter(function(m){return m.id!==S.growth.edit;});
  if(!S.growth.edit&&prevList.length){var prev=prevList[prevList.length-1];if(prev&&prev.canNang&&w<prev.canNang*0.9&&!f._confirm){S.gf._confirm=true;toast("⚠️ Cân giảm >10% so lần trước ("+prev.canNang+"kg). Bấm Lưu lần nữa để xác nhận.");render();return;}}
  var arr=measures();
- if(S.growth.edit){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.edit){arr[i].ngayDo=date;arr[i].canNang=w;arr[i].chieuCao=hh;arr[i].ghiChu=f.ghiChu||"";}S.growth.edit=null;toast("Đã cập nhật số đo.");}
+ if(S.growth.edit){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.edit){arr[i].ngayDo=date;arr[i].canNang=w;arr[i].chieuCao=hh;arr[i].ghiChu=f.ghiChu||"";arr[i].sv=0;}S.growth.edit=null;toast("Đã cập nhật số đo.");}
  else{arr.push({id:"M"+Date.now().toString(36),babyId:b.id,ngayDo:date,canNang:w,chieuCao:hh,ghiChu:f.ghiChu||""});toast(POS[Math.floor(Math.random()*POS.length)]);}
- saveMeasures(arr);S.gf={};render();}
+ saveMeasures(arr);S.gf={};growthFlush();render();}
 function editMeasure(id){var arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id){S.gf={ngayDo:arr[i].ngayDo,canNang:arr[i].canNang,chieuCao:(arr[i].chieuCao!=null?arr[i].chieuCao:""),ghiChu:arr[i].ghiChu||""};S.growth.baby=arr[i].babyId;}S.growth.edit=id;render();}
-function delMeasure(id){if(!confirm("Xóa số đo này?"))return;saveMeasures(measures().filter(function(m){return m.id!==id;}));if(S.growth.edit===id){S.growth.edit=null;S.gf={};}toast("Đã xóa số đo.");render();}
+function delMeasure(id){if(!confirm("Xóa số đo này?"))return;growthOnDelMeasure(id);setTimeout(growthFlush,0);saveMeasures(measures().filter(function(m){return m.id!==id;}));if(S.growth.edit===id){S.growth.edit=null;S.gf={};}toast("Đã xóa số đo.");render();}
 function growthPoint(id){var m=null,arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id)m=arr[i];if(!m)return;var b=babyById(m.babyId);if(!b)return;var am=ageMo(b.ngaySinh,m.ngayDo),boy=b.gioiTinh!=="Gái";var s=fmtDate(m.ngayDo)+" · "+ageLabel(am)+" · "+m.canNang+"kg";if(m.chieuCao)s+=" · "+m.chieuCao+"cm";if(am!=null&&am<=60){var zw=zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,am),m.canNang);s+=" · cân Z="+zw.toFixed(1)+" ("+zClass(zw,"w").lb+")";}toast(s);}
 function babyForm(){var f=S.bf||{},editing=!!S.growth.editBaby;
  return '<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:4px"><div class="sec-ic">'+ic('child_care')+'</div><h3 style="font-size:15px">'+(editing?"Sửa hồ sơ bé":"Hồ sơ bé mới")+'</h3></div>'
@@ -951,6 +951,7 @@ function renderGrowth(){
  h+='<div class="gbaby" style="margin-bottom:12px">'+bs.map(function(x){return '<div class="gchip'+(x.id===b.id?' on':'')+'" onclick="selBaby(\''+x.id+'\')">'+ic('child_care')+esc(x.ten||"Bé")+'</div>';}).join('')+'<div class="gchip add" onclick="S.growth.addingBaby=true;S.growth.editBaby=null;S.bf={};render()">'+ic('add')+'Bé</div></div>';
  if(S.growth.addingBaby)h+=babyForm();
  h+='<div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:10px"><div class="sec-ic" style="background:var(--sec-fx);color:var(--on-sec-fx)">'+ic('child_care')+'</div><div style="flex:1;min-width:0"><div style="font-family:var(--fd);font-weight:700;font-size:14px">'+esc(b.ten||"Bé")+' · '+esc(b.gioiTinh||"Trai")+'</div><div style="font-size:11.5px;color:var(--on-var)">Sinh '+fmtDate(b.ngaySinh)+' · '+ageLabel(nowA)+'</div></div><div class="mact"><button onclick="editBaby(\''+b.id+'\')">'+ic('edit')+'</button><button onclick="delBaby(\''+b.id+'\')">'+ic('delete')+'</button></div></div>';
+ var _sl=growthSyncLine(b);if(_sl)h+='<div class="faint" style="font-size:11.5px;line-height:1.5;margin:8px 2px 0'+(_sl.charAt(0)==="⚠"?";color:#9A5B13":"")+'">'+esc(_sl)+'</div>';
  var lastM=ms.length?ms[ms.length-1]:null,dueDays=lastM?Math.floor((Date.now()-parseD(lastM.ngayDo))/86400000):null;
  if(dueDays!=null&&dueDays>=30)h+='<div class="reminder" style="margin-top:12px">'+ic('notifications')+'<div><b>Đến hẹn cân đo cho bé</b><div style="font-size:11.5px;opacity:.95">Đã '+dueDays+' ngày kể từ lần đo gần nhất — cập nhật để đường tăng trưởng luôn chính xác.</div></div></div>';
  if(nowA!=null&&nowA>60)h+='<div class="warn" style="margin-top:12px">'+ic('warning')+'<div>Bé đã ngoài phạm vi biểu đồ 0–5 tuổi (WHO 0–60 tháng). Biểu đồ chỉ hiển thị đến mốc 60 tháng; mẹ vẫn có thể lưu số đo để tham khảo.</div></div>';
@@ -967,6 +968,199 @@ function renderGrowth(){
  h+=measureForm(b);
  if(ms.length<2)h+='<div class="posmsg" style="margin-top:12px">'+ic('celebration')+'<div>Mẹ ơi, hãy quay lại nhập số đo vào tháng sau để nhìn thấy đường tăng trưởng của bé rõ hơn nhé!</div></div>';
  return h;}
+
+/* ===== TĂNG TRƯỞNG GẮN VÀO TƯ VẤN (30/09/2026) =====
+ * Khách yêu cầu: tư vấn xong phải thấy luôn biểu đồ của bé, và gõ SĐT là có lại số đo các lần mua trước.
+ * Trước đây: biểu đồ ở tab riêng, PG phải nhập lại cân nặng/chiều cao vừa hỏi ở bước tư vấn, và chỉ lưu trên máy đó.
+ * Giờ: bé được nhận theo SĐT người mua + tên bé; số đo của phiên tư vấn tự thành 1 điểm trên biểu đồ;
+ *      nếu máy đã nhập mã kích hoạt NPP thì hồ sơ bé lưu về hệ thống để máy khác của NPP cũng thấy.
+ * Chỉ làm khi khách ĐỒNG Ý (S.consent===true). Khách không đồng ý: không tìm, không lưu, không gửi. */
+var GR_TOMB_KEY="nt_growth_tomb", _grFlushing=false, _kidLk={phone:"",state:"",msg:""};
+
+/* Chuẩn hoá tên bé để so khớp — CÙNG LUẬT với name_key() ở máy chủ (backend/app/routers/appsale_growth.py).
+   Sửa một bên thì sửa cả hai, không thì cùng một bé thành hai hồ sơ. "Bé Na" = "bé na" = "NA". */
+function kidKey(name){ var s=deburr((name||"").trim()).replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim(); if(s.indexOf("be ")===0&&s.length>3) s=s.slice(3); return s||"be"; }
+function kidPhone(p){ var d=(""+(p||"")).replace(/\D/g,""); if(d.indexOf("84")===0&&d.length>=11) d="0"+d.slice(2); if(d.length===9&&d.charAt(0)!=="0") d="0"+d; return d; }
+function kidPhoneOK(p){ var d=kidPhone(p); return d.length===10&&d.charAt(0)==="0"&&"35789".indexOf(d.charAt(1))>=0; }
+function kidsOfPhone(p){ var d=kidPhone(p); if(!kidPhoneOK(d)) return []; return babies().filter(function(b){ return b.phone===d; }); }
+function kidGrowthSex(g){ return g==="Nữ"?"Gái":"Trai"; }
+function kidConsultSex(g){ return g==="Gái"?"Nữ":"Nam"; }
+function kidNewId(pre){ return pre+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36); }
+function round1(x){ return Math.round(x*10)/10; }
+
+/* ---- Tuổi tính từ ngày sinh (thay cho ô "số tuổi" chỉ nhận số tròn) ---- */
+function dobMonths(){ var d=S.user&&S.user.dob; if(!d) return null; var m=ageMo(d,nowISO()); return (m==null||m<0)?null:m; }
+/* Đặt nhóm tuổi + S.m.months / S.m.age theo ngày sinh. Trả về nhóm cũ nếu app vừa tự đổi nhóm, "" nếu không đổi. */
+function applyDob(){ var m=dobMonths(); if(m==null) return ""; var was=S.user.obj;
+ if(m<12){ S.user.obj="tre_0_12"; S.m.months=round1(m); delete S.m.age; }
+ else { S.user.obj="tre_1_10"; var y=Math.round(m/12*100)/100; if(y>10&&y<11) y=10; /* bé 10 tuổi 3 tháng vẫn là "10 tuổi" của nhóm 1–10 */ S.m.age=y; delete S.m.months; }
+ return was!==S.user.obj?was:""; }
+function ageText(){ var m=(typeof isChild==="function"&&isChild())?dobMonths():null; if(m!=null) return ageLabel(m);
+ return (S.m.age!=null&&S.m.age!=="")?(S.m.age+" tuổi"):((S.m.months!=null&&S.m.months!=="")?(S.m.months+" tháng"):""); }
+function dobAgeLine(){ var m=dobMonths(); if(S.user.dob&&m==null) return '<span style="color:#DC2626">Ngày sinh không hợp lệ.</span>';
+ return m!=null?('Bé <b>'+ageLabel(m)+'</b> — tuổi tự tính, không phải nhập lại ở bước sau.'):'Có ngày sinh thì app tự tính tuổi và vẽ được biểu đồ tăng trưởng của bé.'; }
+function setDob(v){ S.user.dob=v; var e=el("dobage"); if(e) e.innerHTML=dobAgeLine(); }
+
+/* ---- Gọi máy chủ ---- */
+function growthCall(path,method,body){
+ var ctl=("AbortController" in window)?new AbortController():null; var tm=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},15000):null;
+ function clr(){ if(tm)clearTimeout(tm); }
+ return fetch(WINTOP_API+"/growth"+path,{method:method,headers:wtHeaders(true),body:body?JSON.stringify(body):undefined,signal:ctl?ctl.signal:undefined})
+  .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ if(!r.ok){ var e=new Error((j&&typeof j.detail==="string"&&j.detail)||("máy chủ trả lỗi "+r.status)); e.status=r.status; throw e; } return j; }); })
+  .then(function(j){ clr(); return j; }, function(e){ clr(); throw e; });
+}
+function growthErrText(e){ if(e&&e.name==="AbortError") return "quá thời gian chờ";
+ if(e&&e.status===404) return "hệ thống chưa bật lưu hồ sơ bé";   /* App Sale lên trước, máy chủ cập nhật sau → đường dẫn chưa có */
+ if(e&&e.status===403) return "máy này chưa có mã kích hoạt NPP hợp lệ";
+ if(e&&e.status===401) return "mã kích hoạt NPP không đúng hoặc đã bị thu hồi";
+ if(e&&e.status) return e.message; return "không kết nối được máy chủ"; }
+
+/* ---- Trộn dữ liệu máy chủ vào máy ---- */
+/* full=true: danh sách `kids` là TOÀN BỘ bé của SĐT này trên máy chủ → bé đã đồng bộ mà máy chủ không còn nghĩa là máy khác đã xoá. */
+function growthMerge(phone,kids,full){
+ var bs=babies(), ms=measures(), seen={};
+ (kids||[]).forEach(function(k){
+  var b=null,i; seen[k.id]=1;
+  for(i=0;i<bs.length;i++) if(bs[i].sv===k.id) b=bs[i];
+  if(!b){ var key=kidKey(k.name); for(i=0;i<bs.length;i++) if(bs[i].phone===phone&&kidKey(bs[i].ten)===key) b=bs[i]; }
+  if(!b){ b={id:kidNewId("B"),ten:k.name,ngaySinh:k.dob,gioiTinh:kidGrowthSex(k.gender),phone:phone}; bs.push(b); }
+  b.sv=k.id; b.phone=phone; if(!b.cv) b.cv=k.consent_v||"";
+  if(!b.dirty){ b.ten=k.name; b.ngaySinh=k.dob; b.gioiTinh=kidGrowthSex(k.gender); }   /* máy đang có sửa chưa gửi thì giữ bản trên máy */
+  var have={}, onServer={}, del=b.del||[];
+  ms.forEach(function(m){ if(m.babyId===b.id) have[m.id]=m; });
+  (k.measures||[]).forEach(function(sm){ onServer[sm.id]=1; var m=have[sm.id];
+   if(!m){ if(del.indexOf(sm.id)>=0) return;   /* PG vừa xoá trên máy, chưa kịp báo máy chủ → đừng cho nó sống lại */
+    ms.push({id:sm.id,babyId:b.id,ngayDo:sm.date,canNang:sm.weight,chieuCao:sm.height,ghiChu:"",src:sm.source||"",sv:1}); }
+   else if(m.sv===1){ m.ngayDo=sm.date; m.canNang=sm.weight; m.chieuCao=sm.height; } });
+  ms=ms.filter(function(m){ return !(m.babyId===b.id&&m.sv===1&&!onServer[m.id]); });   /* lần đo máy khác đã xoá */
+ });
+ if(full){ var gone={}; bs.forEach(function(b){ if(b.phone===phone&&b.sv&&!seen[b.sv]&&!b.dirty&&!ms.some(function(m){return m.babyId===b.id&&m.sv!==1;})) gone[b.id]=1; });
+  bs=bs.filter(function(b){return !gone[b.id];}); ms=ms.filter(function(m){return !gone[m.babyId];}); }
+ saveBabies(bs); saveMeasures(ms);
+}
+
+/* ---- Tìm bé theo SĐT (gọi khi PG gõ xong ô SĐT) ---- */
+/* KHÔNG gọi render() ở đây: ô SĐT vừa mất con trỏ vì PG bấm sang ô khác — vẽ lại cả màn là ô mới cũng mất con trỏ. Chỉ vẽ lại khung #kidbox. */
+function kidBoxPaint(){ var e=el("kidbox"); if(e) e.innerHTML=kidChips(); }
+function kidsLookup(){
+ var p=kidPhone(S.buyer.phone);
+ if(S.consent!==true||!kidPhoneOK(p)){ _kidLk={phone:p,state:"",msg:""}; kidBoxPaint(); return; }
+ if(!wtToken()){ _kidLk={phone:p,state:"off",msg:""}; kidBoxPaint(); return; }
+ _kidLk={phone:p,state:"loading",msg:""}; kidBoxPaint();
+ growthCall("/lookup","POST",{phone:p}).then(function(j){ growthMerge(p,j.children||[],true); if(_kidLk.phone!==p) return; _kidLk={phone:p,state:"ok",msg:""}; kidBoxPaint(); })
+  .catch(function(e){ console.warn("Tìm hồ sơ bé lỗi:",e&&e.message); if(_kidLk.phone!==p) return; _kidLk={phone:p,state:(e&&e.status===404)?"nosrv":"err",msg:growthErrText(e)}; kidBoxPaint(); });
+}
+/* 4 trạng thái KHÁC NHAU: đang tìm / không có bé nào / không tìm được / máy chưa kích hoạt. Gộp "không có" với "không tìm được" là nói dối PG. */
+function kidLookupLine(){ var p=kidPhone(S.buyer.phone), st=(_kidLk.phone===p)?_kidLk.state:"", n=kidsOfPhone(p).length;
+ function ln(t,warn){ return '<div class="faint" style="font-size:12px;line-height:1.5;margin:0 0 9px'+(warn?';color:#9A5B13':'')+'">'+t+'</div>'; }
+ if(st==="loading") return ln("Đang tìm hồ sơ bé của số này trên hệ thống…");
+ if(st==="err") return ln("⚠ Chưa tải được hồ sơ bé từ hệ thống ("+esc(_kidLk.msg)+"). Vẫn tư vấn được; số đo lần này app sẽ gửi sau.",true);
+ if(st==="off"||st==="nosrv") return ln(n?"Chỉ hiện các bé đã lưu trên máy này ("+(st==="off"?"máy chưa nhập mã kích hoạt NPP":"hệ thống chưa bật lưu hồ sơ bé")+").":"Số này chưa có hồ sơ bé trên máy này — app sẽ tạo khi tư vấn xong ("+(st==="off"?"máy chưa nhập mã kích hoạt NPP nên không tìm trên hệ thống":"hệ thống chưa bật lưu hồ sơ bé")+").");
+ if(st==="ok"&&!n) return ln("Số này chưa có hồ sơ bé nào — app sẽ tạo khi tư vấn xong.");
+ return ""; }
+function kidChips(){ if(S.consent!==true) return ""; var ks=kidsOfPhone(S.buyer.phone), st=kidLookupLine();
+ if(!ks.length) return st;
+ return '<label>Bé đã có hồ sơ — chạm để chọn</label><div class="chips" style="margin-bottom:6px">'+ks.map(function(b){ var m=ageMo(b.ngaySinh,nowISO());
+   return '<div class="chip '+(S.user.babyId===b.id?"on":"")+'" onclick="pickKid(\''+b.id+'\')">'+esc(b.ten||"Bé")+(m!=null&&m>=0?(" · "+ageLabel(m)):"")+'</div>'; }).join("")+'</div>'+st; }
+function pickKid(id){ var b=babyById(id); if(!b) return; S.user.babyId=id; S.user.name=b.ten||""; S.user.gender=kidConsultSex(b.gioiTinh); S.user.dob=b.ngaySinh||"";
+ var m=dobMonths(); if(m!=null) S.user.obj=(m<12?"tre_0_12":"tre_1_10"); render(); }
+
+/* ---- Tư vấn xong → thêm 1 điểm vào biểu đồ của bé ---- */
+/* Trả về mã bé nếu đã gắn; null nếu không đủ điều kiện (không đồng ý / không phải trẻ / thiếu ngày sinh, cân nặng, SĐT). */
+function consultToGrowth(sess){
+ if(S.consent!==true||!isChild()) return null;
+ var dob=S.user.dob, w=num("w"), h=num("h"), p=kidPhone(S.buyer.phone);
+ if(!dob||dobMonths()==null||w==null||w<=0||!kidPhoneOK(p)) return null;
+ var bs=babies(), b=null, name=(S.user.name||"").trim()||"Bé", key=kidKey(name), i;
+ for(i=0;i<bs.length;i++) if(bs[i].phone===p&&kidKey(bs[i].ten)===key) b=bs[i];
+ if(!b){ b={id:kidNewId("B"),phone:p}; bs.push(b); }
+ b.ten=name; b.ngaySinh=dob; b.gioiTinh=kidGrowthSex(S.user.gender);
+ b.cv=CONSENT_V; b.ca=(sess&&sess.consentAt)||new Date().toISOString(); b.dirty=true;
+ saveBabies(bs);
+ var ms=measures(), today=nowISO(), m=null;
+ /* Tư vấn lại cùng bé trong cùng ngày: sửa điểm của hôm nay, không thêm điểm thứ hai. */
+ for(i=0;i<ms.length;i++) if(ms[i].babyId===b.id&&ms[i].ngayDo===today&&ms[i].src==="tuvan") m=ms[i];
+ if(m){ m.canNang=round1(w); m.chieuCao=(h!=null&&h>0)?round1(h):null; m.sv=0; }
+ else ms.push({id:"M"+((sess&&sess.sid)||kidNewId("")),babyId:b.id,ngayDo:today,canNang:round1(w),chieuCao:(h!=null&&h>0)?round1(h):null,ghiChu:"Từ phiên tư vấn",src:"tuvan",sv:0});
+ saveMeasures(ms); S.user.babyId=b.id; S.growth.baby=b.id;
+ return b.id;
+}
+
+/* ---- Gửi về hệ thống: chính dữ liệu trên máy là "hàng chờ" (bé có cờ dirty / lần đo chưa có sv=1 / mã chờ xoá) ---- */
+function growthPending(){ var ms=measures(); return babies().filter(function(b){ if(!b.phone||!b.cv) return false; if(b.dirty||(b.del&&b.del.length)) return true; return ms.some(function(m){return m.babyId===b.id&&m.sv!==1;}); }); }
+function growthFlush(){
+ var pend=growthPending(), tomb=lsGet(GR_TOMB_KEY,[]);
+ if((!pend.length&&!tomb.length)||_grFlushing) return;
+ if(!wtToken()){ S._grErr="máy này chưa nhập mã kích hoạt NPP"; return; }
+ if(!navigator.onLine){ S._grErr="đang không có mạng"; return; }
+ _grFlushing=true; var i=0, t=0, failed=null, quiet=false;
+ function done(){ _grFlushing=false;
+  if(failed){ S._grErr=failed; console.warn("Gửi hồ sơ bé lỗi:",failed);
+   /* "Hệ thống chưa bật" (máy chủ chưa cập nhật) không phải lỗi của PG — không báo toast, chỉ hiện ở dòng trạng thái. */
+   if(!quiet&&!S._grWarned){ S._grWarned=true; toast("Chưa lưu được số đo của bé về hệ thống ("+failed+"). App giữ lại và tự gửi sau."); } }
+  else { S._grErr=null; S._grWarned=false; }
+  if(S.tab==="growth"||(S.tab==="tuvan"&&S.step===4&&S.scanState==="done")) render(); }
+ function fail(e){ failed=growthErrText(e); if(e&&e.status===404) quiet=true; }
+ function nextTomb(){
+  if(t>=tomb.length) return done();
+  var id=tomb[t]; t++;
+  growthCall("/children/"+encodeURIComponent(id),"DELETE").then(function(){ return true; }, function(e){ if(e&&e.status===404&&e.message.indexOf("Không tìm thấy")===0) return true; fail(e); return false; })
+   .then(function(ok){ if(ok) lsSet(GR_TOMB_KEY, lsGet(GR_TOMB_KEY,[]).filter(function(x){return x!==id;})); nextTomb(); });
+ }
+ function next(){
+  if(i>=pend.length) return nextTomb();
+  var b=babyById(pend[i].id); i++; if(!b) return next();
+  var mine=measures().filter(function(m){return m.babyId===b.id&&m.sv!==1;}).slice(0,60), removed=(b.del||[]).slice(0,200);
+  var body={ phone:b.phone, child:{name:b.ten||"Bé",dob:b.ngaySinh,gender:kidConsultSex(b.gioiTinh)}, consent_v:b.cv, consent_at:b.ca||null, removed:removed,
+    measures:mine.map(function(m){ return {client_id:m.id,date:m.ngayDo,weight:m.canNang,height:(m.chieuCao==null||m.chieuCao==="")?null:m.chieuCao,source:m.src||"tay",pg:(S.acc&&S.acc.name)||""}; }) };
+  growthCall("/sync","POST",body).then(function(j){
+    /* Đọc LẠI từ máy rồi mới đánh dấu: trong lúc đang gửi PG có thể đã thêm số đo khác. */
+    var bs=babies(), ms=measures(), sent={}; body.measures.forEach(function(m){sent[m.client_id]=1;});
+    bs.forEach(function(x){ if(x.id===b.id){ x.sv=j.child.id; x.dirty=false; x.del=(x.del||[]).filter(function(d){return removed.indexOf(d)<0;}); } });
+    ms.forEach(function(m){ if(m.babyId===b.id&&sent[m.id]) m.sv=1; });
+    saveBabies(bs); saveMeasures(ms); growthMerge(b.phone,[j.child],false);
+   }, fail).then(next);
+ }
+ next();
+}
+/* 1 dòng trạng thái cho 1 bé: đã về hệ thống / đang chờ gửi / chỉ lưu trên máy. */
+function growthSyncLine(b){ if(!b) return "";
+ if(!b.phone||!b.cv) return "Hồ sơ này chỉ lưu trên máy (tạo tay, chưa gắn số điện thoại khách).";
+ var pend=growthPending().some(function(x){return x.id===b.id;});
+ if(!wtToken()) return "Máy này chưa nhập mã kích hoạt NPP nên hồ sơ của bé chỉ lưu trên máy này.";   /* không phải lỗi, và app sẽ KHÔNG tự gửi được — đừng hứa "tự gửi lại" */
+ if(pend) return "⚠ Số đo chưa về hệ thống"+(S._grErr?(" ("+S._grErr+")"):"")+" — app giữ trên máy và tự gửi lại.";
+ return b.sv?"Đã lưu về hệ thống — máy khác của NPP gõ số điện thoại này cũng thấy.":""; }
+
+/* ---- Thẻ biểu đồ trong màn KẾT QUẢ tư vấn ---- */
+function consultGrowthCard(){
+ if(typeof isChild!=="function"||!isChild()||S.consent!==true) return "";
+ var b=S.user.babyId?babyById(S.user.babyId):null;
+ if(!b){ return S.user.dob?"":'<div class="card" style="margin-top:12px;font-size:12.5px;line-height:1.55;color:var(--muted)">Chưa vẽ được biểu đồ tăng trưởng cho bé vì phiên này không có ngày sinh. Lần sau nhập ngày sinh ở bước 1 là app tự vẽ và tự nhớ các lần đo.</div>'; }
+ var ms=babyMeasures(b.id), tab=S.growth.tab==="h"?"h":"w", nowA=ageMo(b.ngaySinh,nowISO());
+ var plot=ms.filter(function(m){ return tab==="h"?(m.chieuCao!=null&&m.chieuCao!==""):(m.canNang!=null); });
+ var h='<div class="card" style="margin-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:var(--health-soft);color:var(--health)">'+ic("trending_up",16)+'</span>Tăng trưởng của '+esc(b.ten||"bé")+'</div>';
+ h+='<div class="muted" style="font-size:12px;margin-bottom:9px">'+(ms.length>1?(ms.length+" lần đo · lần đầu "+fmtDate(ms[0].ngayDo)):"Lần đo đầu tiên của bé — từ lần sau biểu đồ sẽ nối thành đường.")+'</div>';
+ if(ms.length>1){ var a=ms[ms.length-2], z=ms[ms.length-1], days=Math.round((parseD(z.ngayDo)-parseD(a.ngayDo))/86400000), dw=round1(z.canNang-a.canNang);
+  var dh=(z.chieuCao!=null&&z.chieuCao!==""&&a.chieuCao!=null&&a.chieuCao!=="")?round1(z.chieuCao-a.chieuCao):null;
+  h+='<div style="background:var(--pri-soft);border-radius:11px;padding:9px 11px;font-size:12.5px;line-height:1.5;margin-bottom:10px">So với lần trước ('+fmtDate(a.ngayDo)+', cách '+days+' ngày): <b>'+(dw>=0?"+":"")+(""+dw).replace(".",",")+' kg</b>'+(dh!=null?(' · <b>'+(dh>=0?"+":"")+(""+dh).replace(".",",")+' cm</b>'):"")+'</div>'; }
+ h+='<div class="gv-tabs"><div class="gv-tab'+(tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">Cân nặng</div><div class="gv-tab'+(tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">Chiều cao</div></div>';
+ if(!plot.length) h+='<div style="text-align:center;color:var(--muted);font-size:12.5px;padding:22px 8px">Chưa có số đo '+(tab==="h"?"chiều cao":"cân nặng")+' của bé.</div>';
+ else h+=growthChart(b,ms,tab)+growthLegend();
+ if(nowA!=null&&nowA>60) h+='<div class="faint" style="font-size:12px;line-height:1.5;margin-top:8px;color:#9A5B13">Bé đã trên 5 tuổi: biểu đồ chuẩn WHO trong app mới có tới 60 tháng, nên các điểm sau mốc đó dồn ở mép phải. Số đo vẫn được lưu đủ.</div>';
+ var sl=growthSyncLine(b); if(sl) h+='<div class="faint" style="font-size:11.5px;line-height:1.5;margin-top:8px'+(sl.charAt(0)==="⚠"?";color:#9A5B13":"")+'">'+esc(sl)+'</div>';
+ h+='<button class="btn sec" style="margin-top:10px;width:100%;font-size:13px" onclick="S.growth.baby=\''+b.id+'\';setTab(\'growth\')">Xem đầy đủ lịch sử đo của bé</button>';
+ return h+'</div>';
+}
+
+function dobStep2Line(){ return '<div style="background:var(--pri-soft);border-radius:11px;padding:9px 11px;font-size:13px;line-height:1.5;margin-bottom:11px">Tuổi của bé: <b>'+ageLabel(dobMonths())+'</b> <span class="faint" style="font-size:11.5px">(tính từ ngày sinh '+fmtDate(S.user.dob)+')</span></div>'; }
+/* Xoá / sửa trên máy phải báo được cho hệ thống, không thì lần tìm SĐT sau dữ liệu đã xoá lại hiện về. */
+function growthOnDelMeasure(id){ var ms=measures(),m=null,i; for(i=0;i<ms.length;i++) if(ms[i].id===id) m=ms[i]; if(!m) return;
+ var bs=babies(); bs.forEach(function(b){ if(b.id===m.babyId&&b.phone&&b.cv&&(m.sv===1||b.sv)){ b.del=b.del||[]; if(b.del.indexOf(id)<0) b.del.push(id); } }); saveBabies(bs); }
+function growthOnDelBaby(id){ var b=babyById(id); if(b&&b.sv){ var t=lsGet(GR_TOMB_KEY,[]); if(t.indexOf(b.sv)<0) t.push(b.sv); lsSet(GR_TOMB_KEY,t); } }
+/* Đổi tên bé = đổi khoá nhận diện trên hệ thống → bỏ hồ sơ cũ trên hệ thống, gửi lại toàn bộ dưới tên mới (không thì thành 2 bé). */
+function growthOnEditBaby(id,oldKey){ var bs=babies(),ms=measures(),hit=false; bs.forEach(function(b){ if(b.id!==id||!b.phone||!b.cv) return; hit=true; b.dirty=true;
+  if(b.sv&&kidKey(b.ten)!==oldKey){ var t=lsGet(GR_TOMB_KEY,[]); if(t.indexOf(b.sv)<0) t.push(b.sv); lsSet(GR_TOMB_KEY,t); b.sv=""; b.del=[]; ms.forEach(function(m){ if(m.babyId===id) m.sv=0; }); } });
+ if(hit){ saveBabies(bs); saveMeasures(ms); } }
 
 function render(){ el("topmascot").innerHTML=curMascot(); var tb=el("topbar"); if(tb) tb.style.display=(S.tab==="home"?"none":"flex"); var ta=el("topactions"); if(ta) ta.innerHTML=topActions(true); var hb=document.querySelector(".top .hbtn"); if(hb&&!hb.innerHTML) hb.innerHTML=ic("menu",20); renderTabbar(); var v=el("view");
  v.innerHTML = S.tab==="home"?renderHome(): S.tab==="profile"?renderProfile(): S.tab==="stats"?renderStats(): S.tab==="orders"?renderOrders(): S.tab==="makeorder"?renderMakeOrder(): S.tab==="rank"?renderRank(): S.tab==="tuvan"?renderTuVan(): S.tab==="sanpham"?renderProducts(): S.tab==="hoidap"?renderQA(): S.tab==="quiz"?renderQuiz(): S.tab==="km"?renderPromo(): S.tab==="feedback"?renderFeedback(): S.tab==="docs"?renderDocs(): S.tab==="growth"?renderGrowth():renderCSR(); v.style.animation='none';void v.offsetHeight;v.style.animation=''; }
@@ -987,7 +1181,7 @@ function step1(){ var u=S.user, dyn="";
  if(u.obj){ dyn+='<label>Giới tính</label><div class="chips">'+["Nam","Nữ"].map(function(g){return '<div class="chip '+(u.gender===g?"on":"")+'" onclick="S.user.gender=\''+g+'\';render()">'+g+'</div>';}).join("")+'</div>';
   if(u.obj==="adult"){ dyn+='<label>Nhóm tuổi</label><div class="chips">'+[["Trưởng thành",false],["Cao tuổi (60+)",true]].map(function(x){return '<div class="chip '+(u.senior===x[1]?"on":"")+'" onclick="S.user.senior='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'; }
   if(u.obj==="pregnant"){ dyn+='<label>Tình trạng</label><div class="chips">'+[["Đang mang thai",false],["Sau sinh / cho con bú",true]].map(function(x){return '<div class="chip '+(!!u.postpartum===x[1]?"on":"")+'" onclick="S.user.postpartum='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'; }
-  if(u.obj==="tre_0_12"||u.obj==="tre_1_10"){ dyn+='<label>Con thứ mấy?</label><input value="'+esc(u.birth)+'" oninput="S.user.birth=this.value" placeholder="VD: 1, 2..."/><label>Sinh thường / Sinh mổ</label><div class="chips">'+["Sinh thường","Sinh mổ"].map(function(d){return '<div class="chip '+(u.deliv===d?"on":"")+'" onclick="S.user.deliv=\''+d+'\';render()">'+d+'</div>';}).join("")+'</div><label>Sinh non? Số tuần sinh sớm (để trống nếu đủ tháng)</label><input type="number" inputmode="numeric" value="'+esc(u.preterm||"")+'" oninput="S.user.preterm=this.value" placeholder="VD: 4 — sinh sớm 4 tuần"/>'; }
+  if(u.obj==="tre_0_12"||u.obj==="tre_1_10"){ dyn+='<label>Ngày sinh của bé</label><input type="date" value="'+esc(u.dob||"")+'" max="'+nowISO()+'" onchange="setDob(this.value)"/><div id="dobage" class="faint" style="font-size:12px;line-height:1.5;margin:-4px 0 9px">'+dobAgeLine()+'</div><label>Con thứ mấy?</label><input value="'+esc(u.birth)+'" oninput="S.user.birth=this.value" placeholder="VD: 1, 2..."/><label>Sinh thường / Sinh mổ</label><div class="chips">'+["Sinh thường","Sinh mổ"].map(function(d){return '<div class="chip '+(u.deliv===d?"on":"")+'" onclick="S.user.deliv=\''+d+'\';render()">'+d+'</div>';}).join("")+'</div><label>Sinh non? Số tuần sinh sớm (để trống nếu đủ tháng)</label><input type="number" inputmode="numeric" value="'+esc(u.preterm||"")+'" oninput="S.user.preterm=this.value" placeholder="VD: 4 — sinh sớm 4 tuần"/>'; }
   dyn+='<label>Tiền sử bệnh lý</label>'+HISTS.map(function(h){var on=u.hist.indexOf(h)>=0;return '<div class="chk '+(on?"on":"")+'" onclick="toggleHist(\''+h+'\')"><span class="bx">'+(on?ic("check",13):"")+'</span>'+h+'</div>';}).join("");
   dyn+='<label>Sản phẩm đang dùng (nếu có)</label><input value="'+esc(u.cur)+'" oninput="S.user.cur=this.value" placeholder="Tên sữa đang dùng..."/>'; }
  return stepBar()+
@@ -995,25 +1189,26 @@ function step1(){ var u=S.user, dyn="";
  /* XIN ĐỒNG Ý TRƯỚC KHI LƯU. Trước 30/09/2026 app gán sẵn consent=true và không hỏi ai — lưu tên/SĐT khách
     mà khách không hề được hỏi. Giờ PG BẮT BUỘC chọn 1 trong 2 (không có mặc định): bỏ qua là không đi tiếp được. */
  '<label>Hỏi khách trước khi lưu thông tin *</label>'+
- '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và kết quả tư vấn hôm nay để chăm sóc và nhắc lịch cho anh/chị. Anh/chị đồng ý không ạ?”</div>'+
+ '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và kết quả tư vấn hôm nay (gồm cả cân nặng, chiều cao) để chăm sóc và nhắc lịch cho anh/chị. Anh/chị đồng ý không ạ?”</div>'+
  '<div class="chips" style="margin-bottom:11px">'+[["Khách đồng ý",true],["Khách không đồng ý",false]].map(function(x){return '<div class="chip '+(S.consent===x[1]?"on":"")+'" onclick="S.consent='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'+
  (S.consent===false
   ? '<div class="faint" style="font-size:12.5px;line-height:1.55;background:#fff;border:1px dashed #cfe0fb;border-radius:10px;padding:9px 11px;margin-bottom:10px">Không lưu tên và số điện thoại của khách này. Vẫn tư vấn bình thường.</div>'
   : '<label>Tên người mua *</label><input value="'+esc(S.buyer.name)+'" oninput="S.buyer.name=this.value" placeholder="Họ tên"/>'+
-    '<label>Số điện thoại *</label><input type="tel" value="'+esc(S.buyer.phone)+'" oninput="S.buyer.phone=this.value" placeholder="SĐT"/>'+
+    '<label>Số điện thoại *</label><input type="tel" value="'+esc(S.buyer.phone)+'" oninput="S.buyer.phone=this.value" onchange="kidsLookup()" placeholder="SĐT"/>'+
     '<label>Địa chỉ</label><input value="'+esc(S.buyer.addr)+'" oninput="S.buyer.addr=this.value" placeholder="(tùy chọn)"/>')+
  '<label>Mua cho ai?</label><div class="chips">'+RELS.map(function(r){return '<div class="chip '+(S.buyer.rel===r?"on":"")+'" onclick="S.buyer.rel=\''+r+'\';render()">'+r+'</div>';}).join("")+'</div>'+
  '</div>'+
  '<div class="card" style="background:#FFF6EE;border-color:#f6dcc4"><div class="sec-title" style="margin-top:0;color:#b45309"><span class="ico" style="background:#fff;color:var(--warm)">'+ic("heart",16)+'</span>Người dùng sản phẩm</div>'+
+ '<div id="kidbox">'+kidChips()+'</div>'+
  (S.consent===false?'':'<label>Tên người dùng</label><input value="'+esc(S.user.name)+'" oninput="S.user.name=this.value" placeholder="Họ tên người dùng"/>')+
  '<label>Đối tượng sử dụng *</label><div class="chips">'+OBJS.map(function(o){return '<div class="chip '+(u.obj===o.v?"on":"")+'" onclick="S.user.obj=\''+o.v+'\';render()">'+o.l+'</div>';}).join("")+'</div>'+dyn+'</div>'+
  '<button class="btn" onclick="next1()">Tiếp tục '+ic("arrow",18)+'</button>'; }
-function next1(){ if(S.consent==null){toast("Hỏi khách trước: có đồng ý cho lưu thông tin không?");return;} if(S.consent&&(!S.buyer.name||!S.buyer.phone)){toast("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){toast("Chọn đối tượng sử dụng.");return;} if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
+function next1(){ if(S.consent==null){toast("Hỏi khách trước: có đồng ý cho lưu thông tin không?");return;} if(S.consent&&(!S.buyer.name||!S.buyer.phone)){toast("Nhập Tên và SĐT người mua.");return;} if(!S.user.obj){toast("Chọn đối tượng sử dụng.");return;} if(isChild()&&S.user.dob){ if(dobMonths()==null){toast("Ngày sinh của bé không hợp lệ.");return;} var _was=applyDob(); if(_was) toast("Theo ngày sinh, bé "+ageLabel(dobMonths())+" — app chuyển sang nhóm “"+objLabel(S.user.obj)+"”."); } if(!S.user.hist.length)S.user.hist=["Không có"]; S.step=2; window.scrollTo(0,0); render(); }
 
 function numIn(k,ph){ return '<input type="number" inputmode="decimal" value="'+(S.m[k]!=null?S.m[k]:"")+'" oninput="setM(\''+k+'\',this.value)" placeholder="'+ph+'"/>'; }
 function step2(){ var o=S.user.obj,f="";
- if(o==="tre_0_12")f='<label>Số tháng tuổi</label>'+numIn("months","0–12")+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
- else if(o==="tre_1_10")f='<label>Số tuổi (năm)</label>'+numIn("age","1–10")+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
+ if(o==="tre_0_12")f=(dobMonths()!=null?dobStep2Line():'<label>Số tháng tuổi</label>'+numIn("months","0–12"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
+ else if(o==="tre_1_10")f=(dobMonths()!=null?dobStep2Line():'<label>Số tuổi (năm)</label>'+numIn("age","1–10"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
  else if(o==="adult")f='<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
  else if(o==="pregnant"){ var tog='<label>Tình trạng của mẹ</label><div class="chips" style="margin-bottom:11px">'+[["Đang mang thai",false],["Sau sinh / cho con bú",true]].map(function(x){return '<div class="chip '+(!!S.user.postpartum===x[1]?"on":"")+'" onclick="S.user.postpartum='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>';
   if(S.user.postpartum) f=tog+'<label>Tuổi</label>'+numIn("age","tuổi")+'<div class="row"><div><label>Cân nặng hiện tại (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
@@ -1306,7 +1501,7 @@ function scanHolo(){
  return '<div class="scan-panel" style="padding:16px 14px 18px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> ĐANG PHÂN TÍCH DINH DƯỠNG</div><div class="scan-stage" style="position:relative;height:242px;margin:8px 0 10px">'+svg+'</div><div style="text-align:center"><div id="scanpct" style="font-size:30px;font-weight:800;font-family:var(--fh);color:#5BE0C4;line-height:1">0%</div><div id="scanmsg" style="font-size:12px;margin-top:4px;color:#bfe9df">Tổng hợp khuyến nghị sản phẩm…</div></div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
 }
 function sh(icon,text,col,bg){ col=col||"var(--pri)"; bg=bg||"var(--pri-soft)"; return '<div class="rhead"><span class="rh-ic" style="background:'+bg+';color:'+col+'">'+ic(icon,16)+'</span>'+text+'</div>'; }
-function summaryCard(){ var o=S.user.obj; var objL=objLabel(o); var age=S.m.age!=null?(S.m.age+" tuổi"):(S.m.months!=null?(S.m.months+" tháng"):""); var it=[];
+function summaryCard(){ var o=S.user.obj; var objL=objLabel(o); var age=ageText(); var it=[];
  it.push(["Đối tượng",objL]); it.push(["Giới tính",S.user.gender]);
  if(age)it.push(["Tuổi",age]);
  if(S.m.h!=null)it.push(["Chiều cao",S.m.h+" cm"]);
@@ -1391,6 +1586,7 @@ function step4(){ if(S.scanState==='scanning') return stepBar()+scanLoader(); va
  return stepBar()+
  (c?heroCard(c,nm):'<div class="card" style="text-align:center;padding:22px">Chưa đủ dữ liệu để phân tích.</div>')+
  (c&&c.status==="pregnant"?pregPanel(c):"")+
+ consultGrowthCard()+
  (r.freeze?"":scanResultCard())+adviceCard(r)+
  (r.freeze?"":stockAdviceCard(r))+
  (r.freeze?"":tuvanVideoCard(r))+
@@ -2064,7 +2260,7 @@ function replaceSessionEnc(id,obj){
 }
 
 /* ---------- HOÀN TẤT 1 PHIÊN TƯ VẤN ---------- */
-var CONSENT_V="v1-2026-09-30"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
+var CONSENT_V="v2-2026-09-30"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
 function newSessionId(){ return "S"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36); }
 function buildSession(){
  var s=buildSessionFull();
@@ -2072,7 +2268,7 @@ function buildSession(){
  if(!s.consent){
   /* Khách KHÔNG đồng ý: bỏ mọi thứ nhận ra được người (tên, SĐT, địa chỉ, số đo, bệnh sử). Chỉ giữ phần không
      định danh (PG, điểm bán, đối tượng, SP gợi ý) để vẫn đếm đúng số lượt tư vấn của PG. */
-  s.buyerName=""; s.phone=""; s.addr=""; s.userName=""; s.birth=""; s.deliv="";
+  s.buyerName=""; s.phone=""; s.addr=""; s.userName=""; s.birth=""; s.dob=""; s.deliv="";
   s.weight=""; s.height=""; s.week=""; s.gainActual=""; s.gainEval=""; s.metric=""; s.hist=[]; s.cur="";
  }
  return s;
@@ -2082,11 +2278,11 @@ function buildSessionFull(){
  var objL=objLabel(S.user.obj);
  var prods=(r.prods||[]).map(function(id){var p=P(id);return p?p.name:id;});
  var first=(r.prods||[])[0];
- var age=S.m.age!=null?(""+S.m.age+" tuổi"):(S.m.months!=null?(""+S.m.months+" tháng"):"");
+ var age=ageText();
  var dt=new Date();
  return { pg:S.acc.name||"", area:S.acc.area||"",
   buyerName:S.buyer.name||"", phone:S.buyer.phone||"", addr:S.buyer.addr||"", rel:S.buyer.rel||"",
-  userName:S.user.name||"", obj:objL, gender:S.user.gender||"", birth:S.user.birth||"", deliv:S.user.deliv||"",
+  userName:S.user.name||"", obj:objL, gender:S.user.gender||"", birth:S.user.birth||"", dob:S.user.dob||"", deliv:S.user.deliv||"",
   age:age, weight:(S.m.w!=null?S.m.w:""), height:(S.m.h!=null?S.m.h:""), week:(S.m.week!=null?S.m.week:""),
   gainActual:(c.traj&&c.traj.ac!=null)?c.traj.ac:"", gainEval:(c.traj?c.traj.gs:""),
   metric:c.metric||"", status:c.label||"", needs:(S.needs||[]).slice(), hist:(S.user.hist||[]).slice(), cur:S.user.cur||"",
@@ -2163,6 +2359,10 @@ function finishConsult(){
  /* Bản có tên/SĐT chỉ lưu trên máy khi khách ĐỒNG Ý. Khách không đồng ý: chỉ gửi bản không định danh (xem buildSession). */
  if(_ss.consent){ saveSessionEnc(_ss).catch(function(e){ console.warn("Lưu phiên lỗi:",e); toast("Không lưu được phiên trên máy này: "+((e&&e.message)||"lỗi")+"."); }); }
  queueSession(_ss); flushSessions(true);
+ /* Số đo của phiên này thành 1 điểm trên biểu đồ của bé (chỉ khi khách đồng ý + có ngày sinh). Màn kết quả đã vẽ TRƯỚC
+    khi hàm này chạy (xem startScan) nên phải vẽ lại thì thẻ biểu đồ mới có điểm hôm nay. */
+ if(_ss.consent){ var _kid=null; try{ _kid=consultToGrowth(_ss); }catch(e){ console.warn("Gắn số đo vào biểu đồ lỗi:",e); toast("Chưa gắn được số đo vào biểu đồ của bé."); }
+  if(_kid){ growthFlush(); if(S.tab==="tuvan"&&S.step===4) render(); } }
 }
 /* ===== THỐNG KÊ CÁ NHÂN (nhật ký cục bộ) ===== */
 var STATS_KEY="wt_stats_v1";
@@ -2770,7 +2970,8 @@ function renderAdmin(){
   try{ if(typeof checkDeepLink==="function"){ checkDeepLink(); window.addEventListener("hashchange", checkDeepLink); } }catch(e){}
   function autoFlush(){ try{ if(typeof flushOrders==="function" && navigator.onLine) flushOrders(true); }catch(e){}
     /* Hàng chờ phiên tư vấn đi cùng nhịp với hàng chờ đơn (mở app / có mạng / mỗi phút). */
-    try{ if(typeof flushSessions==="function") flushSessions(true); }catch(e){ console.warn("flushSessions lỗi:",e); } }
+    try{ if(typeof flushSessions==="function") flushSessions(true); }catch(e){ console.warn("flushSessions lỗi:",e); }
+    try{ if(typeof growthFlush==="function") growthFlush(); }catch(e){ console.warn("growthFlush lỗi:",e); } }
   function autoStock(){ try{ if(typeof pullStockAuto==="function") pullStockAuto(); }catch(e){} }
   window.addEventListener("load",function(){ setTimeout(function(){ autoFlush(); autoStock(); },2500); });
   window.addEventListener("online",function(){ if(typeof toast==="function")toast("Đã có mạng — đang đồng bộ."); autoFlush(); autoStock(); });
