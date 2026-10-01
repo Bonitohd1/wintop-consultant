@@ -426,11 +426,6 @@
   @keyframes gcFade{from{opacity:0}to{opacity:1}}
   @keyframes gcPop{0%{opacity:0;transform:scale(.2)}100%{opacity:1;transform:scale(1)}}
   @media (prefers-reduced-motion:reduce){.gc-band,.gc-line,.gc-path,.gc-pt,.gc-callout{animation:none;opacity:1;stroke-dashoffset:0}}
-  .glegend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:11px;color:var(--muted)}
-  .glegend span{display:inline-flex;align-items:center;gap:5px}
-  .glegend i{display:inline-block;width:18px;height:0;border-top-width:2.5px;border-top-style:solid;vertical-align:middle}
-  .glegend i.gc-sw-dash{border-top-style:dashed}
-  .glegend i.gc-sw-dot{width:10px;height:10px;border:0;border-radius:50%;vertical-align:-1px}
   .gbaby{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
   .gchip{flex-shrink:0;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px}
   .gchip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
@@ -448,18 +443,31 @@
   .posmsg{background:var(--pri-soft);color:var(--pri);border-radius:12px;padding:11px 13px;font-size:12.5px;display:flex;gap:8px;align-items:flex-start;font-weight:500}
   .posmsg .ic{font-size:19px;flex-shrink:0}
   .zpill-ok{background:var(--health-soft);color:var(--ok)}.zpill-low{background:var(--warm-soft);color:var(--bad)}.zpill-high{background:var(--gold-soft);color:var(--warn)}.zpill-na{background:var(--pri-soft);color:var(--muted)}
-  .zbig{display:flex;gap:10px}.zbig>div{flex:1;background:var(--pri-soft);border-radius:12px;padding:11px}
-  .zbig .zt{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;font-family:var(--fh)}
-  .gi-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 9px}
-  .gi-t{background:#F6F9FD;border:1px solid var(--line);border-radius:12px;padding:8px 8px 9px;min-width:0}
-  .gi-k{font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.25;font-family:var(--fh)}
-  .gi-v{font-family:var(--fh);font-weight:800;font-size:16.5px;margin:3px 0 1px;white-space:nowrap;letter-spacing:-.2px}
-  .gi-v small{font-size:11px;font-weight:700;color:var(--muted)}
-  .gi-s{font-size:10.5px;color:var(--muted);line-height:1.3;margin-bottom:5px}
-  .gi-t .mz{font-size:9.5px;padding:2px 7px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-  .gi-line{font-size:12.5px;line-height:1.55;background:var(--pri-soft);border-radius:11px;padding:9px 11px;margin-bottom:10px}
-  .glegend i.gc-sw-zone{width:12px;height:10px;border:0;border-radius:3px;opacity:.35;vertical-align:-1px}
-  .zbig .zv{font-family:var(--fh);font-weight:700;font-size:17px;margin:3px 0}
+  .gr-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .gr-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:800;font-size:16px;flex-shrink:0}
+  .gr-who{flex:1;min-width:0}.gr-name{font-family:var(--fh);font-weight:700;font-size:15px}.gr-sub{font-size:11.5px;color:var(--muted);line-height:1.35}
+  .gr-badge{font-family:var(--fh);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;max-width:44%;overflow:hidden;text-overflow:ellipsis}
+  .gr-b-ok{background:var(--health-soft);color:var(--ok)}.gr-b-low{background:var(--warm-soft);color:var(--bad)}.gr-b-high{background:var(--gold-soft);color:var(--warn)}
+  .gr-seg{display:flex;gap:4px;background:#F1F4F9;border-radius:12px;padding:3px;margin:0 0 12px}
+  .gr-seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 0;font-family:var(--fh);font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+  .gr-seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+  .gr-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .gr-big{font-family:var(--fh);font-weight:800;font-size:28px;letter-spacing:-.5px}.gr-u{font-size:13px;color:var(--muted);font-weight:600}
+  .gr-me{font-size:10.5px;font-weight:700;color:var(--warn);background:var(--gold-soft);border-radius:999px;padding:2px 7px;vertical-align:4px}
+  .gr-pc{font-size:12px;color:var(--muted);text-align:right;line-height:1.3}
+  .gr-rule{position:relative;height:24px;margin:8px 0 2px}
+  .gr-bar{display:flex;height:10px;border-radius:999px;overflow:hidden;position:absolute;left:0;right:0;top:7px}.gr-bar i{display:block;height:100%}
+  .gr-dot{position:absolute;top:2px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--pri);border:3px solid #fff;box-shadow:0 1px 4px rgba(15,23,42,.35)}
+  .gr-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:10px}.gr-lbl .ok{color:var(--ok);font-weight:700}
+  .gr-line{font-size:12.5px;line-height:1.55;background:var(--pri-soft);border-radius:11px;padding:9px 11px;margin-bottom:10px}
+  .gr-chips{display:flex;gap:6px;justify-content:center;margin-top:8px}
+  .gr-chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+  .gr-chips button.on{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)}
+  .gr-tip{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--muted);background:#F6F8FB;border-radius:10px;padding:8px 10px}.gr-tip b{color:var(--ink)}
+  .gr-next{display:flex;gap:10px;align-items:flex-start;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .gr-nic{color:#10A36B;flex-shrink:0;margin-top:1px}.gr-nt{font-family:var(--fh);font-weight:700;font-size:13.5px}.gr-nd{font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px}
+  .gr-foot{font-size:10.5px;color:var(--muted);line-height:1.5;margin-top:8px}
+  .gr-empty{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 8px}
  #gamefab{display:none !important;}
 </style>
 </head>
@@ -816,7 +824,7 @@ var NAV=[{k:"home",ic:"home",l:"Trang chủ"},{k:"tuvan",ic:"stetho",l:"Tư vấ
 function renderTabbar(){ el("tabbar").innerHTML=NAV.map(function(t){ if(t.c) return '<div class="navc"><button onclick="newConsult()">'+ic("plus",24)+'</button></div>'; return '<button class="'+(S.tab===t.k?"on":"")+'" onclick="setTab(\''+t.k+'\')">'+ic(t.ic,22)+'<span>'+t.l+'</span></button>'; }).join(""); }
 
 /* ===== BIEU DO TANG TRUONG (port tu Nutritie, WHO 0-60m) ===== */
-if(typeof S!=='undefined'){if(!S.growth)S.growth={baby:'',tab:'w',all5:false,addingBaby:false,editBaby:null,edit:null};if(!S.bf)S.bf={};if(!S.gf)S.gf={};}
+if(typeof S!=='undefined'){if(!S.growth)S.growth={baby:'',tab:'w',range:12,addingBaby:false,editBaby:null,edit:null};if(!S.bf)S.bf={};if(!S.gf)S.gf={};}
 var WHO={
  wfaB:[[0.3487,3.3464,0.14602],[0.2297,4.4709,0.13395],[0.197,5.5675,0.12385],[0.1738,6.3762,0.11727],[0.1553,7.0023,0.11316],[0.1395,7.5105,0.1108],[0.1257,7.934,0.10958],[0.1134,8.297,0.10902],[0.1021,8.6151,0.10882],[0.0917,8.9014,0.10881],[0.082,9.1649,0.10891],[0.073,9.4122,0.10906],[0.0644,9.6479,0.10925],[0.0563,9.8749,0.10949],[0.0487,10.0953,0.10976],[0.0413,10.3108,0.11007],[0.0343,10.5228,0.11041],[0.0275,10.7319,0.11079],[0.0211,10.9385,0.11119],[0.0148,11.143,0.11164],[0.0087,11.3462,0.11211],[0.0029,11.5486,0.11261],[-0.0028,11.7504,0.11314],[-0.0083,11.9514,0.11369],[-0.0137,12.1515,0.11426],[-0.0189,12.3502,0.11485],[-0.024,12.5466,0.11544],[-0.0289,12.7401,0.11604],[-0.0337,12.9303,0.11664],[-0.0385,13.1169,0.11723],[-0.0431,13.3,0.11781],[-0.0476,13.4798,0.11839],[-0.052,13.6567,0.11896],[-0.0564,13.8309,0.11953],[-0.0606,14.0031,0.12008],[-0.0648,14.1736,0.12062],[-0.0689,14.3429,0.12116],[-0.0729,14.5113,0.12168],[-0.0769,14.6791,0.1222],[-0.0808,14.8466,0.12271],[-0.0846,15.014,0.12322],[-0.0883,15.1813,0.12373],[-0.092,15.3486,0.12425],[-0.0957,15.5158,0.12478],[-0.0993,15.6828,0.12531],[-0.1028,15.8497,0.12586],[-0.1063,16.0163,0.12643],[-0.1097,16.1827,0.127],[-0.1131,16.3489,0.12759],[-0.1165,16.515,0.12819],[-0.1198,16.6811,0.1288],[-0.123,16.8471,0.12943],[-0.1262,17.0132,0.13005],[-0.1294,17.1792,0.13069],[-0.1325,17.3452,0.13133],[-0.1356,17.5111,0.13197],[-0.1387,17.6768,0.13261],[-0.1417,17.8422,0.13325],[-0.1447,18.0073,0.13389],[-0.1477,18.1722,0.13453],[-0.1506,18.3366,0.13517]],
  wfaG:[[0.3809,3.2322,0.14171],[0.1714,4.1873,0.13724],[0.0962,5.1282,0.13],[0.0402,5.8458,0.12619],[-0.005,6.4237,0.12402],[-0.043,6.8985,0.12274],[-0.0756,7.297,0.12204],[-0.1039,7.6422,0.12178],[-0.1288,7.9487,0.12181],[-0.1507,8.2254,0.12199],[-0.17,8.48,0.12223],[-0.1872,8.7192,0.12247],[-0.2024,8.9481,0.12268],[-0.2158,9.1699,0.12283],[-0.2278,9.387,0.12294],[-0.2384,9.6008,0.12299],[-0.2478,9.8124,0.12303],[-0.2562,10.0226,0.12306],[-0.2637,10.2315,0.12309],[-0.2703,10.4393,0.12315],[-0.2762,10.6464,0.12323],[-0.2815,10.8534,0.12335],[-0.2862,11.0608,0.1235],[-0.2903,11.2688,0.12369],[-0.2941,11.4775,0.1239],[-0.2975,11.6864,0.12414],[-0.3005,11.8947,0.12441],[-0.3032,12.1015,0.12472],[-0.3057,12.3059,0.12506],[-0.308,12.5073,0.12545],[-0.3101,12.7055,0.12587],[-0.312,12.9006,0.12633],[-0.3138,13.093,0.12683],[-0.3155,13.2837,0.12737],[-0.3171,13.4731,0.12794],[-0.3186,13.6618,0.12855],[-0.3201,13.8503,0.12919],[-0.3216,14.0385,0.12988],[-0.323,14.2265,0.13059],[-0.3243,14.414,0.13135],[-0.3257,14.601,0.13213],[-0.327,14.7873,0.13293],[-0.3283,14.9727,0.13376],[-0.3296,15.1573,0.1346],[-0.3309,15.341,0.13545],[-0.3322,15.524,0.1363],[-0.3335,15.7064,0.13716],[-0.3348,15.8882,0.138],[-0.3361,16.0697,0.13884],[-0.3374,16.2511,0.13968],[-0.3387,16.4322,0.14051],[-0.34,16.6133,0.14132],[-0.3414,16.7942,0.14213],[-0.3427,16.9748,0.14293],[-0.344,17.1551,0.14371],[-0.3453,17.3347,0.14448],[-0.3466,17.5136,0.14525],[-0.3479,17.6916,0.146],[-0.3492,17.8686,0.14675],[-0.3505,18.0445,0.14748],[-0.3518,18.2193,0.14821]],
@@ -842,15 +850,16 @@ function babyMeasures(id){return measures().filter(function(m){return m.babyId==
 function curBaby(){var bs=babies();if(!bs.length)return null;var b=null,id=S.growth.baby;for(var i=0;i<bs.length;i++)if(bs[i].id===id)b=bs[i];if(!b){b=bs[0];S.growth.baby=b.id;}return b;}
 function dueBabies(){var bs=babies(),now=Date.now(),out=[];bs.forEach(function(b){var ms=babyMeasures(b.id);if(ms.length){var last=parseD(ms[ms.length-1].ngayDo);if(last&&(now-last)/86400000>=30)out.push(b);}});return out;}
 var POS=["Tuyệt vời! Mẹ vừa thêm một cột mốc mới cho bé.","Đã lưu — theo dõi đều đặn giúp mẹ hiểu con hơn mỗi ngày.","Cảm ơn mẹ đã chăm chỉ cân đo cho bé!","Ghi nhận rồi ạ! Đường tăng trưởng của bé lại dài thêm một chút."];
-function zClass(z,type){if(z==null||!isFinite(z))return {lb:"Chưa đủ dữ liệu",cls:"na"};var w=(type==="w");if(z<-3)return {lb:w?"Suy dinh dưỡng nặng":"Thấp còi nặng",cls:"low"};if(z<-2)return {lb:w?"Nhẹ cân":"Thấp còi",cls:"low"};if(z<=2)return {lb:"Bình thường",cls:"ok"};if(z<=3)return {lb:w?"Cân nặng cao":"Cao hơn tuổi",cls:"high"};return {lb:w?"Thừa cân rõ rệt":"Rất cao",cls:"high"};}
 function selBaby(id){S.growth.baby=id;S.growth.edit=null;S.growth.editBaby=null;S.growth.addingBaby=false;S.gf={};render();}
 function submitBaby(){var f=S.bf||{},ten=(f.ten||"").trim(),ngay=f.ngaySinh||"",gt=f.gioiTinh||"Trai";
+ /* Sinh non: ô để trống = chưa biết (giữ nguyên); người dùng xoá trắng ô đang có số = đủ tháng (0). */
+ var snt; if(f.snt!=null){ var sx=String(f.snt).trim(); if(sx===""){ snt=0; } else { var sn=parseFloat(sx); if(!isFinite(sn)||sn<0||sn>16){toast("Số tuần sinh sớm phải từ 0 đến 16 (để trống nếu bé sinh đủ tháng).");return;} snt=Math.round(sn); } }
  if(!ngay){toast("Nhập ngày sinh của bé (bắt buộc).");return;}var d=parseD(ngay);if(!d){toast("Ngày sinh không hợp lệ.");return;}if(d>new Date()){toast("Ngày sinh không thể ở tương lai.");return;}
  var arr=babies();
- var _edId=null,_edKey="";if(S.growth.editBaby){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.editBaby){_edId=arr[i].id;_edKey=kidKey(arr[i].ten);arr[i].ten=ten||arr[i].ten;arr[i].ngaySinh=ngay;arr[i].gioiTinh=gt;}S.growth.editBaby=null;toast("Đã cập nhật hồ sơ bé.");}
- else{var id="B"+Date.now().toString(36);arr.push({id:id,ten:ten||"Bé",ngaySinh:ngay,gioiTinh:gt});S.growth.baby=id;toast("Đã thêm hồ sơ "+(ten||"bé")+"!");}
+ var _edId=null,_edKey="";if(S.growth.editBaby){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.editBaby){_edId=arr[i].id;_edKey=kidKey(arr[i].ten);arr[i].ten=ten||arr[i].ten;arr[i].ngaySinh=ngay;arr[i].gioiTinh=gt;if(snt!=null)arr[i].snt=snt;}S.growth.editBaby=null;toast("Đã cập nhật hồ sơ bé.");}
+ else{var id="B"+Date.now().toString(36),nb={id:id,ten:ten||"Bé",ngaySinh:ngay,gioiTinh:gt};if(snt!=null)nb.snt=snt;arr.push(nb);S.growth.baby=id;toast("Đã thêm hồ sơ "+(ten||"bé")+"!");}
  saveBabies(arr);if(_edId){growthOnEditBaby(_edId,_edKey);growthFlush();}S.bf={};S.growth.addingBaby=false;render();}
-function editBaby(id){var b=babyById(id);if(!b)return;S.bf={ten:b.ten,ngaySinh:b.ngaySinh,gioiTinh:b.gioiTinh};S.growth.editBaby=id;S.growth.addingBaby=true;render();}
+function editBaby(id){var b=babyById(id);if(!b)return;S.bf={ten:b.ten,ngaySinh:b.ngaySinh,gioiTinh:b.gioiTinh};if(b.snt)S.bf.snt=b.snt;S.growth.editBaby=id;S.growth.addingBaby=true;render();}
 function delBaby(id){if(!confirm("Xóa hồ sơ bé này và toàn bộ số đo của bé?"))return;growthOnDelBaby(id);setTimeout(growthFlush,0);saveBabies(babies().filter(function(b){return b.id!==id;}));saveMeasures(measures().filter(function(m){return m.babyId!==id;}));if(S.growth.baby===id)S.growth.baby="";S.growth.editBaby=null;S.growth.addingBaby=false;toast("Đã xóa hồ sơ bé.");render();}
 function submitMeasure(){var b=curBaby();if(!b){toast("Chọn hồ sơ bé trước.");return;}var f=S.gf||{};
  var date=f.ngayDo||nowISO();if(!parseD(date)){toast("Ngày đo không hợp lệ.");return;}if(parseD(date)>new Date()){toast("Ngày đo không thể ở tương lai.");return;}
@@ -861,171 +870,214 @@ function submitMeasure(){var b=curBaby();if(!b){toast("Chọn hồ sơ bé trư�
  var prevList=babyMeasures(b.id).filter(function(m){return m.id!==S.growth.edit;});
  if(!S.growth.edit&&prevList.length){var prev=prevList[prevList.length-1];if(prev&&prev.canNang&&w<prev.canNang*0.9&&!f._confirm){S.gf._confirm=true;toast("⚠️ Cân giảm >10% so lần trước ("+prev.canNang+"kg). Bấm Lưu lần nữa để xác nhận.");render();return;}}
  var arr=measures();
- if(S.growth.edit){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.edit){arr[i].ngayDo=date;arr[i].canNang=w;arr[i].chieuCao=hh;arr[i].ghiChu=f.ghiChu||"";arr[i].sv=0;}S.growth.edit=null;toast("Đã cập nhật số đo.");}
- else{arr.push({id:"M"+Date.now().toString(36),babyId:b.id,ngayDo:date,canNang:w,chieuCao:hh,ghiChu:f.ghiChu||""});toast(POS[Math.floor(Math.random()*POS.length)]);}
+ if(S.growth.edit){for(var i=0;i<arr.length;i++)if(arr[i].id===S.growth.edit){arr[i].ngayDo=date;arr[i].canNang=w;arr[i].chieuCao=hh;arr[i].ghiChu=f.ghiChu||"";arr[i].ng=f.ng==="me"?"me":"do";arr[i].sv=0;}S.growth.edit=null;toast("Đã cập nhật số đo.");}
+ else{arr.push({id:"M"+Date.now().toString(36),babyId:b.id,ngayDo:date,canNang:w,chieuCao:hh,ghiChu:f.ghiChu||"",ng:f.ng==="me"?"me":"do"});toast(POS[Math.floor(Math.random()*POS.length)]);}
  saveMeasures(arr);S.gf={};growthFlush();render();}
-function editMeasure(id){var arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id){S.gf={ngayDo:arr[i].ngayDo,canNang:arr[i].canNang,chieuCao:(arr[i].chieuCao!=null?arr[i].chieuCao:""),ghiChu:arr[i].ghiChu||""};S.growth.baby=arr[i].babyId;}S.growth.edit=id;render();}
+function editMeasure(id){var arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id){S.gf={ngayDo:arr[i].ngayDo,canNang:arr[i].canNang,chieuCao:(arr[i].chieuCao!=null?arr[i].chieuCao:""),ghiChu:arr[i].ghiChu||"",ng:arr[i].ng==="me"?"me":"do"};S.growth.baby=arr[i].babyId;}S.growth.edit=id;render();}
 function delMeasure(id){if(!confirm("Xóa số đo này?"))return;growthOnDelMeasure(id);setTimeout(growthFlush,0);saveMeasures(measures().filter(function(m){return m.id!==id;}));if(S.growth.edit===id){S.growth.edit=null;S.gf={};}toast("Đã xóa số đo.");render();}
-function growthPoint(id){var m=null,arr=measures();for(var i=0;i<arr.length;i++)if(arr[i].id===id)m=arr[i];if(!m)return;var b=babyById(m.babyId);if(!b)return;var am=ageMo(b.ngaySinh,m.ngayDo),boy=b.gioiTinh!=="Gái";var s=fmtDate(m.ngayDo)+" · "+ageLabel(am)+" · "+m.canNang+"kg";if(m.chieuCao)s+=" · "+m.chieuCao+"cm";if(am!=null&&am<=60){var zw=zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,am),m.canNang);s+=" · cân Z="+zw.toFixed(1)+" ("+zClass(zw,"w").lb+")";}toast(s);}
 function babyForm(){var f=S.bf||{},editing=!!S.growth.editBaby;
  return '<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:4px"><div class="sec-ic">'+ic('child_care')+'</div><h3 style="font-size:15px">'+(editing?"Sửa hồ sơ bé":"Hồ sơ bé mới")+'</h3></div>'
  +'<label>Tên gọi của bé</label><input value="'+esc(f.ten||"")+'" oninput="S.bf.ten=this.value" placeholder="VD: Bé Bo">'
  +'<label>Ngày sinh *</label><input type="date" value="'+esc(f.ngaySinh||"")+'" max="'+nowISO()+'" oninput="S.bf.ngaySinh=this.value">'
  +'<label>Giới tính *</label><div class="chips">'+["Trai","Gái"].map(function(g){return '<div class="chip'+(((f.gioiTinh||"Trai")===g)?" on":"")+'" onclick="S.bf.gioiTinh=\''+g+'\';render()">'+g+'</div>';}).join('')+'</div>'
+ +'<label>Sinh non? Số tuần sinh sớm</label><input type="number" inputmode="numeric" min="0" max="16" value="'+esc(f.snt!=null&&f.snt!==0?f.snt:"")+'" oninput="S.bf.snt=this.value" placeholder="Để trống nếu bé sinh đủ tháng">'
+ +'<div class="faint" style="font-size:11px;line-height:1.45;margin-top:4px">Bé sinh non: dưới 2 tuổi biểu đồ tính theo tuổi hiệu chỉnh, không bị xếp nhẹ cân oan.</div>'
  +'<div class="btnrow" style="margin-top:14px"><button class="btn sec" onclick="S.growth.addingBaby=false;S.growth.editBaby=null;S.bf={};render()">Hủy</button><button class="btn" onclick="submitBaby()">'+ic('check')+(editing?"Lưu":"Thêm bé")+'</button></div></div>';}
 function measureForm(b){var f=S.gf||{},editing=!!S.growth.edit;
  return '<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:4px"><div class="sec-ic">'+ic('add')+'</div><h3 style="font-size:15px">'+(editing?"Sửa số đo":"Thêm số đo cho "+esc(b.ten||"bé"))+'</h3></div>'
  +'<label>Ngày đo *</label><input type="date" value="'+esc(f.ngayDo||nowISO())+'" max="'+nowISO()+'" oninput="S.gf.ngayDo=this.value">'
  +'<div class="row"><div><label>Cân nặng (kg) *</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.canNang!=null?f.canNang:"")+'" oninput="S.gf.canNang=this.value" placeholder="VD: 9.5"></div><div><label>Chiều cao (cm)</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.chieuCao!=null?f.chieuCao:"")+'" oninput="S.gf.chieuCao=this.value" placeholder="VD: 74"></div></div>'
+ +'<label>Số đo này lấy từ đâu?</label><div class="chips">'+[["do","Cân đo thật (tại quầy / sổ khám)"],["me","Mẹ nhớ lại"]].map(function(o){return '<div class="chip'+(((f.ng||"do")===o[0])?" on":"")+'" onclick="S.gf.ng=\''+o[0]+'\';render()">'+o[1]+'</div>';}).join('')+'</div>'
  +'<label>Ghi chú</label><input value="'+esc(f.ghiChu||"")+'" oninput="S.gf.ghiChu=this.value" placeholder="VD: bé mọc răng, biếng ăn...">'
  +'<div class="btnrow" style="margin-top:14px">'+(editing?'<button class="btn sec" onclick="S.growth.edit=null;S.gf={};render()">Hủy</button>':'')+'<button class="btn" onclick="submitMeasure()">'+ic('check')+(editing?"Cập nhật":"Lưu số đo")+'</button></div></div>';}
-/* ===== BIỂU ĐỒ TĂNG TRƯỞNG — bản 01/10/2026 =====
- * Khách chê bản cũ "đơn giản quá": chỉ có 1 dải xanh + đường của bé, khung tuổi hẹp (5 tháng) nên trông như 2 đường
- * thẳng, không nói được bé đang ở đâu so với các bạn cùng tuổi hay có đang đi đúng nhịp không.
- * Bản này trả lời 3 câu PG cần nói với mẹ tại quầy:
- *   1) Bé đang ở đâu?            → bách phân vị ("nặng hơn 54/100 bạn cùng tuổi") + 5 vùng màu chuẩn WHO.
- *   2) Bé có đi đúng nhịp không?  → so lần đo cách ≥3 tuần: đi đúng kênh / nhanh hơn / tụt kênh (lệch ≥0,67 SD = vượt
- *                                   qua 1 đường bách phân vị chính — ngưỡng hay dùng trong theo dõi tăng trưởng).
- *   3) Lần sau cần đạt bao nhiêu? → nét đứt "kênh của bé" 3 tháng tới, có con số đích.
+/* ===== BIỂU ĐỒ TĂNG TRƯỞNG — bản 3 (01/10/2026, theo mẫu khách xem) =====
+ * Khách chê bản trước "cứng nhắc": ký hiệu kỹ thuật (SD, TV, bách phân vị), nét mảnh, đọc như bảng số.
+ * Bản này đi theo quy ước sổ theo dõi sức khoẻ mẹ và bé mà các mẹ đã quen:
+ *   - Con số lớn ở đầu + THƯỚC MÀU: xanh = bình thường, hồng/đỏ = suy dinh dưỡng, vàng = cao hơn chuẩn.
+ *   - Tên vùng ghi ngay trong biểu đồ; đường của bé cong mềm; mốc "Hôm nay"; vạch xanh "lần cân tới nên ở khoảng".
+ *   - Chạm một chấm để xem lần đo đó (khung ngay dưới biểu đồ, không bật thông báo che màn).
+ * SỬA ĐỘ CHÍNH XÁC so với bản trước (đã đối chiếu chuẩn WHO 2006):
+ *   - Cân nặng theo tuổi KHÔNG dùng để kết luận thừa cân: trên +2 chỉ ghi "Cao hơn chuẩn" (bản cũ ghi "Thừa cân rõ rệt").
+ *   - Chiều cao +2..+3 là BÌNH THƯỜNG (bản cũ tô cảnh báo); chỉ trên +3 mới là "Rất cao".
+ *   - Trẻ sinh non dưới 2 tuổi tính theo TUỔI HIỆU CHỈNH (tuổi thực − số tuần sinh sớm). Bản cũ hỏi số tuần sinh non ở
+ *     bước tư vấn nhưng biểu đồ không dùng → bé sinh non 8 tuần bị xếp "nhẹ cân" oan.
+ *   - Phân biệt số CÂN ĐO THẬT với số MẸ NHỚ LẠI: số mẹ nhớ lại không đủ chắc để kết luận "tụt kênh / nhanh hơn kênh".
  * KHÔNG gắn kết quả tăng trưởng với sản phẩm (luật quảng cáo sữa cho trẻ nhỏ): chỉ nói về số đo của bé. */
+/* Vùng chuẩn — NGUỒN DUY NHẤT cho nhãn (zClass), thước màu và nền biểu đồ: [z dưới, z trên, màu nền, nhãn, nhóm]. */
+var GZ={
+ w:[[-9,-3,"#F5B5C0","Nhẹ cân nặng","low"],[-3,-2,"#FBDCE2","Nhẹ cân","low"],[-2,2,"#D8F1E2","Bình thường","ok"],[2,9,"#FBEBC0","Cao hơn chuẩn","high"]],
+ h:[[-9,-3,"#F5B5C0","Thấp còi nặng","low"],[-3,-2,"#FBDCE2","Thấp còi","low"],[-2,3,"#D8F1E2","Bình thường","ok"],[3,9,"#FBEBC0","Rất cao","high"]]
+};
+/* Ngưỡng theo WHO: dưới −3 | −3 đến dưới −2 | −2 đến +2 (chiều cao: +3) TÍNH CẢ 2 ĐẦU | trên đó. */
+function zClass(z,type){ if(z==null||!isFinite(z)) return {lb:"Chưa đủ dữ liệu",cls:"na"}; var zs=GZ[type==="h"?"h":"w"];
+ for(var i=0;i<zs.length;i++){ var hi=zs[i][1]; if(i===zs.length-1||(zs[i][4]==="ok"?z<=hi:z<hi)) return {lb:zs[i][3],cls:zs[i][4]}; } }
 function gNum(x,d){ if(x==null||!isFinite(x)) return "—"; var f=Math.pow(10,d==null?1:d); return (""+(Math.round(x*f)/f)).replace(".",","); }
 /* Bách phân vị từ Z (phân phối chuẩn) — xấp xỉ Abramowitz–Stegun 7.1.26, sai số < 1e-7. */
 function zPct(z){ if(z==null||!isFinite(z)) return null; var x=Math.abs(z)/Math.SQRT2, t=1/(1+0.3275911*x);
  var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return 50*(1+(z<0?-y:y)); }
-function pctShort(p){ if(p==null) return "—"; if(p<1) return "<1"; if(p>99) return ">99"; return ""+Math.round(p); }
-/* "nặng hơn khoảng 54/100 trẻ…" — ở 2 đầu nói theo kiểu người thường hiểu, không ra "cao hơn <1/100". */
+/* "nặng hơn khoảng 54/100 …" — ở 2 đầu nói kiểu người thường hiểu, không ra "cao hơn <1/100". */
 function pctPhrase(p,up,down,short){ if(p==null) return ""; var tail=short?"":" trẻ cùng tuổi, cùng giới";
  if(p<3) return down+" hơn hầu hết (97/100)"+tail; if(p>97) return up+" hơn hầu hết (97/100)"+tail; return up+" hơn khoảng "+Math.round(p)+"/100"+tail; }
 function gTbl(b,isW){ var boy=b.gioiTinh!=="Gái"; return isW?(boy?WHO.wfaB:WHO.wfaG):(boy?WHO.hfaB:WHO.hfaG); }
-/* Các lần đo có số liệu của 1 chỉ số, kèm tuổi (tháng) + Z. Bảng WHO trong app dừng ở 60 tháng → sau đó Z = null. */
+/* Số tuần sinh sớm đã lưu trong hồ sơ bé (0 = đủ tháng / chưa biết). */
+function gSnt(b){ var x=parseFloat(b&&b.snt); return (isFinite(x)&&x>0&&x<=16)?x:0; }
+/* Tuổi dùng để SO CHUẨN: sinh non + dưới 24 tháng tuổi thực → tuổi hiệu chỉnh (WHO/AAP chỉnh tới 2 tuổi). */
+function gAgeMo(b,dateISO){ var a=ageMo(b.ngaySinh,dateISO); if(a==null) return null; var w=gSnt(b);
+ if(w&&a<24){ a-=w*7/30.4375; if(a<0) a=0; } return a; }
+function gCorrected(b,dateISO){ var a=ageMo(b.ngaySinh,dateISO); return gSnt(b)>0&&a!=null&&a<24; }
+/* Các lần đo có số liệu của 1 chỉ số, kèm tuổi so chuẩn + Z. Bảng WHO trong app dừng ở 60 tháng → sau đó Z = null. */
 function gMetric(b,ms,isW){ var tbl=gTbl(b,isW), out=[];
  ms.forEach(function(m){ var v=isW?m.canNang:m.chieuCao; if(v==null||v==="") return; v=+v; if(!isFinite(v)||v<=0) return;
-  var am=ageMo(b.ngaySinh,m.ngayDo); if(am==null||am<0) return; out.push({m:m,v:v,am:am,z:(am<=60?zFrom(lmsAt(tbl,am),v):null)}); });
+  var am=gAgeMo(b,m.ngayDo); if(am==null||am<0) return; out.push({m:m,v:v,am:am,z:(am<=60?zFrom(lmsAt(tbl,am),v):null),me:m.ng==="me"}); });
  return out; }
-/* Nhịp tăng: so lần đo mới nhất với lần đo gần nhất cách ít nhất 21 ngày (cách quá gần thì sai số cân lấn hết). */
+/* Nhịp tăng: so lần đo mới nhất với lần đo gần nhất cách ít nhất 21 ngày (cách quá gần thì sai số cân lấn hết).
+   Một trong 2 lần là số mẹ nhớ lại → soft: KHÔNG kết luận tụt / nhanh hơn kênh. */
 function gTrend(b,ms,isW){ var p=gMetric(b,ms,isW); if(p.length<2) return null; var z2=p[p.length-1], z1=null, i;
  for(i=p.length-2;i>=0;i--){ if((parseD(z2.m.ngayDo)-parseD(p[i].m.ngayDo))/86400000>=21){ z1=p[i]; break; } }
  if(!z1) return {short:true};
- var r={from:z1,to:z2,days:Math.round((parseD(z2.m.ngayDo)-parseD(z1.m.ngayDo))/86400000),dv:z2.v-z1.v,st:""};
+ var r={from:z1,to:z2,days:Math.round((parseD(z2.m.ngayDo)-parseD(z1.m.ngayDo))/86400000),dv:z2.v-z1.v,st:"",soft:!!(z1.me||z2.me)};
  if(z1.z!=null&&z2.z!=null){ var dz=z2.z-z1.z; r.dz=dz; r.exp=xAtZ(lmsAt(gTbl(b,isW),z2.am),z1.z)-z1.v; r.st=dz<=-0.67?"down":(dz>=0.67?"up":"ok"); }
  return r; }
-/* 3 ô chỉ số + 1 câu nhận định — dùng chung cho màn kết quả tư vấn và tab Tăng trưởng. */
-function growthInsights(b,ms){
- var W=gMetric(b,ms,true), H=gMetric(b,ms,false); if(!W.length&&!H.length) return "";
- function tile(title,p,unit,type){
-  if(!p) return '<div class="gi-t"><div class="gi-k">'+title+'</div><div class="gi-v">—</div><div class="gi-s">Chưa đo</div></div>';
-  var c=zClass(p.z,type);
-  return '<div class="gi-t"><div class="gi-k">'+title+'</div><div class="gi-v">'+gNum(p.v)+' <small>'+unit+'</small></div>'
-   +(p.z!=null?('<div class="gi-s">Bách phân vị '+pctShort(zPct(p.z))+'</div><span class="mz zpill-'+c.cls+'">'+c.lb+'</span>'):'<div class="gi-s">Ngoài bảng chuẩn 0–5 tuổi</div>')+'</div>'; }
- var tw=gTrend(b,ms,true), t3;
- if(!tw||tw.short) t3='<div class="gi-t"><div class="gi-k">Nhịp tăng cân</div><div class="gi-v">—</div><div class="gi-s">'+(tw?"Lần đo trước cách chưa tới 3 tuần":"Cần thêm 1 lần đo")+'</div></div>';
- else { var lb=tw.st==="down"?"Tụt kênh":(tw.st==="up"?"Nhanh hơn kênh":(tw.st==="ok"?"Đúng kênh":"")), cl=tw.st==="down"?"low":(tw.st==="up"?"high":"ok");
-  t3='<div class="gi-t"><div class="gi-k">Tăng trong '+tw.days+' ngày</div><div class="gi-v">'+(tw.dv>=0?"+":"")+gNum(tw.dv)+' <small>kg</small></div>'
-   +(tw.exp!=null?('<div class="gi-s">Theo kênh ≈ '+(tw.exp>=0?"+":"")+gNum(tw.exp)+' kg</div>'):'<div class="gi-s">&nbsp;</div>')+(lb?('<span class="mz zpill-'+cl+'">'+lb+'</span>'):'')+'</div>'; }
- var lw=W.length?W[W.length-1]:null, lh=H.length?H[H.length-1]:null;
- var s=[]; if(lw&&lw.z!=null) s.push(pctPhrase(zPct(lw.z),"nặng","nhẹ",false)); if(lh&&lh.z!=null) s.push(pctPhrase(zPct(lh.z),"cao","thấp",s.length>0));
- var line=s.length?("Bé "+s.join(", và ")+"."):"";
- if(tw&&tw.st==="ok") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé đi đúng kênh tăng trưởng của mình.";
+/* Câu nhận định bằng lời thường — dùng chung màn kết quả tư vấn và tab Tăng trưởng. */
+function growthLine(b,ms){
+ var W=gMetric(b,ms,true), H=gMetric(b,ms,false), lw=W.length?W[W.length-1]:null, lh=H.length?H[H.length-1]:null, s=[];
+ if(lw&&lw.z!=null) s.push(pctPhrase(zPct(lw.z),"nặng","nhẹ",false)); if(lh&&lh.z!=null) s.push(pctPhrase(zPct(lh.z),"cao","thấp",s.length>0));
+ var line=s.length?("Bé "+s.join(", và ")+"."):"", tw=gTrend(b,ms,true);
+ if(tw&&tw.st&&tw.soft) line+=" Số đo do mẹ nhớ lại nên chưa kết luận được nhịp tăng — lần sau cân tại quầy để biết chắc.";
+ else if(tw&&tw.st==="ok") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé đi đúng kênh tăng trưởng của mình.";
  else if(tw&&tw.st==="up") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé tăng cân nhanh hơn kênh của mình.";
  else if(tw&&tw.st==="down") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" cân nặng tăng chậm hơn kênh của bé — nên cân lại sau 2–4 tuần; nếu vẫn tụt, mẹ đưa bé đi khám dinh dưỡng.";
- return '<div class="gi-row">'+tile("Cân nặng",lw,"kg","w")+tile("Chiều cao",lh,"cm","h")+t3+'</div>'+(line?('<div class="gi-line">'+line+'</div>'):"");
-}
+ if(lw&&lw.z!=null&&lw.z>2) line+=" Cân nặng theo tuổi cao hơn chuẩn chưa có nghĩa là thừa cân — cần xem cùng chiều cao.";
+ return line; }
+/* Nhãn trạng thái ở đầu thẻ (giống sổ theo dõi: 1 dòng tóm tắt). */
+function growthBadge(b,ms){ var W=gMetric(b,ms,true), H=gMetric(b,ms,false), lw=W.length?W[W.length-1]:null, lh=H.length?H[H.length-1]:null;
+ if(!lw&&!lh) return null; var cw=lw?zClass(lw.z,"w").cls:"na", ch=lh?zClass(lh.z,"h").cls:"na", tw=gTrend(b,ms,true);
+ if(cw==="low"||ch==="low") return {t:"Cần theo dõi",c:"low"};
+ if(tw&&tw.st==="down"&&!tw.soft) return {t:"Chậm tăng cân",c:"high"};
+ if(cw==="high") return {t:"Cân nặng cao hơn chuẩn",c:"high"};
+ if(ch==="high") return {t:"Rất cao so với tuổi",c:"high"};
+ if(cw==="ok") return {t:"Phát triển tốt",c:"ok"};
+ return null; }
+/* Lịch cân: dưới 2 tuổi mỗi tháng, 2–5 tuổi mỗi 3 tháng (lịch theo dõi tăng trưởng thường dùng). */
+function gNextWeigh(b,lastISO){ var a=ageMo(b.ngaySinh,lastISO); var days=(a!=null&&a<24)?30:91; var d=parseD(lastISO); if(!d) return null;
+ var nx=new Date(d.getTime()+days*86400000), today=parseD(nowISO()); var due=nx<=today;
+ var iso=due?nowISO():(nx.getFullYear()+'-'+('0'+(nx.getMonth()+1)).slice(-2)+'-'+('0'+nx.getDate()).slice(-2));
+ return {iso:iso,due:due,months:days===30?1:3}; }
+/* Thước vị trí: con số lớn + "nặng hơn khoảng X/100 bạn cùng tuổi" + dải màu có chấm vị trí của bé. */
+function growthRuler(b,ms,isW){ var p=gMetric(b,ms,isW); if(!p.length) return ""; var last=p[p.length-1], type=isW?"w":"h", zs=GZ[type], unit=isW?"kg":"cm";
+ var who=last.z!=null?(pctPhrase(zPct(last.z),isW?"nặng":"cao",isW?"nhẹ":"thấp",true)+" bạn cùng tuổi"):"Ngoài bảng chuẩn 0–5 tuổi";
+ var h='<div class="gr-top"><div><span class="gr-big">'+gNum(last.v)+'</span> <span class="gr-u">'+unit+'</span>'+(last.me?' <span class="gr-me">mẹ nhớ lại</span>':'')+'</div><div class="gr-pc">'+who+'</div></div>';
+ if(last.z==null) return h;
+ var segs=zs.map(function(s){ var a=Math.max(-4,s[0]),c=Math.min(4,s[1]); return '<i style="width:'+((c-a)/8*100).toFixed(2)+'%;background:'+s[2]+'"></i>'; }).join("");
+ var pos=Math.max(2,Math.min(98,(last.z+4)/8*100));
+ return h+'<div class="gr-rule"><div class="gr-bar">'+segs+'</div><span class="gr-dot" style="left:'+pos.toFixed(1)+'%"></span></div>'
+  +'<div class="gr-lbl"><span>'+zs[1][3]+'</span><span class="ok">'+zs[2][3]+'</span><span>'+zs[3][3]+'</span></div>'; }
 var _gcSeq=0;
-function growthLegend(){
- var items=[['#1F2D6B','Bé','dot'],['#1F2D6B','Kênh dự kiến','dash'],['#0F9A6A','Trung vị','solid'],['#C2691A','±2SD','dash']];
- if(S.growth.all5) items.push(['#E11D48','±3SD','dash']);
- var zones=[['#16A34A','Bình thường'],['#F59E0B','Cần chú ý'],['#E11D48','Nguy cơ']];
- return '<div class="glegend">'+items.map(function(it){ var cls=it[2]==='dot'?'gc-sw-dot':(it[2]==='dash'?'gc-sw-dash':''); var st=it[2]==='dot'?('background:'+it[0]):('border-top-color:'+it[0]);
-   return '<span><i class="'+cls+'" style="'+st+'"></i>'+it[1]+'</span>'; }).join('')
-  +zones.map(function(z){ return '<span><i class="gc-sw-zone" style="background:'+z[0]+'"></i>'+z[1]+'</span>'; }).join('')+'</div>'; }
-function growthChart(b,ms,tab){
- var isW=(tab!=="h"), tbl=gTbl(b,isW), boy=b.gioiTinh!=="Gái", accent=boy?"#1D6FE0":"#E0559B", unit=isW?"kg":"cm";
- var pts=gMetric(b,ms,isW).map(function(p){ return {am:Math.min(p.am,60),v:p.v,id:p.m.id,z:p.z,d:p.m.ngayDo}; });
- var nowA=ageMo(b.ngaySinh,nowISO()); if(nowA==null||nowA<0) nowA=0; nowA=Math.min(nowA,60);
- var last=pts.length?pts[pts.length-1]:null;
- /* Kênh dự kiến 3 tháng tới: đi theo đúng Z hiện tại của bé (bé "bám kênh" thì sẽ tới đây). */
- var proj=null; if(last&&last.z!=null&&last.am<59.5){ var ta=Math.min(60,last.am+3); proj={a0:last.am,a1:ta,v:xAtZ(lmsAt(tbl,ta),last.z)}; }
- /* Khung tuổi: rộng ít nhất 12 tháng (khung 5 tháng làm đường cong chuẩn trông như đường thẳng — lỗi bản cũ). */
- var firstA=pts.length?pts[0].am:nowA, lastA=Math.max(pts.length?last.am:nowA,nowA,proj?proj.a1:0);
- var x0=Math.max(0,Math.floor(Math.min(firstA,nowA)-3)), x1=Math.min(60,Math.ceil(lastA+1));
- if(x1-x0<12){ x1=Math.min(60,x0+12); if(x1-x0<12) x0=Math.max(0,x1-12); }
- var xs=[]; for(var mm=x0;mm<x1;mm+=0.5) xs.push(mm); xs.push(x1);
- var ymin=Infinity,ymax=-Infinity;
- xs.forEach(function(mo){ var lo=xAtZ(lmsAt(tbl,mo),-2.5),hi=xAtZ(lmsAt(tbl,mo),2.5); if(lo<ymin)ymin=lo; if(hi>ymax)ymax=hi; });
- pts.forEach(function(p){ if(p.am>=x0){ if(p.v<ymin)ymin=p.v; if(p.v>ymax)ymax=p.v; } }); if(proj){ if(proj.v>ymax)ymax=proj.v; if(proj.v<ymin)ymin=proj.v; }
- if(!isFinite(ymin)){ ymin=0; ymax=isW?20:120; }
- var pad=((ymax-ymin)*0.04)||1; ymin=Math.max(0,ymin-pad); ymax=ymax+pad;
- var W=364,H=300,L=40,R=42,T=22,Bm=36,pw=W-L-R,ph=H-T-Bm, cid="gcclip"+(++_gcSeq);
- function X(m){ return L+(m-x0)/(x1-x0)*pw; } function Y(v){ return T+(ymax-v)/(ymax-ymin)*ph; }
- function f1(n){ return n.toFixed(1); }
- function zPts(z){ return xs.map(function(mo){ return f1(X(mo))+','+f1(Y(xAtZ(lmsAt(tbl,mo),z))); }); }
- var g=[];
- /* -- 5 vùng màu chuẩn WHO (luôn hiện): đỏ < −3 · cam −3..−2 · xanh −2..+2 · cam +2..+3 · đỏ > +3 -- */
- function band(za,zb,col,op){ var a=zPts(za),c=zPts(zb); g.push('<polygon points="'+a.concat(c.slice().reverse()).join(' ')+'" fill="'+col+'" fill-opacity="'+op+'"/>'); }
- g.push('<g clip-path="url(#'+cid+')">');
- band(-6,-3,"#E11D48",".07"); band(-3,-2,"#F59E0B",".09"); band(-2,2,"#16A34A",".085"); band(2,3,"#F59E0B",".09"); band(3,6,"#E11D48",".07");
- /* -- Lưới -- */
- for(var i=0;i<=5;i++){ var vv=ymin+(ymax-ymin)*i/5, yy=f1(Y(vv)); g.push('<line x1="'+L+'" y1="'+yy+'" x2="'+(L+pw)+'" y2="'+yy+'" stroke="#E7EDF5" stroke-width="1"/>'); }
- var step=(x1-x0)>24?6:((x1-x0)>12?3:2);
- for(var mo2=Math.ceil(x0/step)*step; mo2<=x1; mo2+=step) g.push('<line x1="'+f1(X(mo2))+'" y1="'+T+'" x2="'+f1(X(mo2))+'" y2="'+(T+ph)+'" stroke="#EEF2F8" stroke-width="1"/>');
- /* -- Đường chuẩn: TV liền, ±2 đứt, ±3 chấm (khi bật) -- */
- var zset=[[2,'#C2691A','5 3',1.1,'+2SD'],[0,'#0F9A6A','',1.7,'TV'],[-2,'#C2691A','5 3',1.1,'−2SD']];
- if(S.growth.all5){ zset.unshift([3,'#E11D48','2 3',1,'+3SD']); zset.push([-3,'#E11D48','2 3',1,'−3SD']); }
- zset.forEach(function(zz){ g.push('<polyline points="'+zPts(zz[0]).join(' ')+'" fill="none" stroke="'+zz[1]+'" stroke-width="'+zz[3]+'" stroke-linejoin="round"'+(zz[2]?' stroke-dasharray="'+zz[2]+'"':'')+'/>'); });
+/* Biểu đồ vùng chuẩn WHO. range: 6 | 12 tháng gần nhất, 0 = từ lúc sinh. seq: mã riêng cho vùng cắt + khung chạm. */
+function growthChart(b,ms,tab,seq){
+ var isW=(tab!=="h"), type=isW?"w":"h", tbl=gTbl(b,isW), zs=GZ[type], boy=b.gioiTinh!=="Gái", accent=boy?"#1D6FE0":"#E0559B", unit=isW?"kg":"cm";
+ seq=seq||(++_gcSeq);
+ var pts=gMetric(b,ms,isW).filter(function(p){ return p.am<=60; }).map(function(p){ return {am:p.am,v:p.v,id:p.m.id,z:p.z,me:p.me,d:p.m.ngayDo}; });
+ var nowA=gAgeMo(b,nowISO()); if(nowA==null||nowA<0) nowA=0; nowA=Math.min(nowA,60);
+ var last=pts.length?pts[pts.length-1]:null, R=S.growth.range; if(R!==6&&R!==0) R=12;
+ var tail=R===6?2:3, x1=Math.min(60,Math.max(nowA,last?last.am:0)+tail), x0=R?Math.max(0,Math.min(x1-tail-R,last?last.am-1:x1)):0;
+ if(x1-x0<6){ x1=Math.min(60,x0+6); x0=Math.max(0,x1-6); }
+ var xs=[]; for(var a=x0;a<x1;a+=0.25) xs.push(a); xs.push(x1);
+ var zTop=isW?2.8:3.4, zBot=-3.3, lo=Infinity, hi=-Infinity;
+ xs.forEach(function(m){ var l=xAtZ(lmsAt(tbl,m),zBot), u=xAtZ(lmsAt(tbl,m),zTop); if(l<lo)lo=l; if(u>hi)hi=u; });
+ pts.forEach(function(p){ if(p.am>=x0-0.01){ if(p.v<lo)lo=p.v; if(p.v>hi)hi=p.v; } });
+ /* "Lần cân tới nên ở khoảng": chỉ vẽ khi bé đang ở vùng bình thường — bé đang nhẹ cân thì "giữ kênh" là lời khuyên sai. */
+ var nx=(last&&last.z!=null&&zClass(last.z,type).cls==="ok")?gNextWeigh(b,last.d):null, tgt=null;
+ if(nx){ var ta=gAgeMo(b,nx.iso); if(ta!=null&&ta<=60&&ta<=x1+0.01){ tgt={a:ta,lo:xAtZ(lmsAt(tbl,ta),last.z-0.3),hi:xAtZ(lmsAt(tbl,ta),last.z+0.3)}; if(tgt.hi>hi)hi=tgt.hi; if(tgt.lo<lo)lo=tgt.lo;
+  if(x1-ta<0.6&&x1<60){ x1=Math.min(60,ta+0.6); xs.push(x1); } } }   /* chừa lề để vạch xanh không dính mép phải */
+ var pad=(hi-lo)*0.03; lo-=pad; hi+=pad;
+ /* Vạch số trục dọc tròn, cách đều (bản trước ra 8 · 12 · 15 · 18 trông như lỗi) */
+ var yStep=[0.5,1,2,3,5,10,20,25].filter(function(s){ return (hi-lo)/s<=6; })[0]||25, yTicks=[];
+ for(var yv=Math.ceil(lo/yStep)*yStep; yv<=hi; yv+=yStep) yTicks.push(Math.round(yv*10)/10);
+ var W=340,H=236,L=34,Rr=10,T=20,B=26,pw=W-L-Rr,ph=H-T-B,cid="gcclip"+seq;
+ function X(m){ return L+(m-x0)/(x1-x0)*pw; } function Y(v){ return T+(hi-v)/(hi-lo)*ph; } function f1(n){ return n.toFixed(1); }
+ function curve(z){ return xs.map(function(m){ return f1(X(m))+","+f1(Y(xAtZ(lmsAt(tbl,m),z))); }); }
+ var g=['<defs><clipPath id="'+cid+'"><rect x="'+L+'" y="'+T+'" width="'+pw+'" height="'+ph+'" rx="8"/></clipPath></defs><g clip-path="url(#'+cid+')">'];
+ zs.forEach(function(s){ var c1=curve(Math.max(-6,s[0])), c2=curve(Math.min(6,s[1])); g.push('<polygon points="'+c1.concat(c2.reverse()).join(" ")+'" fill="'+s[2]+'"/>'); });
+ g.push('<polyline points="'+curve(0).join(" ")+'" fill="none" stroke="#7B8698" stroke-width="1" stroke-dasharray="3 4" opacity=".7"/>');
+ [12,24,36,48].forEach(function(m){ if(m>x0&&m<x1) g.push('<line x1="'+f1(X(m))+'" x2="'+f1(X(m))+'" y1="'+T+'" y2="'+(T+ph)+'" stroke="#fff" stroke-width="1.5"/>'); });
  g.push('</g>');
- /* -- Nhãn trục -- */
- for(i=0;i<=5;i++){ var v2=ymin+(ymax-ymin)*i/5; g.push('<text x="'+(L-6)+'" y="'+f1(Y(v2)+3.2)+'" text-anchor="end" font-size="9" fill="#7B8698" font-weight="500">'+v2.toFixed(isW?1:0)+'</text>'); }
- for(mo2=Math.ceil(x0/step)*step; mo2<=x1; mo2+=step) g.push('<text x="'+f1(X(mo2))+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="9" fill="#7B8698" font-weight="500">'+mo2+'</text>');
- g.push('<line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/><line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
- g.push('<text x="'+(L+pw/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600">Tháng tuổi</text>');
- g.push('<text x="12" y="'+(T+ph/2)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600" transform="rotate(-90 12 '+(T+ph/2)+')">'+(isW?"Cân nặng (kg)":"Chiều cao (cm)")+'</text>');
- /* -- Chip nhãn mép phải, tự né chồng -- */
- var labs=zset.map(function(zz){ return {y:Y(xAtZ(lmsAt(tbl,x1),zz[0])),txt:zz[4],col:zz[1]}; }).sort(function(a,c){ return a.y-c.y; });
- for(var li=1;li<labs.length;li++){ if(labs[li].y-labs[li-1].y<13) labs[li].y=labs[li-1].y+13; }
- labs.forEach(function(l){ var w=l.txt.length*4.9+11, cx=L+pw+4, yy=Math.max(T+7,Math.min(T+ph-1,l.y));
-  g.push('<rect x="'+cx+'" y="'+f1(yy-7)+'" rx="6.5" width="'+f1(w)+'" height="14" fill="#fff" stroke="'+l.col+'" stroke-width="1"/><text x="'+f1(cx+w/2)+'" y="'+f1(yy+2.7)+'" text-anchor="middle" font-size="7.6" fill="'+l.col+'" font-weight="700">'+l.txt+'</text>'); });
- /* -- Vạch hôm nay -- */
- if(nowA>x0&&nowA<=x1){ var nx=f1(X(nowA)); g.push('<line x1="'+nx+'" y1="'+(T+1)+'" x2="'+nx+'" y2="'+(T+ph)+'" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2 3"/><text x="'+nx+'" y="'+(T-7)+'" text-anchor="middle" font-size="7.5" fill="#94A3B8" font-weight="700">hôm nay</text>'); }
- /* -- Kênh dự kiến 3 tháng tới -- */
- if(proj){ var pp=[]; for(var a=proj.a0;a<proj.a1;a+=0.5) pp.push(f1(X(a))+','+f1(Y(xAtZ(lmsAt(tbl,a),last.z)))); pp.push(f1(X(proj.a1))+','+f1(Y(proj.v)));
-  g.push('<polyline points="'+pp.join(' ')+'" fill="none" stroke="'+accent+'" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" opacity=".75"/>');
-  var ex=X(proj.a1), ey=Y(proj.v), ptxt="≈ "+gNum(proj.v)+" "+unit, pw2=ptxt.length*4.7+10, px=ex-pw2/2, py=ey+9;
-  if(px+pw2>L+pw) px=L+pw-pw2; if(py+14>T+ph) py=ey-23;
-  g.push('<circle cx="'+f1(ex)+'" cy="'+f1(ey)+'" r="4.2" fill="#fff" stroke="'+accent+'" stroke-width="2"/>');
-  g.push('<rect x="'+f1(px)+'" y="'+f1(py)+'" rx="6" width="'+f1(pw2)+'" height="14" fill="#fff" stroke="'+accent+'" stroke-width="1" stroke-dasharray="3 2"/><text x="'+f1(px+pw2/2)+'" y="'+f1(py+10)+'" text-anchor="middle" font-size="7.8" fill="'+accent+'" font-weight="700">'+ptxt+'</text>'); }
- /* -- Số đo của bé: đường + chấm; chấm ngoài vùng bình thường có vòng cam/đỏ -- */
- if(pts.length){
-  if(pts.length>1) g.push('<polyline class="gc-path" pathLength="1" points="'+pts.map(function(p){return f1(X(p.am))+','+f1(Y(p.v));}).join(' ')+'" fill="none" stroke="'+accent+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>');
-  pts.forEach(function(p,idx){ var lst=idx===pts.length-1, ring=(p.z!=null&&Math.abs(p.z)>3)?"#E11D48":((p.z!=null&&Math.abs(p.z)>2)?"#F59E0B":null);
-   if(ring) g.push('<circle cx="'+f1(X(p.am))+'" cy="'+f1(Y(p.v))+'" r="'+(lst?8.5:7)+'" fill="none" stroke="'+ring+'" stroke-width="2"/>');
-   g.push('<circle class="gc-pt" cx="'+f1(X(p.am))+'" cy="'+f1(Y(p.v))+'" r="'+(lst?5:3.8)+'" fill="'+accent+'" stroke="#fff" stroke-width="'+(lst?2.4:1.8)+'" style="cursor:pointer;animation-delay:'+(0.15+idx*0.05).toFixed(2)+'s" onclick="growthPoint(\''+p.id+'\')"/>'); });
-  /* ngày đo dưới điểm đầu + điểm cuối (bỏ điểm đầu nếu sát điểm cuối để khỏi đè chữ) */
-  var fp=pts[0], dl=[last]; if(pts.length>1&&Math.abs(X(last.am)-X(fp.am))>34) dl.unshift(fp);
-  dl.forEach(function(p){ var ty=Y(p.v)+15; if(ty>T+ph-3) ty=Y(p.v)-10; g.push('<text x="'+f1(X(p.am))+'" y="'+f1(ty)+'" text-anchor="middle" font-size="7.6" fill="#64748B" font-weight="600">'+fmtDate(p.d).slice(0,5)+'</text>'); });
-  var lx=X(last.am), ly=Y(last.v), vtxt=gNum(last.v)+" "+unit, cw=vtxt.length*5.1+14, cxx=lx+9, cyy=ly-21;
-  if(cxx+cw>L+pw) cxx=lx-9-cw; if(cxx<L) cxx=L; if(cyy<T+1) cyy=ly+10;
-  g.push('<g class="gc-callout"><rect x="'+f1(cxx)+'" y="'+f1(cyy)+'" rx="7" width="'+f1(cw)+'" height="16" fill="'+accent+'"/><text x="'+f1(cxx+cw/2)+'" y="'+f1(cyy+10.8)+'" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">'+vtxt+'</text></g>'); }
- return '<svg class="gchart" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="'+cid+'"><rect x="'+L+'" y="'+T+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs><rect width="'+W+'" height="'+H+'" rx="14" fill="#fff"/><rect x="'+(L-0.5)+'" y="'+(T-0.5)+'" width="'+(pw+1)+'" height="'+(ph+1)+'" fill="#FCFDFE" stroke="#EEF2F8" stroke-width="1"/>'+g.join('')+'</svg>';
+ /* Tên vùng ngay trong biểu đồ (chỉ khi vùng đủ cao để chữ không đè) */
+ zs.forEach(function(s){ var aa=x0+(x1-x0)*0.05, top=Y(xAtZ(lmsAt(tbl,aa),Math.min(zTop,s[1]))), bot=Y(xAtZ(lmsAt(tbl,aa),Math.max(zBot,s[0])));
+  /* vùng bình thường: ghi ở nửa trên (giữa vùng là đường trung vị + đường của đa số bé — chữ sẽ đè lên) */
+  if(bot-top>14){ var zm=s[4]==="ok"?Math.min(zTop,s[1])-0.75:(Math.max(zBot,s[0])+Math.min(zTop,s[1]))/2, yy=Y(xAtZ(lmsAt(tbl,aa+(x1-x0)*0.03),zm)); g.push('<text x="'+(L+6)+'" y="'+f1(Math.max(T+11,Math.min(T+ph-4,yy+4)))+'" font-size="10.5" font-weight="600" fill="#4B5568" opacity=".85">'+s[3]+'</text>'); } });
+ [12,24,36,48].forEach(function(m){ if(m>x0&&m<x1-1) g.push('<text x="'+f1(X(m)+3)+'" y="'+(T+ph-5)+'" font-size="10" fill="#8A94A6">'+(m/12)+' tuổi</text>'); });
+ var step=(x1-x0)>24?6:((x1-x0)>9?3:1);
+ for(var m2=Math.ceil(x0/step)*step;m2<=x1+1e-9;m2+=step){ if(X(m2)>W-Rr-34) continue;   /* chừa chỗ cho chữ "tháng" ở mép phải */ g.push('<text x="'+f1(X(m2))+'" y="'+(H-9)+'" font-size="10" text-anchor="middle" fill="#8A94A6">'+m2+'</text>'); }
+ g.push('<text x="'+(W-Rr)+'" y="'+(H-9)+'" font-size="10" text-anchor="end" fill="#8A94A6">tháng</text>');
+ yTicks.forEach(function(v){ var yy=Y(v); if(yy<T+6||yy>T+ph-4) return; g.push('<text x="'+(L-5)+'" y="'+f1(yy+3.5)+'" font-size="10" text-anchor="end" fill="#8A94A6">'+gNum(v,1)+'</text>'); });
+ /* Mốc hôm nay */
+ if(nowA>=x0&&nowA<=x1){ var hx=f1(X(nowA)); g.push('<line x1="'+hx+'" x2="'+hx+'" y1="'+T+'" y2="'+(T+ph)+'" stroke="'+accent+'" stroke-width="1" stroke-dasharray="2 3" opacity=".8"/><text x="'+hx+'" y="'+(T-6)+'" font-size="10.5" font-weight="600" text-anchor="middle" fill="'+accent+'">Hôm nay</text>'); }
+ /* Vạch xanh: lần cân tới nên ở khoảng */
+ if(tgt) g.push('<line x1="'+f1(X(tgt.a))+'" x2="'+f1(X(tgt.a))+'" y1="'+f1(Y(tgt.hi))+'" y2="'+f1(Y(tgt.lo))+'" stroke="#10A36B" stroke-width="5" stroke-linecap="round"/>');
+ /* Đường của bé: cong mềm (Catmull-Rom → Bézier), chỉ các lần đo trong khung */
+ var vis=pts.filter(function(p){ return p.am>=x0-0.01; });
+ if(vis.length>1){ var d="M"+f1(X(vis[0].am))+","+f1(Y(vis[0].v));
+  for(var k=1;k<vis.length;k++){ var p0=vis[Math.max(0,k-2)],p1=vis[k-1],p2=vis[k],p3=vis[Math.min(vis.length-1,k+1)];
+   d+=" C"+f1(X(p1.am)+(X(p2.am)-X(p0.am))/6)+","+f1(Y(p1.v)+(Y(p2.v)-Y(p0.v))/6)+" "+f1(X(p2.am)-(X(p3.am)-X(p1.am))/6)+","+f1(Y(p2.v)-(Y(p3.v)-Y(p1.v))/6)+" "+f1(X(p2.am))+","+f1(Y(p2.v)); }
+  g.push('<path class="gc-path" pathLength="1" d="'+d+'" fill="none" stroke="'+accent+'" stroke-width="2.6" stroke-linecap="round"/>'); }
+ vis.forEach(function(p,idx){ var lst=p===last;
+  /* chấm nét đứt = số mẹ nhớ lại; chấm đặc = lần đo cuối */
+  g.push('<circle class="gc-pt" cx="'+f1(X(p.am))+'" cy="'+f1(Y(p.v))+'" r="'+(lst?6:4.6)+'" fill="'+(lst?accent:"#fff")+'" stroke="'+accent+'" stroke-width="2"'+(p.me?' stroke-dasharray="2.2 1.8"':'')+' style="cursor:pointer;animation-delay:'+(0.12+idx*0.05).toFixed(2)+'s" onclick="growthTip(\''+p.id+'\',\''+tab+'\','+seq+')"/>'); });
+ if(last&&last.am>=x0-0.01){ var txt=gNum(last.v)+" "+unit, bw=txt.length*6+14, bx=Math.max(L,Math.min(X(last.am)-bw/2,W-Rr-bw)), by=Y(last.v)-30; if(by<T) by=Y(last.v)+11;
+  g.push('<g class="gc-callout"><rect x="'+f1(bx)+'" y="'+f1(by)+'" width="'+f1(bw)+'" height="19" rx="9.5" fill="'+accent+'"/><text x="'+f1(bx+bw/2)+'" y="'+f1(by+13.2)+'" font-size="11.5" font-weight="700" text-anchor="middle" fill="#fff">'+txt+'</text></g>'); }
+ return '<svg class="gchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Biểu đồ '+(isW?"cân nặng":"chiều cao")+' theo vùng chuẩn WHO">'+g.join("")+'</svg>';
+}
+/* Chạm 1 chấm: hiện chi tiết lần đo ngay dưới biểu đồ (không toast che màn, không vẽ lại cả màn). */
+function growthTip(id,tab,seq){ var e=el("gtip"+seq); if(!e) return; var m=null,arr=measures(),i; for(i=0;i<arr.length;i++) if(arr[i].id===id) m=arr[i]; if(!m) return;
+ var b=babyById(m.babyId); if(!b) return; var isW=tab!=="h", p=gMetric(b,babyMeasures(b.id),isW), cur=null, prev=null;
+ for(i=0;i<p.length;i++) if(p[i].m.id===id){ cur=p[i]; prev=i>0?p[i-1]:null; } if(!cur) return; var unit=isW?"kg":"cm";
+ var s="Ngày "+fmtDate(m.ngayDo)+" · "+ageLabel(cur.am)+(gCorrected(b,m.ngayDo)?" (hiệu chỉnh)":"")+" · <b>"+gNum(cur.v)+" "+unit+"</b>";
+ if(cur.z!=null) s+=" · "+pctPhrase(zPct(cur.z),isW?"nặng":"cao",isW?"nhẹ":"thấp",true)+" bạn cùng tuổi ("+zClass(cur.z,isW?"w":"h").lb.toLowerCase()+")";
+ if(prev) s+=" · so với lần trước "+(cur.v-prev.v>=0?"+":"")+gNum(cur.v-prev.v)+" "+unit;
+ s+=" · "+(cur.me?"mẹ nhớ lại":"cân đo thật"); e.innerHTML=s; }
+/* Cả khối biểu đồ (dùng chung tab Tăng trưởng và màn kết quả tư vấn). */
+function growthPanel(b,ms){
+ var tab=S.growth.tab==="h"?"h":"w", isW=tab!=="h", seq=++_gcSeq, R=S.growth.range; if(R!==6&&R!==0) R=12;
+ var nowA=ageMo(b.ngaySinh,nowISO()), bd=growthBadge(b,ms), corr=gCorrected(b,nowISO());
+ var h='<div class="gr-head"><div class="gr-av" style="background:'+(b.gioiTinh==="Gái"?"#FCE7F1;color:#C2387A":"#E6F0FD;color:#1D6FE0")+'">'+esc(((b.ten||"Bé").replace(/^bé\s+/i,"").charAt(0)||"B").toUpperCase())+'</div>'
+  +'<div class="gr-who"><div class="gr-name">'+esc(b.ten||"Bé")+'</div><div class="gr-sub">'+esc(b.gioiTinh||"Trai")+' · '+ageLabel(nowA)+(corr?' · tuổi hiệu chỉnh '+ageLabel(gAgeMo(b,nowISO())):'')+' · '+ms.length+' lần đo</div></div>'
+  +(bd?'<span class="gr-badge gr-b-'+bd.c+'">'+bd.t+'</span>':'')+'</div>';
+ h+='<div class="gr-seg" role="tablist"><button class="'+(isW?"on":"")+'" onclick="S.growth.tab=\'w\';render()">Cân nặng</button><button class="'+(!isW?"on":"")+'" onclick="S.growth.tab=\'h\';render()">Chiều cao</button></div>';
+ var p=gMetric(b,ms,isW);
+ if(!p.length) return h+'<div class="gr-empty">Chưa có số đo '+(isW?"cân nặng":"chiều cao")+' của bé. Thêm số đo để vẽ biểu đồ.</div>';
+ h+=growthRuler(b,ms,isW);
+ var line=growthLine(b,ms); if(line) h+='<div class="gr-line">'+line+'</div>';
+ h+=growthChart(b,ms,tab,seq);
+ h+='<div class="gr-chips">'+[[6,"6 tháng"],[12,"1 năm"],[0,"Từ lúc sinh"]].map(function(c){ return '<button class="'+(R===c[0]?"on":"")+'" onclick="S.growth.range='+c[0]+';render()">'+c[1]+'</button>'; }).join("")+'</div>';
+ h+='<div class="gr-tip" id="gtip'+seq+'">Chạm vào một chấm để xem lần đo đó</div>';
+ var last=p[p.length-1], nx=gNextWeigh(b,last.m.ngayDo), c=last.z!=null?zClass(last.z,isW?"w":"h"):null, tbl=gTbl(b,isW), unit=isW?"kg":"cm";
+ if(nx){ var t2;
+  if(c&&c.cls==="ok"){ var ta=gAgeMo(b,nx.iso); t2=(ta!=null&&ta<=60)?("Để giữ đúng kênh của bé, "+(isW?"cân nặng":"chiều cao")+" lúc đó nên ở khoảng "+gNum(xAtZ(lmsAt(tbl,ta),last.z-0.3))+"–"+gNum(xAtZ(lmsAt(tbl,ta),last.z+0.3))+" "+unit+" (vạch xanh trên biểu đồ)."):"Cân đo đều đặn để theo dõi đường tăng trưởng của bé."; }
+  else if(c&&c.cls==="low") t2="Bé đang ở vùng "+c.lb.toLowerCase()+" — mẹ nên đưa bé đi khám dinh dưỡng để được tư vấn cụ thể.";
+  else if(c&&c.cls==="high") t2=isW?"Cân nặng theo tuổi cao hơn chuẩn — cần đo thêm chiều cao để biết bé có thừa cân hay không.":"Bé cao hơn hẳn các bạn cùng tuổi — thường không đáng lo; mẹ hỏi bác sĩ ở lần khám tới.";
+  else t2="Cân đo đều đặn để theo dõi đường tăng trưởng của bé.";
+  h+='<div class="gr-next"><span class="gr-nic">'+ic("event",18)+'</span><div><div class="gr-nt">'+(nx.due?"Đã đến lúc cân đo lại cho bé":"Lần cân tới: khoảng "+fmtDate(nx.iso))+'</div><div class="gr-nd">'+t2+'</div></div></div>'; }
+ h+='<div class="gr-foot">'+(p.some(function(x){return x.me;})?'Chấm viền đứt = số mẹ nhớ lại. ':'')+'Chuẩn tăng trưởng WHO 2006 (0–5 tuổi). Dưới 2 tuổi đo chiều dài nằm, từ 2 tuổi đo đứng.'+(gSnt(b)?' Bé sinh sớm '+gSnt(b)+' tuần: dưới 2 tuổi tính theo tuổi hiệu chỉnh.':'')+'</div>';
+ return h;
 }
 function growthAssess(b,ms){
- var boy=b.gioiTinh!=="Gái";
- var wm=ms.filter(function(m){return m.canNang!=null&&isFinite(m.canNang);});
- var hm=ms.filter(function(m){return m.chieuCao!=null&&isFinite(m.chieuCao);});
- if(!wm.length)return '';
- var lw=wm[wm.length-1],awm=ageMo(b.ngaySinh,lw.ngayDo);
- var zW=(awm!=null&&awm<=60)?zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,awm),lw.canNang):null,cW=zClass(zW,"w");
- var lh=hm.length?hm[hm.length-1]:null,ahm=lh?ageMo(b.ngaySinh,lh.ngayDo):null;
- var zH=(lh&&ahm!=null&&ahm<=60)?zFrom(lmsAt(boy?WHO.hfaB:WHO.hfaG,ahm),lh.chieuCao):null,cH=zClass(zH,"h");
+ var W=gMetric(b,ms,true), H=gMetric(b,ms,false); if(!W.length) return '';
+ var lw=W[W.length-1], zW=lw.z, cW=zClass(zW,"w"), lh=H.length?H[H.length-1]:null, zH=lh?lh.z:null;
  var h='<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:10px"><div class="sec-ic">'+ic('insights')+'</div><h3 style="font-size:15px">Nhận định (lần đo gần nhất)</h3></div>';
- if(false)h+='<div class="zbig"><div><div class="zt">Cân nặng / tuổi</div><div class="zv">'+(zW!=null?"Z "+zW.toFixed(1):"—")+'</div><span class="mz zpill-'+cW.cls+'">'+cW.lb+'</span></div>'
-  +'<div><div class="zt">Chiều cao / tuổi</div><div class="zv">'+(zH!=null?"Z "+zH.toFixed(1):"—")+'</div><span class="mz zpill-'+(lh?cH.cls:"na")+'">'+(lh?cH.lb:"Chưa đo cao")+'</span></div></div>';
- var msg=cW.cls==="ok"?"Cân nặng của bé đang trong vùng bình thường theo chuẩn WHO. Mẹ duy trì chế độ ăn hiện tại và cân đo đều đặn nhé!":cW.cls==="low"?"Cân nặng của bé đang dưới chuẩn. Mẹ nên chú ý tăng cường dinh dưỡng và theo dõi sát hơn.":"Cân nặng của bé nhỉnh hơn chuẩn. Mẹ cân đối khẩu phần và tăng vận động cho bé nhé.";
+ /* Cân nặng theo tuổi cao KHÔNG có nghĩa là thừa cân (WHO: phải xem cân nặng theo chiều cao / BMI). Bản cũ khuyên
+    "cân đối khẩu phần, tăng vận động" — tức là ngầm bảo bé thừa cân. */
+ var msg=cW.cls==="ok"?"Cân nặng của bé đang trong vùng bình thường theo chuẩn WHO. Mẹ duy trì chế độ ăn hiện tại và cân đo đều đặn nhé!"
+  :cW.cls==="low"?"Cân nặng của bé đang dưới chuẩn. Mẹ nên chú ý dinh dưỡng và theo dõi sát hơn."
+  :cW.cls==="high"?"Cân nặng của bé cao hơn chuẩn theo tuổi. Riêng chỉ số này chưa đủ để nói bé thừa cân — cần xem cùng chiều cao của bé."
+  :"Bé đã ngoài phạm vi bảng chuẩn 0–5 tuổi trong app.";
+ if(lw.me) msg+=" (Số đo do mẹ nhớ lại — lần sau cân tại quầy để chính xác hơn.)";
  h+='<div class="posmsg" style="margin-top:11px">'+ic('child_care')+'<div>'+msg+'</div></div>';
- var cham=false;if(wm.length>=2){var last=wm[wm.length-1];for(var i=wm.length-2;i>=0;i--){var dd=(parseD(last.ngayDo)-parseD(wm[i].ngayDo))/86400000;if(dd>=75){if(last.canNang<=wm[i].canNang+0.1)cham=true;break;}}}
+ var cham=false;if(W.length>=2){var last=W[W.length-1];for(var i=W.length-2;i>=0;i--){var dd=(parseD(last.m.ngayDo)-parseD(W[i].m.ngayDo))/86400000;if(dd>=75){if(last.v<=W[i].v+0.1&&!last.me&&!W[i].me)cham=true;break;}}}
  if(cham)h+='<div class="warn" style="margin-top:11px">'+ic('warning')+'<div><b>Bé chậm tăng cân khoảng 3 tháng liền.</b> Đây có thể là dấu hiệu cần hỗ trợ dinh dưỡng cho bé.</div></div>'
   +'<button class="btn btnP press" style="margin-top:10px" onclick="newConsult()">'+ic('stethoscope')+'Tư vấn sản phẩm cho bé</button>';
- var needDoc=(zW!=null&&(zW<-2||zW>3))||(zH!=null&&zH<-2);
- if(needDoc)h+='<div class="danger" style="margin-top:11px;display:flex;gap:8px"><span style="flex-shrink:0">'+ic('warning')+'</span><div>Chỉ số của bé đang ngoài vùng an toàn (dưới −2SD hoặc trên +3SD). Mẹ nên đưa bé đi khám chuyên gia dinh dưỡng để được đánh giá kỹ hơn. <i>Thông tin trong app chỉ để tham khảo, không thay thế chẩn đoán y khoa.</i></div></div>';
+ var needDoc=(zW!=null&&zW<-2)||(zH!=null&&(zH<-2||zH>3));
+ if(needDoc)h+='<div class="danger" style="margin-top:11px;display:flex;gap:8px"><span style="flex-shrink:0">'+ic('warning')+'</span><div>Chỉ số của bé đang ngoài vùng bình thường theo chuẩn WHO'+((zW!=null&&zW<-2)||(zH!=null&&zH<-2)?' (nhẹ cân hoặc thấp còi)':' (rất cao so với tuổi)')+'. Mẹ nên đưa bé đi khám chuyên gia dinh dưỡng / bác sĩ nhi để được đánh giá kỹ hơn. <i>Thông tin trong app chỉ để tham khảo, không thay thế chẩn đoán y khoa.</i></div></div>';
  return h+'</div>';}
 function renderGrowth(){
  var bs=babies();
@@ -1035,20 +1087,16 @@ function renderGrowth(){
  var h=head;
  h+='<div class="gbaby" style="margin-bottom:12px">'+bs.map(function(x){return '<div class="gchip'+(x.id===b.id?' on':'')+'" onclick="selBaby(\''+x.id+'\')">'+ic('child_care')+esc(x.ten||"Bé")+'</div>';}).join('')+'<div class="gchip add" onclick="S.growth.addingBaby=true;S.growth.editBaby=null;S.bf={};render()">'+ic('add')+'Bé</div></div>';
  if(S.growth.addingBaby)h+=babyForm();
- h+='<div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:10px"><div class="sec-ic" style="background:var(--sec-fx);color:var(--on-sec-fx)">'+ic('child_care')+'</div><div style="flex:1;min-width:0"><div style="font-family:var(--fd);font-weight:700;font-size:14px">'+esc(b.ten||"Bé")+' · '+esc(b.gioiTinh||"Trai")+'</div><div style="font-size:11.5px;color:var(--on-var)">Sinh '+fmtDate(b.ngaySinh)+' · '+ageLabel(nowA)+'</div></div><div class="mact"><button onclick="editBaby(\''+b.id+'\')">'+ic('edit')+'</button><button onclick="delBaby(\''+b.id+'\')">'+ic('delete')+'</button></div></div>';
+ h+='<div class="card" style="padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--on-var)"><div style="flex:1;min-width:0">Sinh '+fmtDate(b.ngaySinh)+(gSnt(b)?' · sinh sớm '+gSnt(b)+' tuần':'')+'</div><div class="mact"><button onclick="editBaby(\''+b.id+'\')" aria-label="Sửa hồ sơ bé">'+ic('edit')+'</button><button onclick="delBaby(\''+b.id+'\')" aria-label="Xoá hồ sơ bé">'+ic('delete')+'</button></div></div>';
  var _sl=growthSyncLine(b);if(_sl)h+='<div class="faint" style="font-size:11.5px;line-height:1.5;margin:8px 2px 0'+(_sl.charAt(0)==="⚠"?";color:#9A5B13":"")+'">'+esc(_sl)+'</div>';
  var lastM=ms.length?ms[ms.length-1]:null,dueDays=lastM?Math.floor((Date.now()-parseD(lastM.ngayDo))/86400000):null;
  if(dueDays!=null&&dueDays>=30)h+='<div class="reminder" style="margin-top:12px">'+ic('notifications')+'<div><b>Đến hẹn cân đo cho bé</b><div style="font-size:11.5px;opacity:.95">Đã '+dueDays+' ngày kể từ lần đo gần nhất — cập nhật để đường tăng trưởng luôn chính xác.</div></div></div>';
  if(nowA!=null&&nowA>60)h+='<div class="warn" style="margin-top:12px">'+ic('warning')+'<div>Bé đã ngoài phạm vi biểu đồ 0–5 tuổi (WHO 0–60 tháng). Biểu đồ chỉ hiển thị đến mốc 60 tháng; mẹ vẫn có thể lưu số đo để tham khảo.</div></div>';
- h+='<div class="card" style="margin-top:12px">'+growthInsights(b,ms)+'<div class="gv-tabs"><div class="gv-tab'+(S.growth.tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">'+ic('monitor_weight')+'Cân nặng</div><div class="gv-tab'+(S.growth.tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">'+ic('straighten')+'Chiều cao</div></div>';
- var plot=ms.filter(function(m){return S.growth.tab==="h"?(m.chieuCao!=null):(m.canNang!=null);});
- if(!plot.length)h+='<div style="text-align:center;color:var(--on-var);font-size:12.5px;padding:26px 8px">Chưa có số đo '+(S.growth.tab==="h"?"chiều cao":"cân nặng")+'. Thêm số đo bên dưới để vẽ biểu đồ.</div>';
- else h+=growthChart(b,ms,S.growth.tab)+growthLegend();
- h+='<label style="display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11.5px;color:var(--on-var);cursor:pointer;font-weight:600;margin:8px 0 0"><input type="checkbox" style="width:auto;height:auto" '+(S.growth.all5?"checked":"")+' onchange="S.growth.all5=this.checked;render()">Hiện đủ 5 đường (±3SD)</label></div>';
+ h+='<div class="card" style="margin-top:12px">'+growthPanel(b,ms)+'</div>';
  h+=growthAssess(b,ms);
  h+='<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:2px"><div class="sec-ic">'+ic('event')+'</div><h3 style="font-size:15px">Lịch sử đo ('+ms.length+')</h3></div>';
  if(!ms.length)h+='<div style="color:var(--on-var);font-size:12.5px;padding:8px 0">Chưa có số đo nào cho bé.</div>';
- else h+=ms.slice().reverse().map(function(m){var am=ageMo(b.ngaySinh,m.ngayDo),boy=b.gioiTinh!=="Gái";var zw=(am!=null&&am<=60)?zFrom(lmsAt(boy?WHO.wfaB:WHO.wfaG,am),m.canNang):null,zc=zClass(zw,"w");return '<div class="mrow"><div style="flex:1;min-width:0"><div class="md">'+fmtDate(m.ngayDo)+' · '+m.canNang+' kg'+(m.chieuCao?' · '+m.chieuCao+' cm':'')+'</div><div class="ms">'+ageLabel(am)+(m.ghiChu?' · '+esc(m.ghiChu):'')+'</div></div>'+(zw!=null?'<span class="mz zpill-'+zc.cls+'">Z '+zw.toFixed(1)+'</span>':'')+'<div class="mact"><button onclick="editMeasure(\''+m.id+'\')">'+ic('edit')+'</button><button onclick="delMeasure(\''+m.id+'\')">'+ic('delete')+'</button></div></div>';}).join('');
+ else h+=ms.slice().reverse().map(function(m){var am=gAgeMo(b,m.ngayDo);var zw=(am!=null&&am<=60&&m.canNang)?zFrom(lmsAt(gTbl(b,true),am),m.canNang):null,zc=zClass(zw,"w");return '<div class="mrow"><div style="flex:1;min-width:0"><div class="md">'+fmtDate(m.ngayDo)+' · '+m.canNang+' kg'+(m.chieuCao?' · '+m.chieuCao+' cm':'')+'</div><div class="ms">'+ageLabel(ageMo(b.ngaySinh,m.ngayDo))+(m.ng==="me"?' · mẹ nhớ lại':'')+(m.ghiChu?' · '+esc(m.ghiChu):'')+'</div></div>'+(zw!=null?'<span class="mz zpill-'+zc.cls+'">'+zc.lb+'</span>':'')+'<div class="mact"><button onclick="editMeasure(\''+m.id+'\')">'+ic('edit')+'</button><button onclick="delMeasure(\''+m.id+'\')">'+ic('delete')+'</button></div></div>';}).join('');
  h+='</div>';
  h+=measureForm(b);
  if(ms.length<2)h+='<div class="posmsg" style="margin-top:12px">'+ic('celebration')+'<div>Mẹ ơi, hãy quay lại nhập số đo vào tháng sau để nhìn thấy đường tăng trưởng của bé rõ hơn nhé!</div></div>';
@@ -1108,15 +1156,15 @@ function growthMerge(phone,kids,full){
   var b=null,i; seen[k.id]=1;
   for(i=0;i<bs.length;i++) if(bs[i].sv===k.id) b=bs[i];
   if(!b){ var key=kidKey(k.name); for(i=0;i<bs.length;i++) if(bs[i].phone===phone&&kidKey(bs[i].ten)===key) b=bs[i]; }
-  if(!b){ b={id:kidNewId("B"),ten:k.name,ngaySinh:k.dob,gioiTinh:kidGrowthSex(k.gender),phone:phone}; bs.push(b); }
+  if(!b){ b={id:kidNewId("B"),ten:k.name,ngaySinh:k.dob,gioiTinh:kidGrowthSex(k.gender),phone:phone}; if(k.preterm_weeks!=null) b.snt=k.preterm_weeks; bs.push(b); }
   b.sv=k.id; b.phone=phone; if(!b.cv) b.cv=k.consent_v||"";
-  if(!b.dirty){ b.ten=k.name; b.ngaySinh=k.dob; b.gioiTinh=kidGrowthSex(k.gender); }   /* máy đang có sửa chưa gửi thì giữ bản trên máy */
+  if(!b.dirty){ b.ten=k.name; b.ngaySinh=k.dob; b.gioiTinh=kidGrowthSex(k.gender); if(k.preterm_weeks!=null) b.snt=k.preterm_weeks; }   /* máy đang có sửa chưa gửi thì giữ bản trên máy */
   var have={}, onServer={}, del=b.del||[];
   ms.forEach(function(m){ if(m.babyId===b.id) have[m.id]=m; });
   (k.measures||[]).forEach(function(sm){ onServer[sm.id]=1; var m=have[sm.id];
    if(!m){ if(del.indexOf(sm.id)>=0) return;   /* PG vừa xoá trên máy, chưa kịp báo máy chủ → đừng cho nó sống lại */
-    ms.push({id:sm.id,babyId:b.id,ngayDo:sm.date,canNang:sm.weight,chieuCao:sm.height,ghiChu:"",src:sm.source||"",sv:1}); }
-   else if(m.sv===1){ m.ngayDo=sm.date; m.canNang=sm.weight; m.chieuCao=sm.height; } });
+    var nm={id:sm.id,babyId:b.id,ngayDo:sm.date,canNang:sm.weight,chieuCao:sm.height,ghiChu:"",src:sm.source||"",sv:1}; if(sm.measured_by==="me"||sm.measured_by==="do") nm.ng=sm.measured_by; ms.push(nm); }
+   else if(m.sv===1){ m.ngayDo=sm.date; m.canNang=sm.weight; m.chieuCao=sm.height; if(sm.measured_by==="me"||sm.measured_by==="do") m.ng=sm.measured_by; } });
   ms=ms.filter(function(m){ return !(m.babyId===b.id&&m.sv===1&&!onServer[m.id]); });   /* lần đo máy khác đã xoá */
  });
  if(full){ var gone={}; bs.forEach(function(b){ if(b.phone===phone&&b.sv&&!seen[b.sv]&&!b.dirty&&!ms.some(function(m){return m.babyId===b.id&&m.sv!==1;})) gone[b.id]=1; });
@@ -1147,7 +1195,7 @@ function kidChips(){ if(S.consent!==true) return ""; var ks=kidsOfPhone(S.buyer.
  if(!ks.length) return st;
  return '<label>Bé đã có hồ sơ — chạm để chọn</label><div class="chips" style="margin-bottom:6px">'+ks.map(function(b){ var m=ageMo(b.ngaySinh,nowISO());
    return '<div class="chip '+(S.user.babyId===b.id?"on":"")+'" onclick="pickKid(\''+b.id+'\')">'+esc(b.ten||"Bé")+(m!=null&&m>=0?(" · "+ageLabel(m)):"")+'</div>'; }).join("")+'</div>'+st; }
-function pickKid(id){ var b=babyById(id); if(!b) return; S.user.babyId=id; S.user.name=b.ten||""; S.user.gender=kidConsultSex(b.gioiTinh); S.user.dob=b.ngaySinh||"";
+function pickKid(id){ var b=babyById(id); if(!b) return; S.user.babyId=id; S.user.name=b.ten||""; S.user.gender=kidConsultSex(b.gioiTinh); S.user.dob=b.ngaySinh||""; if(b.snt) S.user.preterm=String(b.snt);
  var m=dobMonths(); if(m!=null) S.user.obj=(m<12?"tre_0_12":"tre_1_10"); render(); }
 
 /* ---- Tư vấn xong → thêm 1 điểm vào biểu đồ của bé ---- */
@@ -1159,14 +1207,15 @@ function consultToGrowth(sess){
  var bs=babies(), b=null, name=(S.user.name||"").trim()||"Bé", key=kidKey(name), i;
  for(i=0;i<bs.length;i++) if(bs[i].phone===p&&kidKey(bs[i].ten)===key) b=bs[i];
  if(!b){ b={id:kidNewId("B"),phone:p}; bs.push(b); }
- b.ten=name; b.ngaySinh=dob; b.gioiTinh=kidGrowthSex(S.user.gender);
+ b.ten=name; b.ngaySinh=dob; b.gioiTinh=kidGrowthSex(S.user.gender); if(pretermWeeks()>0) b.snt=Math.round(Math.min(16,pretermWeeks()));
  b.cv=CONSENT_V; b.ca=(sess&&sess.consentAt)||new Date().toISOString(); b.dirty=true;
  saveBabies(bs);
  var ms=measures(), today=nowISO(), m=null;
  /* Tư vấn lại cùng bé trong cùng ngày: sửa điểm của hôm nay, không thêm điểm thứ hai. */
  for(i=0;i<ms.length;i++) if(ms[i].babyId===b.id&&ms[i].ngayDo===today&&ms[i].src==="tuvan") m=ms[i];
- if(m){ m.canNang=round1(w); m.chieuCao=(h!=null&&h>0)?round1(h):null; m.sv=0; }
- else ms.push({id:"M"+((sess&&sess.sid)||kidNewId("")),babyId:b.id,ngayDo:today,canNang:round1(w),chieuCao:(h!=null&&h>0)?round1(h):null,ghiChu:"Từ phiên tư vấn",src:"tuvan",sv:0});
+ var ng=S.m.ng==="do"?"do":"me";   /* tại quầy PG thường HỎI mẹ → mặc định "mẹ nhớ lại", trừ khi PG chọn đã cân đo */
+ if(m){ m.canNang=round1(w); m.chieuCao=(h!=null&&h>0)?round1(h):null; m.ng=ng; m.sv=0; }
+ else ms.push({id:"M"+((sess&&sess.sid)||kidNewId("")),babyId:b.id,ngayDo:today,canNang:round1(w),chieuCao:(h!=null&&h>0)?round1(h):null,ghiChu:"Từ phiên tư vấn",src:"tuvan",ng:ng,sv:0});
  saveMeasures(ms); S.user.babyId=b.id; S.growth.baby=b.id;
  return b.id;
 }
@@ -1196,8 +1245,8 @@ function growthFlush(){
   if(i>=pend.length) return nextTomb();
   var b=babyById(pend[i].id); i++; if(!b) return next();
   var mine=measures().filter(function(m){return m.babyId===b.id&&m.sv!==1;}).slice(0,60), removed=(b.del||[]).slice(0,200);
-  var body={ phone:b.phone, child:{name:b.ten||"Bé",dob:b.ngaySinh,gender:kidConsultSex(b.gioiTinh)}, consent_v:b.cv, consent_at:b.ca||null, removed:removed,
-    measures:mine.map(function(m){ return {client_id:m.id,date:m.ngayDo,weight:m.canNang,height:(m.chieuCao==null||m.chieuCao==="")?null:m.chieuCao,source:m.src||"tay",pg:(S.acc&&S.acc.name)||""}; }) };
+  var body={ phone:b.phone, child:{name:b.ten||"Bé",dob:b.ngaySinh,gender:kidConsultSex(b.gioiTinh),preterm_weeks:(b.snt==null?null:gSnt(b))}, consent_v:b.cv, consent_at:b.ca||null, removed:removed,
+    measures:mine.map(function(m){ return {client_id:m.id,date:m.ngayDo,weight:m.canNang,height:(m.chieuCao==null||m.chieuCao==="")?null:m.chieuCao,source:m.src||"tay",measured_by:(m.ng==="me"||m.ng==="do")?m.ng:null,pg:(S.acc&&S.acc.name)||""}; }) };
   growthCall("/sync","POST",body).then(function(j){
     /* Đọc LẠI từ máy rồi mới đánh dấu: trong lúc đang gửi PG có thể đã thêm số đo khác. */
     var bs=babies(), ms=measures(), sent={}; body.measures.forEach(function(m){sent[m.client_id]=1;});
@@ -1221,14 +1270,10 @@ function consultGrowthCard(){
  if(typeof isChild!=="function"||!isChild()||S.consent!==true) return "";
  var b=S.user.babyId?babyById(S.user.babyId):null;
  if(!b){ return S.user.dob?"":'<div class="card" style="margin-top:12px;font-size:12.5px;line-height:1.55;color:var(--muted)">Chưa vẽ được biểu đồ tăng trưởng cho bé vì phiên này không có ngày sinh. Lần sau nhập ngày sinh ở bước 1 là app tự vẽ và tự nhớ các lần đo.</div>'; }
- var ms=babyMeasures(b.id), tab=S.growth.tab==="h"?"h":"w", nowA=ageMo(b.ngaySinh,nowISO());
- var plot=ms.filter(function(m){ return tab==="h"?(m.chieuCao!=null&&m.chieuCao!==""):(m.canNang!=null); });
+ var ms=babyMeasures(b.id), nowA=ageMo(b.ngaySinh,nowISO());
  var h='<div class="card" style="margin-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:var(--health-soft);color:var(--health)">'+ic("trending_up",16)+'</span>Tăng trưởng của '+esc(b.ten||"bé")+'</div>';
  h+='<div class="muted" style="font-size:12px;margin-bottom:9px">'+(ms.length>1?(ms.length+" lần đo · lần đầu "+fmtDate(ms[0].ngayDo)):"Lần đo đầu tiên của bé — từ lần sau biểu đồ sẽ nối thành đường.")+'</div>';
- h+=growthInsights(b,ms);
- h+='<div class="gv-tabs"><div class="gv-tab'+(tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">Cân nặng</div><div class="gv-tab'+(tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">Chiều cao</div></div>';
- if(!plot.length) h+='<div style="text-align:center;color:var(--muted);font-size:12.5px;padding:22px 8px">Chưa có số đo '+(tab==="h"?"chiều cao":"cân nặng")+' của bé.</div>';
- else h+=growthChart(b,ms,tab)+growthLegend();
+ h+=growthPanel(b,ms);
  if(nowA!=null&&nowA>60) h+='<div class="faint" style="font-size:12px;line-height:1.5;margin-top:8px;color:#9A5B13">Bé đã trên 5 tuổi: biểu đồ chuẩn WHO trong app mới có tới 60 tháng, nên các điểm sau mốc đó dồn ở mép phải. Số đo vẫn được lưu đủ.</div>';
  var sl=growthSyncLine(b); if(sl) h+='<div class="faint" style="font-size:11.5px;line-height:1.5;margin-top:8px'+(sl.charAt(0)==="⚠"?";color:#9A5B13":"")+'">'+esc(sl)+'</div>';
  h+='<button class="btn sec" style="margin-top:10px;width:100%;font-size:13px" onclick="S.growth.baby=\''+b.id+'\';setTab(\'growth\')">Xem đầy đủ lịch sử đo của bé</button>';
@@ -1290,8 +1335,8 @@ function next1(){ if(S.consent==null){toast("Hỏi khách trước: có đồng 
 
 function numIn(k,ph){ return '<input type="number" inputmode="decimal" value="'+(S.m[k]!=null?S.m[k]:"")+'" oninput="setM(\''+k+'\',this.value)" placeholder="'+ph+'"/>'; }
 function step2(){ var o=S.user.obj,f="";
- if(o==="tre_0_12")f=(dobMonths()!=null?dobStep2Line():'<label>Số tháng tuổi</label>'+numIn("months","0–12"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
- else if(o==="tre_1_10")f=(dobMonths()!=null?dobStep2Line():'<label>Số tuổi (năm)</label>'+numIn("age","1–10"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
+ if(o==="tre_0_12")f=(dobMonths()!=null?dobStep2Line():'<label>Số tháng tuổi</label>'+numIn("months","0–12"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>'+'<label>Số cân/đo này</label><div class="chips">'+[["me","Mẹ nhớ lại"],["do","Cân đo tại quầy / theo sổ khám"]].map(function(o){return '<div class="chip'+(((S.m.ng||"me")===o[0])?" on":"")+'" onclick="S.m.ng=\''+o[0]+'\';render()">'+o[1]+'</div>';}).join("")+'</div>';
+ else if(o==="tre_1_10")f=(dobMonths()!=null?dobStep2Line():'<label>Số tuổi (năm)</label>'+numIn("age","1–10"))+'<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>'+'<label>Số cân/đo này</label><div class="chips">'+[["me","Mẹ nhớ lại"],["do","Cân đo tại quầy / theo sổ khám"]].map(function(o){return '<div class="chip'+(((S.m.ng||"me")===o[0])?" on":"")+'" onclick="S.m.ng=\''+o[0]+'\';render()">'+o[1]+'</div>';}).join("")+'</div>';
  else if(o==="adult")f='<div class="row"><div><label>Cân nặng (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
  else if(o==="pregnant"){ var tog='<label>Tình trạng của mẹ</label><div class="chips" style="margin-bottom:11px">'+[["Đang mang thai",false],["Sau sinh / cho con bú",true]].map(function(x){return '<div class="chip '+(!!S.user.postpartum===x[1]?"on":"")+'" onclick="S.user.postpartum='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>';
   if(S.user.postpartum) f=tog+'<label>Tuổi</label>'+numIn("age","tuổi")+'<div class="row"><div><label>Cân nặng hiện tại (kg)</label>'+numIn("w","kg")+'</div><div><label>Chiều cao (cm)</label>'+numIn("h","cm")+'</div></div>';
