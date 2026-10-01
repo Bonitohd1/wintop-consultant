@@ -450,6 +450,15 @@
   .zpill-ok{background:var(--health-soft);color:var(--ok)}.zpill-low{background:var(--warm-soft);color:var(--bad)}.zpill-high{background:var(--gold-soft);color:var(--warn)}.zpill-na{background:var(--pri-soft);color:var(--muted)}
   .zbig{display:flex;gap:10px}.zbig>div{flex:1;background:var(--pri-soft);border-radius:12px;padding:11px}
   .zbig .zt{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;font-family:var(--fh)}
+  .gi-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 9px}
+  .gi-t{background:#F6F9FD;border:1px solid var(--line);border-radius:12px;padding:8px 8px 9px;min-width:0}
+  .gi-k{font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.25;font-family:var(--fh)}
+  .gi-v{font-family:var(--fh);font-weight:800;font-size:16.5px;margin:3px 0 1px;white-space:nowrap;letter-spacing:-.2px}
+  .gi-v small{font-size:11px;font-weight:700;color:var(--muted)}
+  .gi-s{font-size:10.5px;color:var(--muted);line-height:1.3;margin-bottom:5px}
+  .gi-t .mz{font-size:9.5px;padding:2px 7px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .gi-line{font-size:12.5px;line-height:1.55;background:var(--pri-soft);border-radius:11px;padding:9px 11px;margin-bottom:10px}
+  .glegend i.gc-sw-zone{width:12px;height:10px;border:0;border-radius:3px;opacity:.35;vertical-align:-1px}
   .zbig .zv{font-family:var(--fh);font-weight:700;font-size:17px;margin:3px 0}
  #gamefab{display:none !important;}
 </style>
@@ -870,58 +879,134 @@ function measureForm(b){var f=S.gf||{},editing=!!S.growth.edit;
  +'<div class="row"><div><label>Cân nặng (kg) *</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.canNang!=null?f.canNang:"")+'" oninput="S.gf.canNang=this.value" placeholder="VD: 9.5"></div><div><label>Chiều cao (cm)</label><input type="number" inputmode="decimal" step="0.1" value="'+esc(f.chieuCao!=null?f.chieuCao:"")+'" oninput="S.gf.chieuCao=this.value" placeholder="VD: 74"></div></div>'
  +'<label>Ghi chú</label><input value="'+esc(f.ghiChu||"")+'" oninput="S.gf.ghiChu=this.value" placeholder="VD: bé mọc răng, biếng ăn...">'
  +'<div class="btnrow" style="margin-top:14px">'+(editing?'<button class="btn sec" onclick="S.growth.edit=null;S.gf={};render()">Hủy</button>':'')+'<button class="btn" onclick="submitMeasure()">'+ic('check')+(editing?"Cập nhật":"Lưu số đo")+'</button></div></div>';}
-function growthLegend(){var items=[['#1F2D6B','Bé','dot'],['#16A34A','Trung vị','solid'],['#C9932E','±2SD','dash']];if(S.growth.all5)items.push(['#E01F26','±3SD','dash']);return '<div class="glegend">'+items.map(function(it){var cls=it[2]==='dot'?'gc-sw-dot':(it[2]==='dash'?'gc-sw-dash':'');var st=it[2]==='dot'?('background:'+it[0]):('border-top-color:'+it[0]);return '<span><i class="'+cls+'" style="'+st+'"></i>'+it[1]+'</span>';}).join('')+'</div>';}
+/* ===== BIỂU ĐỒ TĂNG TRƯỞNG — bản 01/10/2026 =====
+ * Khách chê bản cũ "đơn giản quá": chỉ có 1 dải xanh + đường của bé, khung tuổi hẹp (5 tháng) nên trông như 2 đường
+ * thẳng, không nói được bé đang ở đâu so với các bạn cùng tuổi hay có đang đi đúng nhịp không.
+ * Bản này trả lời 3 câu PG cần nói với mẹ tại quầy:
+ *   1) Bé đang ở đâu?            → bách phân vị ("nặng hơn 54/100 bạn cùng tuổi") + 5 vùng màu chuẩn WHO.
+ *   2) Bé có đi đúng nhịp không?  → so lần đo cách ≥3 tuần: đi đúng kênh / nhanh hơn / tụt kênh (lệch ≥0,67 SD = vượt
+ *                                   qua 1 đường bách phân vị chính — ngưỡng hay dùng trong theo dõi tăng trưởng).
+ *   3) Lần sau cần đạt bao nhiêu? → nét đứt "kênh của bé" 3 tháng tới, có con số đích.
+ * KHÔNG gắn kết quả tăng trưởng với sản phẩm (luật quảng cáo sữa cho trẻ nhỏ): chỉ nói về số đo của bé. */
+function gNum(x,d){ if(x==null||!isFinite(x)) return "—"; var f=Math.pow(10,d==null?1:d); return (""+(Math.round(x*f)/f)).replace(".",","); }
+/* Bách phân vị từ Z (phân phối chuẩn) — xấp xỉ Abramowitz–Stegun 7.1.26, sai số < 1e-7. */
+function zPct(z){ if(z==null||!isFinite(z)) return null; var x=Math.abs(z)/Math.SQRT2, t=1/(1+0.3275911*x);
+ var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return 50*(1+(z<0?-y:y)); }
+function pctShort(p){ if(p==null) return "—"; if(p<1) return "<1"; if(p>99) return ">99"; return ""+Math.round(p); }
+/* "nặng hơn khoảng 54/100 trẻ…" — ở 2 đầu nói theo kiểu người thường hiểu, không ra "cao hơn <1/100". */
+function pctPhrase(p,up,down,short){ if(p==null) return ""; var tail=short?"":" trẻ cùng tuổi, cùng giới";
+ if(p<3) return down+" hơn hầu hết (97/100)"+tail; if(p>97) return up+" hơn hầu hết (97/100)"+tail; return up+" hơn khoảng "+Math.round(p)+"/100"+tail; }
+function gTbl(b,isW){ var boy=b.gioiTinh!=="Gái"; return isW?(boy?WHO.wfaB:WHO.wfaG):(boy?WHO.hfaB:WHO.hfaG); }
+/* Các lần đo có số liệu của 1 chỉ số, kèm tuổi (tháng) + Z. Bảng WHO trong app dừng ở 60 tháng → sau đó Z = null. */
+function gMetric(b,ms,isW){ var tbl=gTbl(b,isW), out=[];
+ ms.forEach(function(m){ var v=isW?m.canNang:m.chieuCao; if(v==null||v==="") return; v=+v; if(!isFinite(v)||v<=0) return;
+  var am=ageMo(b.ngaySinh,m.ngayDo); if(am==null||am<0) return; out.push({m:m,v:v,am:am,z:(am<=60?zFrom(lmsAt(tbl,am),v):null)}); });
+ return out; }
+/* Nhịp tăng: so lần đo mới nhất với lần đo gần nhất cách ít nhất 21 ngày (cách quá gần thì sai số cân lấn hết). */
+function gTrend(b,ms,isW){ var p=gMetric(b,ms,isW); if(p.length<2) return null; var z2=p[p.length-1], z1=null, i;
+ for(i=p.length-2;i>=0;i--){ if((parseD(z2.m.ngayDo)-parseD(p[i].m.ngayDo))/86400000>=21){ z1=p[i]; break; } }
+ if(!z1) return {short:true};
+ var r={from:z1,to:z2,days:Math.round((parseD(z2.m.ngayDo)-parseD(z1.m.ngayDo))/86400000),dv:z2.v-z1.v,st:""};
+ if(z1.z!=null&&z2.z!=null){ var dz=z2.z-z1.z; r.dz=dz; r.exp=xAtZ(lmsAt(gTbl(b,isW),z2.am),z1.z)-z1.v; r.st=dz<=-0.67?"down":(dz>=0.67?"up":"ok"); }
+ return r; }
+/* 3 ô chỉ số + 1 câu nhận định — dùng chung cho màn kết quả tư vấn và tab Tăng trưởng. */
+function growthInsights(b,ms){
+ var W=gMetric(b,ms,true), H=gMetric(b,ms,false); if(!W.length&&!H.length) return "";
+ function tile(title,p,unit,type){
+  if(!p) return '<div class="gi-t"><div class="gi-k">'+title+'</div><div class="gi-v">—</div><div class="gi-s">Chưa đo</div></div>';
+  var c=zClass(p.z,type);
+  return '<div class="gi-t"><div class="gi-k">'+title+'</div><div class="gi-v">'+gNum(p.v)+' <small>'+unit+'</small></div>'
+   +(p.z!=null?('<div class="gi-s">Bách phân vị '+pctShort(zPct(p.z))+'</div><span class="mz zpill-'+c.cls+'">'+c.lb+'</span>'):'<div class="gi-s">Ngoài bảng chuẩn 0–5 tuổi</div>')+'</div>'; }
+ var tw=gTrend(b,ms,true), t3;
+ if(!tw||tw.short) t3='<div class="gi-t"><div class="gi-k">Nhịp tăng cân</div><div class="gi-v">—</div><div class="gi-s">'+(tw?"Lần đo trước cách chưa tới 3 tuần":"Cần thêm 1 lần đo")+'</div></div>';
+ else { var lb=tw.st==="down"?"Tụt kênh":(tw.st==="up"?"Nhanh hơn kênh":(tw.st==="ok"?"Đúng kênh":"")), cl=tw.st==="down"?"low":(tw.st==="up"?"high":"ok");
+  t3='<div class="gi-t"><div class="gi-k">Tăng trong '+tw.days+' ngày</div><div class="gi-v">'+(tw.dv>=0?"+":"")+gNum(tw.dv)+' <small>kg</small></div>'
+   +(tw.exp!=null?('<div class="gi-s">Theo kênh ≈ '+(tw.exp>=0?"+":"")+gNum(tw.exp)+' kg</div>'):'<div class="gi-s">&nbsp;</div>')+(lb?('<span class="mz zpill-'+cl+'">'+lb+'</span>'):'')+'</div>'; }
+ var lw=W.length?W[W.length-1]:null, lh=H.length?H[H.length-1]:null;
+ var s=[]; if(lw&&lw.z!=null) s.push(pctPhrase(zPct(lw.z),"nặng","nhẹ",false)); if(lh&&lh.z!=null) s.push(pctPhrase(zPct(lh.z),"cao","thấp",s.length>0));
+ var line=s.length?("Bé "+s.join(", và ")+"."):"";
+ if(tw&&tw.st==="ok") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé đi đúng kênh tăng trưởng của mình.";
+ else if(tw&&tw.st==="up") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé tăng cân nhanh hơn kênh của mình.";
+ else if(tw&&tw.st==="down") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" cân nặng tăng chậm hơn kênh của bé — nên cân lại sau 2–4 tuần; nếu vẫn tụt, mẹ đưa bé đi khám dinh dưỡng.";
+ return '<div class="gi-row">'+tile("Cân nặng",lw,"kg","w")+tile("Chiều cao",lh,"cm","h")+t3+'</div>'+(line?('<div class="gi-line">'+line+'</div>'):"");
+}
+var _gcSeq=0;
+function growthLegend(){
+ var items=[['#1F2D6B','Bé','dot'],['#1F2D6B','Kênh dự kiến','dash'],['#0F9A6A','Trung vị','solid'],['#C2691A','±2SD','dash']];
+ if(S.growth.all5) items.push(['#E11D48','±3SD','dash']);
+ var zones=[['#16A34A','Bình thường'],['#F59E0B','Cần chú ý'],['#E11D48','Nguy cơ']];
+ return '<div class="glegend">'+items.map(function(it){ var cls=it[2]==='dot'?'gc-sw-dot':(it[2]==='dash'?'gc-sw-dash':''); var st=it[2]==='dot'?('background:'+it[0]):('border-top-color:'+it[0]);
+   return '<span><i class="'+cls+'" style="'+st+'"></i>'+it[1]+'</span>'; }).join('')
+  +zones.map(function(z){ return '<span><i class="gc-sw-zone" style="background:'+z[0]+'"></i>'+z[1]+'</span>'; }).join('')+'</div>'; }
 function growthChart(b,ms,tab){
- var boy=b.gioiTinh!=="Gái",isW=(tab!=="h"),tbl=isW?(boy?WHO.wfaB:WHO.wfaG):(boy?WHO.hfaB:WHO.hfaG);
- var accent=boy?"#1D6FE0":"#E0559B";
- var pts=[];ms.forEach(function(m){var v=isW?m.canNang:m.chieuCao;if(v==null||!isFinite(v))return;var am=ageMo(b.ngaySinh,m.ngayDo);if(am==null||am<0)return;pts.push({am:Math.min(am,60),v:v,id:m.id,over:am>60});});
- var nowA=ageMo(b.ngaySinh,nowISO())||0;
- var maxA=pts.length?pts[pts.length-1].am:nowA;
- var x0=pts.length?Math.max(0,Math.floor(pts[0].am)):0;
- var x1=Math.min(60,Math.ceil(Math.max(nowA,maxA))+3);if(x1<=x0)x1=Math.min(60,x0+6);if(x1<=x0)x1=60;
- var xs=[];for(var mm=Math.ceil(x0);mm<x1;mm++)xs.push(mm);xs.unshift(x0);xs.push(x1);
- var ymin=Infinity,ymax=-Infinity;xs.forEach(function(mo){var lo=xAtZ(lmsAt(tbl,mo),-3),hi=xAtZ(lmsAt(tbl,mo),3);if(lo<ymin)ymin=lo;if(hi>ymax)ymax=hi;});
- pts.forEach(function(p){if(p.v<ymin)ymin=p.v;if(p.v>ymax)ymax=p.v;});
- if(!isFinite(ymin)){ymin=0;ymax=isW?20:120;}
- var pad=((ymax-ymin)*0.06)||1;ymin=Math.max(0,ymin-pad);ymax=ymax+pad;
- var W=364,H=284,L=40,R=42,T=20,B=34,pw=W-L-R,ph=H-T-B;
- function sx(m){return (L+(m-x0)/(x1-x0)*pw).toFixed(1);}
- function sy(v){return (T+(ymax-v)/(ymax-ymin)*ph).toFixed(1);}
- function zLine(z){return xs.map(function(mo){return sx(mo)+','+sy(xAtZ(lmsAt(tbl,mo),z));});}
- var g=[],yt=5;
- /* -- Vung: binh thuong (-2..+2) xanh; ngoai bien (khi bat 5 duong) do nhat -- */
- var up2=zLine(2),lo2=zLine(-2);
- if(S.growth.all5){var up3=zLine(3),lo3=zLine(-3);
-  g.push('<polygon class="gc-band" points="'+up3.concat(up2.slice().reverse()).join(' ')+'" fill="#E11D48" fill-opacity=".055"/>');
-  g.push('<polygon class="gc-band" points="'+lo2.concat(lo3.slice().reverse()).join(' ')+'" fill="#E11D48" fill-opacity=".055"/>');}
- g.push('<polygon class="gc-band" points="'+up2.concat(lo2.slice().reverse()).join(' ')+'" fill="#16A34A" fill-opacity=".10"/>');
- /* -- Luoi ngang + nhan truc tung -- */
- for(var i=0;i<=yt;i++){var vv=ymin+(ymax-ymin)*i/yt,yy=sy(vv);g.push('<line x1="'+L+'" y1="'+yy+'" x2="'+(L+pw)+'" y2="'+yy+'" stroke="#EAEFF6" stroke-width="1"/>');g.push('<text x="'+(L-6)+'" y="'+(parseFloat(yy)+3.2)+'" text-anchor="end" font-size="9" fill="#7B8698" font-weight="500">'+vv.toFixed(isW?1:0)+'</text>');}
- /* -- Luoi doc + nhan thang tuoi -- */
- var step=Math.max(1,Math.round((x1-x0)/6));for(var mo2=Math.ceil(x0/step)*step;mo2<=x1;mo2+=step){g.push('<line x1="'+sx(mo2)+'" y1="'+T+'" x2="'+sx(mo2)+'" y2="'+(T+ph)+'" stroke="#F1F5FA" stroke-width="1"/>');g.push('<text x="'+sx(mo2)+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="9" fill="#7B8698" font-weight="500">'+mo2+'</text>');}
- /* -- Vach "hom nay" (tuoi hien tai) -- */
- if(nowA>x0&&nowA<=x1){var nx=sx(Math.min(nowA,x1));g.push('<line x1="'+nx+'" y1="'+(T+1)+'" x2="'+nx+'" y2="'+(T+ph)+'" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2 3"/>');g.push('<text x="'+nx+'" y="'+(T-6)+'" text-anchor="middle" font-size="7.5" fill="#94A3B8" font-weight="700">hôm nay</text>');}
- /* -- Khung truc -- */
- g.push('<line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
- g.push('<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
- /* -- Tieu de truc -- */
- g.push('<text x="'+(L+pw/2)+'" y="'+(H-4)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600">Tháng tuổi</text>');
+ var isW=(tab!=="h"), tbl=gTbl(b,isW), boy=b.gioiTinh!=="Gái", accent=boy?"#1D6FE0":"#E0559B", unit=isW?"kg":"cm";
+ var pts=gMetric(b,ms,isW).map(function(p){ return {am:Math.min(p.am,60),v:p.v,id:p.m.id,z:p.z,d:p.m.ngayDo}; });
+ var nowA=ageMo(b.ngaySinh,nowISO()); if(nowA==null||nowA<0) nowA=0; nowA=Math.min(nowA,60);
+ var last=pts.length?pts[pts.length-1]:null;
+ /* Kênh dự kiến 3 tháng tới: đi theo đúng Z hiện tại của bé (bé "bám kênh" thì sẽ tới đây). */
+ var proj=null; if(last&&last.z!=null&&last.am<59.5){ var ta=Math.min(60,last.am+3); proj={a0:last.am,a1:ta,v:xAtZ(lmsAt(tbl,ta),last.z)}; }
+ /* Khung tuổi: rộng ít nhất 12 tháng (khung 5 tháng làm đường cong chuẩn trông như đường thẳng — lỗi bản cũ). */
+ var firstA=pts.length?pts[0].am:nowA, lastA=Math.max(pts.length?last.am:nowA,nowA,proj?proj.a1:0);
+ var x0=Math.max(0,Math.floor(Math.min(firstA,nowA)-3)), x1=Math.min(60,Math.ceil(lastA+1));
+ if(x1-x0<12){ x1=Math.min(60,x0+12); if(x1-x0<12) x0=Math.max(0,x1-12); }
+ var xs=[]; for(var mm=x0;mm<x1;mm+=0.5) xs.push(mm); xs.push(x1);
+ var ymin=Infinity,ymax=-Infinity;
+ xs.forEach(function(mo){ var lo=xAtZ(lmsAt(tbl,mo),-2.5),hi=xAtZ(lmsAt(tbl,mo),2.5); if(lo<ymin)ymin=lo; if(hi>ymax)ymax=hi; });
+ pts.forEach(function(p){ if(p.am>=x0){ if(p.v<ymin)ymin=p.v; if(p.v>ymax)ymax=p.v; } }); if(proj){ if(proj.v>ymax)ymax=proj.v; if(proj.v<ymin)ymin=proj.v; }
+ if(!isFinite(ymin)){ ymin=0; ymax=isW?20:120; }
+ var pad=((ymax-ymin)*0.04)||1; ymin=Math.max(0,ymin-pad); ymax=ymax+pad;
+ var W=364,H=300,L=40,R=42,T=22,Bm=36,pw=W-L-R,ph=H-T-Bm, cid="gcclip"+(++_gcSeq);
+ function X(m){ return L+(m-x0)/(x1-x0)*pw; } function Y(v){ return T+(ymax-v)/(ymax-ymin)*ph; }
+ function f1(n){ return n.toFixed(1); }
+ function zPts(z){ return xs.map(function(mo){ return f1(X(mo))+','+f1(Y(xAtZ(lmsAt(tbl,mo),z))); }); }
+ var g=[];
+ /* -- 5 vùng màu chuẩn WHO (luôn hiện): đỏ < −3 · cam −3..−2 · xanh −2..+2 · cam +2..+3 · đỏ > +3 -- */
+ function band(za,zb,col,op){ var a=zPts(za),c=zPts(zb); g.push('<polygon points="'+a.concat(c.slice().reverse()).join(' ')+'" fill="'+col+'" fill-opacity="'+op+'"/>'); }
+ g.push('<g clip-path="url(#'+cid+')">');
+ band(-6,-3,"#E11D48",".07"); band(-3,-2,"#F59E0B",".09"); band(-2,2,"#16A34A",".085"); band(2,3,"#F59E0B",".09"); band(3,6,"#E11D48",".07");
+ /* -- Lưới -- */
+ for(var i=0;i<=5;i++){ var vv=ymin+(ymax-ymin)*i/5, yy=f1(Y(vv)); g.push('<line x1="'+L+'" y1="'+yy+'" x2="'+(L+pw)+'" y2="'+yy+'" stroke="#E7EDF5" stroke-width="1"/>'); }
+ var step=(x1-x0)>24?6:((x1-x0)>12?3:2);
+ for(var mo2=Math.ceil(x0/step)*step; mo2<=x1; mo2+=step) g.push('<line x1="'+f1(X(mo2))+'" y1="'+T+'" x2="'+f1(X(mo2))+'" y2="'+(T+ph)+'" stroke="#EEF2F8" stroke-width="1"/>');
+ /* -- Đường chuẩn: TV liền, ±2 đứt, ±3 chấm (khi bật) -- */
+ var zset=[[2,'#C2691A','5 3',1.1,'+2SD'],[0,'#0F9A6A','',1.7,'TV'],[-2,'#C2691A','5 3',1.1,'−2SD']];
+ if(S.growth.all5){ zset.unshift([3,'#E11D48','2 3',1,'+3SD']); zset.push([-3,'#E11D48','2 3',1,'−3SD']); }
+ zset.forEach(function(zz){ g.push('<polyline points="'+zPts(zz[0]).join(' ')+'" fill="none" stroke="'+zz[1]+'" stroke-width="'+zz[3]+'" stroke-linejoin="round"'+(zz[2]?' stroke-dasharray="'+zz[2]+'"':'')+'/>'); });
+ g.push('</g>');
+ /* -- Nhãn trục -- */
+ for(i=0;i<=5;i++){ var v2=ymin+(ymax-ymin)*i/5; g.push('<text x="'+(L-6)+'" y="'+f1(Y(v2)+3.2)+'" text-anchor="end" font-size="9" fill="#7B8698" font-weight="500">'+v2.toFixed(isW?1:0)+'</text>'); }
+ for(mo2=Math.ceil(x0/step)*step; mo2<=x1; mo2+=step) g.push('<text x="'+f1(X(mo2))+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="9" fill="#7B8698" font-weight="500">'+mo2+'</text>');
+ g.push('<line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/><line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#C7D2E0" stroke-width="1.2"/>');
+ g.push('<text x="'+(L+pw/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600">Tháng tuổi</text>');
  g.push('<text x="12" y="'+(T+ph/2)+'" text-anchor="middle" font-size="9.5" fill="#475569" font-weight="600" transform="rotate(-90 12 '+(T+ph/2)+')">'+(isW?"Cân nặng (kg)":"Chiều cao (cm)")+'</text>');
- /* -- Duong chuan WHO: TV lien xanh, +/-SD net dut -- */
- var zset=S.growth.all5?[[3,'#E11D48','2 3','+3'],[2,'#C2691A','5 3','+2'],[0,'#0F9A6A','','TV'],[-2,'#C2691A','5 3','-2'],[-3,'#E11D48','2 3','-3']]:[[2,'#C2691A','5 3','+2'],[0,'#0F9A6A','','TV'],[-2,'#C2691A','5 3','-2']];
- var labs=[];
- zset.forEach(function(zz){var pl=zLine(zz[0]).join(' ');g.push('<polyline class="gc-line" points="'+pl+'" fill="none" stroke="'+zz[1]+'" stroke-width="'+(zz[0]===0?2:1.2)+'" stroke-linejoin="round"'+(zz[2]?' stroke-dasharray="'+zz[2]+'"':'')+'/>');labs.push({y:parseFloat(sy(xAtZ(lmsAt(tbl,x1),zz[0]))),txt:(zz[0]===0?'TV':zz[3]+'SD'),col:zz[1]});});
- /* -- Chip nhan mep phai, tu ne chong -- */
- labs.sort(function(a,b){return a.y-b.y;});
- for(var li=1;li<labs.length;li++){if(labs[li].y-labs[li-1].y<13)labs[li].y=labs[li-1].y+13;}
- labs.forEach(function(l){var w=l.txt.length*4.9+11,cx=L+pw+4,yy=Math.max(T+7,Math.min(T+ph-1,l.y));g.push('<g class="gc-line"><rect x="'+cx+'" y="'+(yy-7).toFixed(1)+'" rx="6.5" width="'+w.toFixed(1)+'" height="14" fill="#fff" stroke="'+l.col+'" stroke-width="1"/><text x="'+(cx+w/2).toFixed(1)+'" y="'+(yy+2.7).toFixed(1)+'" text-anchor="middle" font-size="7.6" fill="'+l.col+'" font-weight="700">'+l.txt+'</text></g>');});
- /* -- Du lieu cua be: duong + cham theo gioi tinh + callout gia tri moi nhat -- */
- if(pts.length){if(pts.length>1){var cl=pts.map(function(p){return sx(p.am)+','+sy(p.v);}).join(' ');g.push('<polyline class="gc-path" pathLength="1" points="'+cl+'" fill="none" stroke="'+accent+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>');}
-  pts.forEach(function(p,idx){var last=idx===pts.length-1;g.push('<circle class="gc-pt" cx="'+sx(p.am)+'" cy="'+sy(p.v)+'" r="'+(last?5:3.6)+'" fill="'+accent+'" stroke="#fff" stroke-width="'+(last?2.4:1.8)+'" style="cursor:pointer;animation-delay:'+(0.15+idx*0.05).toFixed(2)+'s" onclick="growthPoint(\''+p.id+'\')"/>');});
-  var lp=pts[pts.length-1],lx=parseFloat(sx(lp.am)),ly=parseFloat(sy(lp.v)),vtxt=(isW?lp.v.toFixed(1)+' kg':lp.v+' cm'),cw=vtxt.length*5.1+14,cxx=lx+9,cyy=ly-20;
-  if(cxx+cw>L+pw)cxx=lx-9-cw;if(cxx<L)cxx=L;if(cyy<T+1)cyy=ly+10;
-  g.push('<g class="gc-callout"><rect x="'+cxx.toFixed(1)+'" y="'+cyy.toFixed(1)+'" rx="7" width="'+cw.toFixed(1)+'" height="16" fill="'+accent+'"/><text x="'+(cxx+cw/2).toFixed(1)+'" y="'+(cyy+10.8).toFixed(1)+'" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">'+vtxt+'</text></g>');}
- return '<svg class="gchart" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg"><rect width="'+W+'" height="'+H+'" rx="14" fill="#fff"/><rect x="'+(L-0.5)+'" y="'+(T-0.5)+'" width="'+(pw+1)+'" height="'+(ph+1)+'" fill="#FCFDFE" stroke="#EEF2F8" stroke-width="1"/>'+g.join('')+'</svg>';}
+ /* -- Chip nhãn mép phải, tự né chồng -- */
+ var labs=zset.map(function(zz){ return {y:Y(xAtZ(lmsAt(tbl,x1),zz[0])),txt:zz[4],col:zz[1]}; }).sort(function(a,c){ return a.y-c.y; });
+ for(var li=1;li<labs.length;li++){ if(labs[li].y-labs[li-1].y<13) labs[li].y=labs[li-1].y+13; }
+ labs.forEach(function(l){ var w=l.txt.length*4.9+11, cx=L+pw+4, yy=Math.max(T+7,Math.min(T+ph-1,l.y));
+  g.push('<rect x="'+cx+'" y="'+f1(yy-7)+'" rx="6.5" width="'+f1(w)+'" height="14" fill="#fff" stroke="'+l.col+'" stroke-width="1"/><text x="'+f1(cx+w/2)+'" y="'+f1(yy+2.7)+'" text-anchor="middle" font-size="7.6" fill="'+l.col+'" font-weight="700">'+l.txt+'</text>'); });
+ /* -- Vạch hôm nay -- */
+ if(nowA>x0&&nowA<=x1){ var nx=f1(X(nowA)); g.push('<line x1="'+nx+'" y1="'+(T+1)+'" x2="'+nx+'" y2="'+(T+ph)+'" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2 3"/><text x="'+nx+'" y="'+(T-7)+'" text-anchor="middle" font-size="7.5" fill="#94A3B8" font-weight="700">hôm nay</text>'); }
+ /* -- Kênh dự kiến 3 tháng tới -- */
+ if(proj){ var pp=[]; for(var a=proj.a0;a<proj.a1;a+=0.5) pp.push(f1(X(a))+','+f1(Y(xAtZ(lmsAt(tbl,a),last.z)))); pp.push(f1(X(proj.a1))+','+f1(Y(proj.v)));
+  g.push('<polyline points="'+pp.join(' ')+'" fill="none" stroke="'+accent+'" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" opacity=".75"/>');
+  var ex=X(proj.a1), ey=Y(proj.v), ptxt="≈ "+gNum(proj.v)+" "+unit, pw2=ptxt.length*4.7+10, px=ex-pw2/2, py=ey+9;
+  if(px+pw2>L+pw) px=L+pw-pw2; if(py+14>T+ph) py=ey-23;
+  g.push('<circle cx="'+f1(ex)+'" cy="'+f1(ey)+'" r="4.2" fill="#fff" stroke="'+accent+'" stroke-width="2"/>');
+  g.push('<rect x="'+f1(px)+'" y="'+f1(py)+'" rx="6" width="'+f1(pw2)+'" height="14" fill="#fff" stroke="'+accent+'" stroke-width="1" stroke-dasharray="3 2"/><text x="'+f1(px+pw2/2)+'" y="'+f1(py+10)+'" text-anchor="middle" font-size="7.8" fill="'+accent+'" font-weight="700">'+ptxt+'</text>'); }
+ /* -- Số đo của bé: đường + chấm; chấm ngoài vùng bình thường có vòng cam/đỏ -- */
+ if(pts.length){
+  if(pts.length>1) g.push('<polyline class="gc-path" pathLength="1" points="'+pts.map(function(p){return f1(X(p.am))+','+f1(Y(p.v));}).join(' ')+'" fill="none" stroke="'+accent+'" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>');
+  pts.forEach(function(p,idx){ var lst=idx===pts.length-1, ring=(p.z!=null&&Math.abs(p.z)>3)?"#E11D48":((p.z!=null&&Math.abs(p.z)>2)?"#F59E0B":null);
+   if(ring) g.push('<circle cx="'+f1(X(p.am))+'" cy="'+f1(Y(p.v))+'" r="'+(lst?8.5:7)+'" fill="none" stroke="'+ring+'" stroke-width="2"/>');
+   g.push('<circle class="gc-pt" cx="'+f1(X(p.am))+'" cy="'+f1(Y(p.v))+'" r="'+(lst?5:3.8)+'" fill="'+accent+'" stroke="#fff" stroke-width="'+(lst?2.4:1.8)+'" style="cursor:pointer;animation-delay:'+(0.15+idx*0.05).toFixed(2)+'s" onclick="growthPoint(\''+p.id+'\')"/>'); });
+  /* ngày đo dưới điểm đầu + điểm cuối (bỏ điểm đầu nếu sát điểm cuối để khỏi đè chữ) */
+  var fp=pts[0], dl=[last]; if(pts.length>1&&Math.abs(X(last.am)-X(fp.am))>34) dl.unshift(fp);
+  dl.forEach(function(p){ var ty=Y(p.v)+15; if(ty>T+ph-3) ty=Y(p.v)-10; g.push('<text x="'+f1(X(p.am))+'" y="'+f1(ty)+'" text-anchor="middle" font-size="7.6" fill="#64748B" font-weight="600">'+fmtDate(p.d).slice(0,5)+'</text>'); });
+  var lx=X(last.am), ly=Y(last.v), vtxt=gNum(last.v)+" "+unit, cw=vtxt.length*5.1+14, cxx=lx+9, cyy=ly-21;
+  if(cxx+cw>L+pw) cxx=lx-9-cw; if(cxx<L) cxx=L; if(cyy<T+1) cyy=ly+10;
+  g.push('<g class="gc-callout"><rect x="'+f1(cxx)+'" y="'+f1(cyy)+'" rx="7" width="'+f1(cw)+'" height="16" fill="'+accent+'"/><text x="'+f1(cxx+cw/2)+'" y="'+f1(cyy+10.8)+'" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">'+vtxt+'</text></g>'); }
+ return '<svg class="gchart" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="'+cid+'"><rect x="'+L+'" y="'+T+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs><rect width="'+W+'" height="'+H+'" rx="14" fill="#fff"/><rect x="'+(L-0.5)+'" y="'+(T-0.5)+'" width="'+(pw+1)+'" height="'+(ph+1)+'" fill="#FCFDFE" stroke="#EEF2F8" stroke-width="1"/>'+g.join('')+'</svg>';
+}
 function growthAssess(b,ms){
  var boy=b.gioiTinh!=="Gái";
  var wm=ms.filter(function(m){return m.canNang!=null&&isFinite(m.canNang);});
@@ -932,7 +1017,7 @@ function growthAssess(b,ms){
  var lh=hm.length?hm[hm.length-1]:null,ahm=lh?ageMo(b.ngaySinh,lh.ngayDo):null;
  var zH=(lh&&ahm!=null&&ahm<=60)?zFrom(lmsAt(boy?WHO.hfaB:WHO.hfaG,ahm),lh.chieuCao):null,cH=zClass(zH,"h");
  var h='<div class="card" style="margin-top:12px"><div class="sec-l" style="margin-bottom:10px"><div class="sec-ic">'+ic('insights')+'</div><h3 style="font-size:15px">Nhận định (lần đo gần nhất)</h3></div>';
- h+='<div class="zbig"><div><div class="zt">Cân nặng / tuổi</div><div class="zv">'+(zW!=null?"Z "+zW.toFixed(1):"—")+'</div><span class="mz zpill-'+cW.cls+'">'+cW.lb+'</span></div>'
+ if(false)h+='<div class="zbig"><div><div class="zt">Cân nặng / tuổi</div><div class="zv">'+(zW!=null?"Z "+zW.toFixed(1):"—")+'</div><span class="mz zpill-'+cW.cls+'">'+cW.lb+'</span></div>'
   +'<div><div class="zt">Chiều cao / tuổi</div><div class="zv">'+(zH!=null?"Z "+zH.toFixed(1):"—")+'</div><span class="mz zpill-'+(lh?cH.cls:"na")+'">'+(lh?cH.lb:"Chưa đo cao")+'</span></div></div>';
  var msg=cW.cls==="ok"?"Cân nặng của bé đang trong vùng bình thường theo chuẩn WHO. Mẹ duy trì chế độ ăn hiện tại và cân đo đều đặn nhé!":cW.cls==="low"?"Cân nặng của bé đang dưới chuẩn. Mẹ nên chú ý tăng cường dinh dưỡng và theo dõi sát hơn.":"Cân nặng của bé nhỉnh hơn chuẩn. Mẹ cân đối khẩu phần và tăng vận động cho bé nhé.";
  h+='<div class="posmsg" style="margin-top:11px">'+ic('child_care')+'<div>'+msg+'</div></div>';
@@ -955,7 +1040,7 @@ function renderGrowth(){
  var lastM=ms.length?ms[ms.length-1]:null,dueDays=lastM?Math.floor((Date.now()-parseD(lastM.ngayDo))/86400000):null;
  if(dueDays!=null&&dueDays>=30)h+='<div class="reminder" style="margin-top:12px">'+ic('notifications')+'<div><b>Đến hẹn cân đo cho bé</b><div style="font-size:11.5px;opacity:.95">Đã '+dueDays+' ngày kể từ lần đo gần nhất — cập nhật để đường tăng trưởng luôn chính xác.</div></div></div>';
  if(nowA!=null&&nowA>60)h+='<div class="warn" style="margin-top:12px">'+ic('warning')+'<div>Bé đã ngoài phạm vi biểu đồ 0–5 tuổi (WHO 0–60 tháng). Biểu đồ chỉ hiển thị đến mốc 60 tháng; mẹ vẫn có thể lưu số đo để tham khảo.</div></div>';
- h+='<div class="card" style="margin-top:12px"><div class="gv-tabs"><div class="gv-tab'+(S.growth.tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">'+ic('monitor_weight')+'Cân nặng</div><div class="gv-tab'+(S.growth.tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">'+ic('straighten')+'Chiều cao</div></div>';
+ h+='<div class="card" style="margin-top:12px">'+growthInsights(b,ms)+'<div class="gv-tabs"><div class="gv-tab'+(S.growth.tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">'+ic('monitor_weight')+'Cân nặng</div><div class="gv-tab'+(S.growth.tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">'+ic('straighten')+'Chiều cao</div></div>';
  var plot=ms.filter(function(m){return S.growth.tab==="h"?(m.chieuCao!=null):(m.canNang!=null);});
  if(!plot.length)h+='<div style="text-align:center;color:var(--on-var);font-size:12.5px;padding:26px 8px">Chưa có số đo '+(S.growth.tab==="h"?"chiều cao":"cân nặng")+'. Thêm số đo bên dưới để vẽ biểu đồ.</div>';
  else h+=growthChart(b,ms,S.growth.tab)+growthLegend();
@@ -1140,9 +1225,7 @@ function consultGrowthCard(){
  var plot=ms.filter(function(m){ return tab==="h"?(m.chieuCao!=null&&m.chieuCao!==""):(m.canNang!=null); });
  var h='<div class="card" style="margin-top:12px"><div class="sec-title" style="margin-top:0"><span class="ico" style="background:var(--health-soft);color:var(--health)">'+ic("trending_up",16)+'</span>Tăng trưởng của '+esc(b.ten||"bé")+'</div>';
  h+='<div class="muted" style="font-size:12px;margin-bottom:9px">'+(ms.length>1?(ms.length+" lần đo · lần đầu "+fmtDate(ms[0].ngayDo)):"Lần đo đầu tiên của bé — từ lần sau biểu đồ sẽ nối thành đường.")+'</div>';
- if(ms.length>1){ var a=ms[ms.length-2], z=ms[ms.length-1], days=Math.round((parseD(z.ngayDo)-parseD(a.ngayDo))/86400000), dw=round1(z.canNang-a.canNang);
-  var dh=(z.chieuCao!=null&&z.chieuCao!==""&&a.chieuCao!=null&&a.chieuCao!=="")?round1(z.chieuCao-a.chieuCao):null;
-  h+='<div style="background:var(--pri-soft);border-radius:11px;padding:9px 11px;font-size:12.5px;line-height:1.5;margin-bottom:10px">So với lần trước ('+fmtDate(a.ngayDo)+', cách '+days+' ngày): <b>'+(dw>=0?"+":"")+(""+dw).replace(".",",")+' kg</b>'+(dh!=null?(' · <b>'+(dh>=0?"+":"")+(""+dh).replace(".",",")+' cm</b>'):"")+'</div>'; }
+ h+=growthInsights(b,ms);
  h+='<div class="gv-tabs"><div class="gv-tab'+(tab!=="h"?" on":"")+'" onclick="S.growth.tab=\'w\';render()">Cân nặng</div><div class="gv-tab'+(tab==="h"?" on":"")+'" onclick="S.growth.tab=\'h\';render()">Chiều cao</div></div>';
  if(!plot.length) h+='<div style="text-align:center;color:var(--muted);font-size:12.5px;padding:22px 8px">Chưa có số đo '+(tab==="h"?"chiều cao":"cân nặng")+' của bé.</div>';
  else h+=growthChart(b,ms,tab)+growthLegend();
