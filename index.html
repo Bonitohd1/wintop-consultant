@@ -824,7 +824,7 @@ var NAV=[{k:"home",ic:"home",l:"Trang chủ"},{k:"tuvan",ic:"stetho",l:"Tư vấ
 function renderTabbar(){ el("tabbar").innerHTML=NAV.map(function(t){ if(t.c) return '<div class="navc"><button onclick="newConsult()">'+ic("plus",24)+'</button></div>'; return '<button class="'+(S.tab===t.k?"on":"")+'" onclick="setTab(\''+t.k+'\')">'+ic(t.ic,22)+'<span>'+t.l+'</span></button>'; }).join(""); }
 
 /* ===== BIEU DO TANG TRUONG (port tu Nutritie, WHO 0-60m) ===== */
-if(typeof S!=='undefined'){if(!S.growth)S.growth={baby:'',tab:'w',range:12,addingBaby:false,editBaby:null,edit:null};if(!S.bf)S.bf={};if(!S.gf)S.gf={};}
+if(typeof S!=='undefined'){if(!S.growth)S.growth={baby:'',tab:'w',range:12,addingBaby:false,editBaby:null,edit:null,q:''};if(!S.bf)S.bf={};if(!S.gf)S.gf={};}
 var WHO={
  wfaB:[[0.3487,3.3464,0.14602],[0.2297,4.4709,0.13395],[0.197,5.5675,0.12385],[0.1738,6.3762,0.11727],[0.1553,7.0023,0.11316],[0.1395,7.5105,0.1108],[0.1257,7.934,0.10958],[0.1134,8.297,0.10902],[0.1021,8.6151,0.10882],[0.0917,8.9014,0.10881],[0.082,9.1649,0.10891],[0.073,9.4122,0.10906],[0.0644,9.6479,0.10925],[0.0563,9.8749,0.10949],[0.0487,10.0953,0.10976],[0.0413,10.3108,0.11007],[0.0343,10.5228,0.11041],[0.0275,10.7319,0.11079],[0.0211,10.9385,0.11119],[0.0148,11.143,0.11164],[0.0087,11.3462,0.11211],[0.0029,11.5486,0.11261],[-0.0028,11.7504,0.11314],[-0.0083,11.9514,0.11369],[-0.0137,12.1515,0.11426],[-0.0189,12.3502,0.11485],[-0.024,12.5466,0.11544],[-0.0289,12.7401,0.11604],[-0.0337,12.9303,0.11664],[-0.0385,13.1169,0.11723],[-0.0431,13.3,0.11781],[-0.0476,13.4798,0.11839],[-0.052,13.6567,0.11896],[-0.0564,13.8309,0.11953],[-0.0606,14.0031,0.12008],[-0.0648,14.1736,0.12062],[-0.0689,14.3429,0.12116],[-0.0729,14.5113,0.12168],[-0.0769,14.6791,0.1222],[-0.0808,14.8466,0.12271],[-0.0846,15.014,0.12322],[-0.0883,15.1813,0.12373],[-0.092,15.3486,0.12425],[-0.0957,15.5158,0.12478],[-0.0993,15.6828,0.12531],[-0.1028,15.8497,0.12586],[-0.1063,16.0163,0.12643],[-0.1097,16.1827,0.127],[-0.1131,16.3489,0.12759],[-0.1165,16.515,0.12819],[-0.1198,16.6811,0.1288],[-0.123,16.8471,0.12943],[-0.1262,17.0132,0.13005],[-0.1294,17.1792,0.13069],[-0.1325,17.3452,0.13133],[-0.1356,17.5111,0.13197],[-0.1387,17.6768,0.13261],[-0.1417,17.8422,0.13325],[-0.1447,18.0073,0.13389],[-0.1477,18.1722,0.13453],[-0.1506,18.3366,0.13517]],
  wfaG:[[0.3809,3.2322,0.14171],[0.1714,4.1873,0.13724],[0.0962,5.1282,0.13],[0.0402,5.8458,0.12619],[-0.005,6.4237,0.12402],[-0.043,6.8985,0.12274],[-0.0756,7.297,0.12204],[-0.1039,7.6422,0.12178],[-0.1288,7.9487,0.12181],[-0.1507,8.2254,0.12199],[-0.17,8.48,0.12223],[-0.1872,8.7192,0.12247],[-0.2024,8.9481,0.12268],[-0.2158,9.1699,0.12283],[-0.2278,9.387,0.12294],[-0.2384,9.6008,0.12299],[-0.2478,9.8124,0.12303],[-0.2562,10.0226,0.12306],[-0.2637,10.2315,0.12309],[-0.2703,10.4393,0.12315],[-0.2762,10.6464,0.12323],[-0.2815,10.8534,0.12335],[-0.2862,11.0608,0.1235],[-0.2903,11.2688,0.12369],[-0.2941,11.4775,0.1239],[-0.2975,11.6864,0.12414],[-0.3005,11.8947,0.12441],[-0.3032,12.1015,0.12472],[-0.3057,12.3059,0.12506],[-0.308,12.5073,0.12545],[-0.3101,12.7055,0.12587],[-0.312,12.9006,0.12633],[-0.3138,13.093,0.12683],[-0.3155,13.2837,0.12737],[-0.3171,13.4731,0.12794],[-0.3186,13.6618,0.12855],[-0.3201,13.8503,0.12919],[-0.3216,14.0385,0.12988],[-0.323,14.2265,0.13059],[-0.3243,14.414,0.13135],[-0.3257,14.601,0.13213],[-0.327,14.7873,0.13293],[-0.3283,14.9727,0.13376],[-0.3296,15.1573,0.1346],[-0.3309,15.341,0.13545],[-0.3322,15.524,0.1363],[-0.3335,15.7064,0.13716],[-0.3348,15.8882,0.138],[-0.3361,16.0697,0.13884],[-0.3374,16.2511,0.13968],[-0.3387,16.4322,0.14051],[-0.34,16.6133,0.14132],[-0.3414,16.7942,0.14213],[-0.3427,16.9748,0.14293],[-0.344,17.1551,0.14371],[-0.3453,17.3347,0.14448],[-0.3466,17.5136,0.14525],[-0.3479,17.6916,0.146],[-0.3492,17.8686,0.14675],[-0.3505,18.0445,0.14748],[-0.3518,18.2193,0.14821]],
@@ -922,9 +922,9 @@ function gNum(x,d){ if(x==null||!isFinite(x)) return "—"; var f=Math.pow(10,d=
 /* Bách phân vị từ Z (phân phối chuẩn) — xấp xỉ Abramowitz–Stegun 7.1.26, sai số < 1e-7. */
 function zPct(z){ if(z==null||!isFinite(z)) return null; var x=Math.abs(z)/Math.SQRT2, t=1/(1+0.3275911*x);
  var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return 50*(1+(z<0?-y:y)); }
-/* "nặng hơn khoảng 54/100 …" — ở 2 đầu nói kiểu người thường hiểu, không ra "cao hơn <1/100". */
-function pctPhrase(p,up,down,short){ if(p==null) return ""; var tail=short?"":" trẻ cùng tuổi, cùng giới";
- if(p<3) return down+" hơn hầu hết (97/100)"+tail; if(p>97) return up+" hơn hầu hết (97/100)"+tail; return up+" hơn khoảng "+Math.round(p)+"/100"+tail; }
+/* Vị trí so với CHUẨN WHO. KHÔNG nói "hơn bao nhiêu bé khác" (khách góp ý 09/10/2026: ngoài đời nhiều bé cùng cao hơn chuẩn,
+   nói như vậy mẹ không tin và là kết luận vô căn cứ). Ở 2 đầu nói kiểu người thường hiểu, không ra "cao hơn <1/100". */
+function whoPos(p,noun){ if(p==null) return ""; if(p>97) return noun+" cao hơn chuẩn WHO (vượt mức 97/100)"; if(p<3) return noun+" thấp hơn chuẩn WHO (dưới mức 3/100)"; return noun+" ở mức khoảng "+Math.round(p)+"/100 theo chuẩn WHO"; }
 /* Loại chỉ số: "w" cân nặng theo tuổi (0–60 tháng) · "h" chiều cao theo tuổi (0–228 tháng) · "b" BMI theo tuổi (61–228 tháng). Chấp nhận cả true/false của bản cũ. */
 function gT(x){ return x===true?"w":(x===false?"h":x); }
 function gMax(x){ return gT(x)==="w"?60:228; }
@@ -955,8 +955,8 @@ function gTrend(b,ms,isW){ var p=gMetric(b,ms,isW); if(p.length<2) return null; 
 /* Câu nhận định bằng lời thường — dùng chung màn kết quả tư vấn và tab Tăng trưởng. */
 function growthLine(b,ms){
  var W=gMetric(b,ms,true), H=gMetric(b,ms,false), Bm=gMetric(b,ms,"b"), lw=W.length?W[W.length-1]:null, lh=H.length?H[H.length-1]:null, lb=Bm.length?Bm[Bm.length-1]:null, s=[];
- if(lw&&lw.z!=null) s.push(pctPhrase(zPct(lw.z),"nặng","nhẹ",false)); if(lb&&lb.z!=null) s.push(pctPhrase(zPct(lb.z),"có BMI cao","có BMI thấp",s.length>0)); if(lh&&lh.z!=null) s.push(lb&&lb.z!=null?pctPhrase(zPct(lh.z),"chiều cao cao","chiều cao thấp",true):pctPhrase(zPct(lh.z),"cao","thấp",s.length>0));
- var line=s.length?("Bé "+s.join(", và ")+"."):"", tw=gTrend(b,ms,true);
+ if(lw&&lw.z!=null) s.push(whoPos(zPct(lw.z),"cân nặng")); if(lb&&lb.z!=null) s.push(whoPos(zPct(lb.z),"BMI")); if(lh&&lh.z!=null) s.push(whoPos(zPct(lh.z),"chiều cao"));
+ var line=s.length?("Bé có "+s.join("; ")+"."):"", tw=gTrend(b,ms,true);
  if(tw&&tw.st&&tw.soft) line+=" Số đo do mẹ nhớ lại nên chưa kết luận được nhịp tăng — lần sau cân tại quầy để biết chắc.";
  else if(tw&&tw.st==="ok") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé đi đúng kênh tăng trưởng của mình.";
  else if(tw&&tw.st==="up") line+=" Từ "+fmtDate(tw.from.m.ngayDo)+" bé tăng cân nhanh hơn kênh của mình.";
@@ -978,9 +978,9 @@ function gNextWeigh(b,lastISO){ var a=ageMo(b.ngaySinh,lastISO); var days=(a!=nu
  var nx=new Date(d.getTime()+days*86400000), today=parseD(nowISO()); var due=nx<=today;
  var iso=due?nowISO():(nx.getFullYear()+'-'+('0'+(nx.getMonth()+1)).slice(-2)+'-'+('0'+nx.getDate()).slice(-2));
  return {iso:iso,due:due,months:days===30?1:3}; }
-/* Thước vị trí: con số lớn + "nặng hơn khoảng X/100 bạn cùng tuổi" + dải màu có chấm vị trí của bé. */
+/* Thước vị trí: con số lớn + vị trí so với chuẩn WHO + dải màu có chấm vị trí của bé. */
 function growthRuler(b,ms,x){ var ty=gT(x), p=gMetric(b,ms,ty); if(!p.length) return ""; var last=p[p.length-1], zs=GZ[ty], unit=GU[ty];
- var who=last.z!=null?(pctPhrase(zPct(last.z),ty==="w"?"nặng":(ty==="b"?"BMI cao":"cao"),ty==="w"?"nhẹ":(ty==="b"?"BMI thấp":"thấp"),true)+" bạn cùng tuổi"):(ty==="w"?"Cân nặng theo tuổi chỉ có chuẩn tới 5 tuổi — xem BMI":"Ngoài bảng chuẩn 0–19 tuổi");
+ var who=last.z!=null?whoPos(zPct(last.z),ty==="w"?"cân nặng":(ty==="b"?"BMI":"chiều cao")):(ty==="w"?"Cân nặng theo tuổi chỉ có chuẩn tới 5 tuổi — xem BMI":"Ngoài bảng chuẩn 0–19 tuổi");
  var h='<div class="gr-top"><div><span class="gr-big">'+gNum(last.v)+'</span> <span class="gr-u">'+unit+'</span>'+(last.me?' <span class="gr-me">mẹ nhớ lại</span>':'')+'</div><div class="gr-pc">'+who+'</div></div>';
  if(last.z==null) return h;
  var segs=zs.map(function(s){ var a=Math.max(-4,s[0]),c=Math.min(4,s[1]); return '<i style="width:'+((c-a)/8*100).toFixed(2)+'%;background:'+s[2]+'"></i>'; }).join("");
@@ -1054,7 +1054,7 @@ function growthTip(id,tab,seq){ var e=el("gtip"+seq); if(!e) return; var m=null,
  for(i=0;i<p.length;i++) if(p[i].m.id===id){ cur=p[i]; prev=i>0?p[i-1]:null; } if(!cur) return; var unit=GU[ty];
  var s="Ngày "+fmtDate(m.ngayDo)+" · "+ageLabel(cur.am)+(gCorrected(b,m.ngayDo)?" (hiệu chỉnh)":"")+" · <b>"+gNum(cur.v)+" "+unit+"</b>";
  if(ty==="b"&&m.canNang&&m.chieuCao) s+=" ("+gNum(+m.canNang)+" kg, "+gNum(+m.chieuCao)+" cm)";
- if(cur.z!=null) s+=" · "+pctPhrase(zPct(cur.z),ty==="w"?"nặng":(ty==="b"?"BMI cao":"cao"),ty==="w"?"nhẹ":(ty==="b"?"BMI thấp":"thấp"),true)+" bạn cùng tuổi ("+zClass(cur.z,ty).lb.toLowerCase()+")";
+ if(cur.z!=null) s+=" · "+whoPos(zPct(cur.z),ty==="w"?"cân nặng":(ty==="b"?"BMI":"chiều cao"))+" ("+zClass(cur.z,ty).lb.toLowerCase()+")";
  if(prev) s+=" · so với lần trước "+(cur.v-prev.v>=0?"+":"")+gNum(cur.v-prev.v)+" "+unit;
  s+=" · "+(cur.me?"mẹ nhớ lại":"cân đo thật"); e.innerHTML=s; }
 /* Cả khối biểu đồ (dùng chung tab Tăng trưởng và màn kết quả tư vấn). */
@@ -1077,7 +1077,7 @@ function growthPanel(b,ms){
  if(nx){ var t2;
   if(c&&c.cls==="ok"){ var ta=gAgeMo(b,nx.iso); t2=(ta!=null&&ta<=gMax(tab))?("Để giữ đúng kênh của bé, "+GN[tab]+" lúc đó nên ở khoảng "+gNum(xAtZ(lmsAt(tbl,ta),last.z-0.3))+"–"+gNum(xAtZ(lmsAt(tbl,ta),last.z+0.3))+" "+unit+" (vạch xanh trên biểu đồ)."):"Cân đo đều đặn để theo dõi đường tăng trưởng của bé."; }
   else if(c&&c.cls==="low") t2="Bé đang ở vùng "+c.lb.toLowerCase()+" — mẹ nên đưa bé đi khám dinh dưỡng để được tư vấn cụ thể.";
-  else if(c&&c.cls==="high") t2=tab==="w"?"Cân nặng theo tuổi cao hơn chuẩn — cần đo thêm chiều cao để biết bé có thừa cân hay không.":(tab==="b"?"BMI của bé cao hơn chuẩn — mẹ nên hỏi bác sĩ hoặc chuyên gia dinh dưỡng; không tự ý cho bé ăn kiêng.":"Bé cao hơn hẳn các bạn cùng tuổi — thường không đáng lo; mẹ hỏi bác sĩ ở lần khám tới.");
+  else if(c&&c.cls==="high") t2=tab==="w"?"Cân nặng theo tuổi cao hơn chuẩn — cần đo thêm chiều cao để biết bé có thừa cân hay không.":(tab==="b"?"BMI của bé cao hơn chuẩn — mẹ nên hỏi bác sĩ hoặc chuyên gia dinh dưỡng; không tự ý cho bé ăn kiêng.":"Chiều cao của bé cao hơn chuẩn WHO — thường không đáng lo; mẹ hỏi bác sĩ ở lần khám tới.");
   else t2="Cân đo đều đặn để theo dõi đường tăng trưởng của bé.";
   h+='<div class="gr-next"><span class="gr-nic">'+ic("event",18)+'</span><div><div class="gr-nt">'+(nx.due?"Đã đến lúc cân đo lại cho bé":"Lần cân tới: khoảng "+fmtDate(nx.iso))+'</div><div class="gr-nd">'+t2+'</div></div></div>'; }
  h+='<div class="gr-foot">'+(p.some(function(x){return x.me;})?'Chấm viền đứt = số mẹ nhớ lại. ':'')+'Chuẩn tăng trưởng WHO 2006 (0–5 tuổi). Dưới 2 tuổi đo chiều dài nằm, từ 2 tuổi đo đứng.'+(last.am>60?' Từ 5 đến 19 tuổi dùng bảng tham chiếu WHO 2007: chiều cao theo tuổi và BMI theo tuổi (BMI = cân nặng ÷ chiều cao²; thừa cân trên +1 SD, béo phì trên +2 SD, gầy dưới −2 SD).':'')+(gSnt(b)?' Bé sinh sớm '+gSnt(b)+' tuần: dưới 2 tuổi tính theo tuổi hiệu chỉnh.':'')+'</div>';
@@ -1113,9 +1113,43 @@ function growthAssess(b,ms){
  if(needDoc){ var why=[]; if(zW!=null&&zW<-2) why.push("nhẹ cân"); if(zH!=null&&zH<-2) why.push("thấp còi"); if(zB!=null&&zB<-2) why.push("gầy"); if(zB!=null&&zB>2) why.push("béo phì"); if(zH!=null&&zH>3) why.push("rất cao so với tuổi");
   h+='<div class="danger" style="margin-top:11px;display:flex;gap:8px"><span style="flex-shrink:0">'+ic('warning')+'</span><div>Chỉ số của bé đang ngoài vùng bình thường theo chuẩn WHO ('+why.join(", ")+'). Mẹ nên đưa bé đi khám chuyên gia dinh dưỡng / bác sĩ nhi để được đánh giá kỹ hơn. <i>Thông tin trong app chỉ để tham khảo, không thay thế chẩn đoán y khoa.</i></div></div>'; }
  return h+'</div>';}
+
+/* ---- Tab Tăng trưởng: tìm hồ sơ bé theo SĐT người mua (khách yêu cầu 09/10/2026) ----
+   1 SĐT ra nhiều bé -> chạm chọn bé (VD con tên "In") -> ra biểu đồ. Tìm trên máy + (nếu máy đã nhập mã NPP) cả trên hệ thống.
+   KHÔNG gọi render() lúc gõ: vẽ lại cả màn là ô nhập mất con trỏ. Chỉ vẽ lại khung #gqres. 5 trạng thái KHÁC NHAU: SĐT sai / đang tìm / có bé /
+   không có bé / không tìm được — gộp "không có" với "không tìm được" là nói dối PG. */
+var _gq={phone:"",state:"",msg:""};
+function gqPaint(){ var e=el("gqres"); if(e) e.innerHTML=gqHtml(); }
+function gqHtml(){
+ var raw=(S.growth.q||"").trim(); if(!raw) return "";
+ var p=kidPhone(raw), st=(_gq.phone===p)?_gq.state:"";
+ function ln(t,warn){ return '<div class="faint" style="font-size:12px;line-height:1.5;margin:2px 0 0'+(warn?';color:#9A5B13':'')+'">'+t+'</div>'; }
+ if(!kidPhoneOK(p)) return st==="bad"?ln("Số điện thoại chưa đúng — cần 10 số, bắt đầu bằng 0.",true):"";
+ if(st==="loading") return ln("Đang tìm hồ sơ bé của số này…");
+ if(!st) return ln("Bấm “Tìm” để xem các bé của số này.");
+ var ks=kidsOfPhone(p), cur=S.growth.baby, note="";
+ if(st==="off") note="Chỉ tìm trên máy này (máy chưa nhập mã kích hoạt NPP nên không tìm trên hệ thống).";
+ else if(st==="nosrv") note="Chỉ tìm trên máy này (hệ thống chưa bật lưu hồ sơ bé).";
+ else if(st==="err") note="⚠ Chưa tải được từ hệ thống ("+esc(_gq.msg)+"). Chỉ hiện các bé đã lưu trên máy này.";
+ if(!ks.length) return ln(st==="ok"?"Số này chưa có hồ sơ bé nào.":("Chưa thấy bé nào của số này trên máy. "+note),st==="err");
+ return '<label style="margin-top:2px">'+ks.length+' bé của số này — chạm để xem biểu đồ</label><div class="gbaby" style="margin:2px 0 4px">'+ks.map(function(b){ var m=ageMo(b.ngaySinh,nowISO());
+   return '<div class="gchip'+(b.id===cur?' on':'')+'" onclick="selBaby(\''+b.id+'\')">'+ic('child_care')+esc(b.ten||"Bé")+(m!=null&&m>=0?(" · "+ageLabel(m)):"")+'</div>'; }).join("")+'</div>'+(note?ln(note,st==="err"):""); }
+function growthSearch(){
+ var p=kidPhone(S.growth.q||"");
+ if(!kidPhoneOK(p)){ _gq={phone:p,state:"bad",msg:""}; gqPaint(); return; }
+ if(!wtToken()){ _gq={phone:p,state:"off",msg:""}; gqPaint(); return; }
+ _gq={phone:p,state:"loading",msg:""}; gqPaint();
+ growthCall("/lookup","POST",{phone:p}).then(function(j){ growthMerge(p,j.children||[],true); if(_gq.phone!==p) return; _gq={phone:p,state:"ok",msg:""}; if(S.tab==="growth") render(); else gqPaint(); })
+  .catch(function(e){ console.warn("Tìm hồ sơ bé lỗi:",e&&e.message); if(_gq.phone!==p) return; _gq={phone:p,state:(e&&e.status===404)?"nosrv":"err",msg:growthErrText(e)}; gqPaint(); });
+}
+function growthSearchCard(){
+ return '<div class="card" style="padding:11px 12px;margin-bottom:12px"><label style="margin-top:0">Tìm hồ sơ bé theo số điện thoại</label>'
+  +'<div style="display:flex;gap:8px;align-items:stretch"><input id="gq" type="tel" inputmode="numeric" autocomplete="off" value="'+esc(S.growth.q||"")+'" placeholder="SĐT người mua" oninput="S.growth.q=this.value" onkeydown="if(event.key===\'Enter\'){event.preventDefault();growthSearch();}" style="flex:1;min-width:0;margin:0">'
+  +'<button class="btn" style="width:auto;padding:0 18px;flex:0 0 auto" onclick="growthSearch()">'+ic('search',18)+'Tìm</button></div>'
+  +'<div id="gqres" style="margin-top:8px">'+gqHtml()+'</div></div>'; }
 function renderGrowth(){
  var bs=babies();
- var head='<div class="sec" style="margin-bottom:12px"><div class="sec-l"><div class="sec-ic">'+ic('trending_up')+'</div><div><h3>Biểu đồ tăng trưởng</h3><div class="sub">Chuẩn WHO 0–19 tuổi · lưu tại máy</div></div></div></div>';
+ var head='<div class="sec" style="margin-bottom:12px"><div class="sec-l"><div class="sec-ic">'+ic('trending_up')+'</div><div><h3>Biểu đồ tăng trưởng</h3><div class="sub">Chuẩn WHO 0–19 tuổi · lưu tại máy</div></div></div></div>'+growthSearchCard();
  if(!bs.length)return head+'<div class="card" style="text-align:center;padding:30px 22px"><div class="gr-emy">'+ic('child_care')+'<span class="gr-emy-tr">'+ic('trending_up')+'</span></div><div style="font-family:var(--fd);font-weight:700;font-size:16px">Tạo hồ sơ cho bé</div><div style="font-size:12.5px;color:var(--on-var);margin-top:5px;line-height:1.6">Thêm bé để bắt đầu lưu số đo và vẽ đường tăng trưởng theo tháng.</div></div>'+babyForm();
  var b=curBaby(),ms=babyMeasures(b.id),nowA=ageMo(b.ngaySinh,nowISO());
  var h=head;
@@ -1352,7 +1386,7 @@ function step1(){ var u=S.user, dyn="";
  /* XIN ĐỒNG Ý TRƯỚC KHI LƯU. Trước 30/09/2026 app gán sẵn consent=true và không hỏi ai — lưu tên/SĐT khách
     mà khách không hề được hỏi. Giờ PG BẮT BUỘC chọn 1 trong 2 (không có mặc định): bỏ qua là không đi tiếp được. */
  '<label>Hỏi khách trước khi lưu thông tin *</label>'+
- '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và kết quả tư vấn hôm nay (gồm cả cân nặng, chiều cao) để chăm sóc và nhắc lịch cho anh/chị. Anh/chị đồng ý không ạ?”</div>'+
+ '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và số đo cân nặng, chiều cao của bé hôm nay để dễ dàng theo dõi biểu đồ tăng trưởng chiều cao, cân nặng của bé, từ đó đánh giá hiệu quả của tình trạng dinh dưỡng mà bé đang được áp dụng. Anh/chị đồng ý không ạ?”</div>'+
  '<div class="chips" style="margin-bottom:11px">'+[["Khách đồng ý",true],["Khách không đồng ý",false]].map(function(x){return '<div class="chip '+(S.consent===x[1]?"on":"")+'" onclick="S.consent='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'+
  (S.consent===false
   ? '<div class="faint" style="font-size:12.5px;line-height:1.55;background:#fff;border:1px dashed #cfe0fb;border-radius:10px;padding:9px 11px;margin-bottom:10px">Không lưu tên và số điện thoại của khách này. Vẫn tư vấn bình thường.</div>'
@@ -2423,7 +2457,7 @@ function replaceSessionEnc(id,obj){
 }
 
 /* ---------- HOÀN TẤT 1 PHIÊN TƯ VẤN ---------- */
-var CONSENT_V="v2-2026-09-30"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
+var CONSENT_V="v3-2026-10-09"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
 function newSessionId(){ return "S"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36); }
 function buildSession(){
  var s=buildSessionFull();
