@@ -1386,7 +1386,7 @@ function step1(){ var u=S.user, dyn="";
  /* XIN ĐỒNG Ý TRƯỚC KHI LƯU. Trước 30/09/2026 app gán sẵn consent=true và không hỏi ai — lưu tên/SĐT khách
     mà khách không hề được hỏi. Giờ PG BẮT BUỘC chọn 1 trong 2 (không có mặc định): bỏ qua là không đi tiếp được. */
  '<label>Hỏi khách trước khi lưu thông tin *</label>'+
- '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và số đo cân nặng, chiều cao của bé hôm nay để dễ dàng theo dõi biểu đồ tăng trưởng chiều cao, cân nặng của bé, từ đó đánh giá hiệu quả của tình trạng dinh dưỡng mà bé đang được áp dụng. Anh/chị đồng ý không ạ?”</div>'+
+ '<div class="faint" style="font-size:12px;line-height:1.55;margin:-2px 0 8px">Đọc cho khách: “Wintop xin lưu tên, số điện thoại và số đo cân nặng, chiều cao của bé hôm nay để dễ dàng theo dõi biểu đồ tăng trưởng chiều cao, cân nặng của bé, từ đó đánh giá hiệu quả của tình trạng dinh dưỡng mà bé đang được áp dụng, đồng thời để chăm sóc và nhắc lịch cân đo cho bé. Anh/chị đồng ý không ạ?”</div>'+
  '<div class="chips" style="margin-bottom:11px">'+[["Khách đồng ý",true],["Khách không đồng ý",false]].map(function(x){return '<div class="chip '+(S.consent===x[1]?"on":"")+'" onclick="S.consent='+x[1]+';render()">'+x[0]+'</div>';}).join("")+'</div>'+
  (S.consent===false
   ? '<div class="faint" style="font-size:12.5px;line-height:1.55;background:#fff;border:1px dashed #cfe0fb;border-radius:10px;padding:9px 11px;margin-bottom:10px">Không lưu tên và số điện thoại của khách này. Vẫn tư vấn bình thường.</div>'
@@ -2457,7 +2457,7 @@ function replaceSessionEnc(id,obj){
 }
 
 /* ---------- HOÀN TẤT 1 PHIÊN TƯ VẤN ---------- */
-var CONSENT_V="v3-2026-10-09"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
+var CONSENT_V="v4-2026-10-10"; /* đổi câu xin đồng ý ở step1 thì đổi mã này, để sau biết khách đã đồng ý với câu nào */
 function newSessionId(){ return "S"+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36); }
 function buildSession(){
  var s=buildSessionFull();
