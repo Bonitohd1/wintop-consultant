@@ -348,6 +348,22 @@
  .scan-tag{ position:absolute; left:50%; transform:translateX(-50%); bottom:9px; display:flex; align-items:center; gap:4px; font-size:9px; font-weight:600; color:#bfe9df; background:rgba(9,26,46,.72); border:.5px solid rgba(91,224,196,.4); padding:3px 8px; border-radius:7px; white-space:nowrap; }
  .scan-hud{ position:absolute; right:6px; top:42px; width:104px; display:flex; flex-direction:column; gap:6px; pointer-events:none; } .shud{ display:flex; align-items:center; gap:6px; background:rgba(9,26,46,.74); border:.5px solid rgba(91,224,196,.4); border-radius:6px; padding:4px 7px; opacity:0; transform:translateX(8px); animation:shudin .5s ease forwards; } .shud .sd{ width:6px; height:6px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px rgba(91,224,196,.6); } .shud span{ display:flex; flex-direction:column; line-height:1.15; min-width:0; } .shud b{ font-size:8px; font-weight:700; color:#8fd6e6; letter-spacing:.3px; } .shud i{ font-size:9.5px; font-style:normal; font-weight:600; color:#eafff9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:78px; } @keyframes shudin{ to{ opacity:1; transform:none } } .scan-hud-svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; } .shudg{ opacity:0; animation:shudg .5s ease forwards; } @keyframes shudg{ to{ opacity:1 } } .scan-dim{ display:none; } .scan-note{ text-align:center; font-size:10px; color:#7fa8b8; margin-top:8px; opacity:.9; line-height:1.4; } .rz{ transition:opacity .15s; } .rz:active{ opacity:.6; }
 
+ /* --- BIO-SCAN chạy theo tiến độ (10/10/2026): chỉ transform / opacity --- */
+ .scan-band.drv,.scan-line.drv{ animation:none; top:0; opacity:1; will-change:transform; }
+ .scan-band.drv{ transform:translateY(-72px); } .scan-line.drv{ transform:translateY(0); }
+ .scan-fill{ position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,rgba(91,224,196,.06),rgba(91,224,196,.22)); transform:scaleY(0); transform-origin:top; will-change:transform; }
+ .scan-prog{ height:5px; border-radius:3px; background:rgba(91,224,196,.16); margin:10px auto 2px; width:min(260px,70%); overflow:hidden; }
+ .scan-prog i{ display:block; height:100%; border-radius:3px; background:linear-gradient(90deg,#5BE0C4,#bdfff0); box-shadow:0 0 10px rgba(123,252,230,.8); transform:scaleX(0); transform-origin:left; will-change:transform; }
+ #scanmsg{ transition:opacity .2s,transform .2s; } #scanmsg.sw{ opacity:0; transform:translateY(4px); }
+ .scan-flash{ position:absolute; inset:0; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 50%,rgba(189,255,240,.6),transparent 70%); }
+ @keyframes scflash{ 0%{opacity:.6} 100%{opacity:0} }
+ .scan-panel.done .scan-flash{ animation:scflash .7s ease-out; }
+ .scan-panel.done .scan-frame{ box-shadow:0 0 0 2px rgba(142,230,160,.9),0 0 28px 4px rgba(142,230,160,.45),0 10px 26px rgba(0,0,0,.4); transition:box-shadow .35s; }
+ .scan-panel.done .scan-frame .hc{ border-color:#8EE6A0; opacity:1; transition:border-color .3s; }
+ .scan-panel.done #scanpct{ color:#8EE6A0 !important; transition:color .3s; }
+ .scan-panel.done .scan-prog i{ background:#8EE6A0; box-shadow:0 0 10px rgba(142,230,160,.8); }
+ .scan-panel.done .scan-line,.scan-panel.done .scan-band{ opacity:0; transition:opacity .3s; }
+ @media (prefers-reduced-motion:reduce){ .scan-panel.done .scan-flash{ animation:none; } #scanmsg{ transition:none; } }
  /* polish + animation */
  .btn{ white-space:nowrap; transition:transform .12s, box-shadow .2s, filter .15s; }
  .btn:active{ transform:scale(.97); }
@@ -1672,8 +1688,8 @@ function scanLoader(){
  var eld=isEld();
  var key=scanPicKey(o,g,eld);
  if(!key) return scanHolo();
- var frame='<div class="scan-frame"><img class="scanpic" src="assets/scan/'+key+'.jpg" alt="" onerror="this.onerror=null;var p=this.closest(\'.scan-panel\');if(p)p.outerHTML=scanHolo();"><div class="scan-grid2"></div><div class="scan-dim"></div><div class="scan-band"></div><div class="scan-line"></div>'+scanChips()+'<span class="hc tl"></span><span class="hc tr"></span><span class="hc bl"></span><span class="hc br"></span><div class="scan-tag">'+ic("scan",12)+' BIO-SCAN · Wintop AI</div></div>';
- return '<div class="scan-panel" style="padding:16px 14px 18px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> ĐANG PHÂN TÍCH DINH DƯỠNG</div><div class="scan-stage2">'+frame+'</div><div style="text-align:center;margin-top:12px"><div id="scanpct" style="font-size:30px;font-weight:800;font-family:var(--fh);color:#5BE0C4;line-height:1">0%</div><div id="scanmsg" style="font-size:12px;margin-top:4px;color:#bfe9df">Tổng hợp khuyến nghị sản phẩm…</div></div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
+ var frame='<div class="scan-frame"><img class="scanpic" src="assets/scan/'+key+'.jpg" alt="" onerror="this.onerror=null;var p=this.closest(\'.scan-panel\');if(p)p.outerHTML=scanHolo();"><div class="scan-grid2"></div><div class="scan-fill"></div><div class="scan-dim"></div><div class="scan-band drv"></div><div class="scan-line drv"></div>'+scanChips()+'<div class="scan-flash"></div><span class="hc tl"></span><span class="hc tr"></span><span class="hc bl"></span><span class="hc br"></span><div class="scan-tag">'+ic("scan",12)+' BIO-SCAN · Wintop AI</div></div>';
+ return '<div class="scan-panel" style="padding:16px 14px 18px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> ĐANG PHÂN TÍCH DINH DƯỠNG</div><div class="scan-stage2">'+frame+'</div><div style="text-align:center;margin-top:12px"><div id="scanpct" style="font-size:30px;font-weight:800;font-family:var(--fh);color:#5BE0C4;line-height:1;font-variant-numeric:tabular-nums">0%</div><div class="scan-prog"><i id="scanbar"></i></div><div id="scanmsg" role="status" aria-live="polite" style="font-size:12px;margin-top:6px;color:#bfe9df">Đọc số đo của khách…</div></div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
 }
 function scanHolo(){
  var o=(S.user&&S.user.obj)||"adult", g=(S.user&&S.user.gender)||"Nam";
@@ -1695,7 +1711,7 @@ function scanHolo(){
  var hud='<g stroke="#5BE0C4" stroke-width="1.6" fill="none" opacity=".8"><path d="M14 40 h14 M14 40 v14"/><path d="M186 40 h-14 M186 40 v14"/><path d="M14 256 h14 M14 256 v-14"/><path d="M186 256 h-14 M186 256 v-14"/></g><g><rect x="12" y="60" width="62" height="26" rx="4" fill="#0d2b47" fill-opacity=".65" stroke="#2f6b7e" stroke-width=".7"/><text x="17" y="71" fill="#7BFCE6" font-size="6.5" font-family="Arial,sans-serif" font-weight="bold">BIO-SCAN</text><text x="17" y="81" fill="#bfe9df" font-size="6" font-family="Arial,sans-serif">Wintop AI</text></g><g><rect x="126" y="228" width="62" height="24" rx="4" fill="#0d2b47" fill-opacity=".65" stroke="#2f6b7e" stroke-width=".7"/><polyline points="130,240 138,240 141,232 145,248 149,236 152,240 158,240 162,234 166,244 170,240 184,240" fill="none" stroke="#7BFCE6" stroke-width="1.2"><animate attributeName="stroke-opacity" values=".4;1;.4" dur="1.4s" repeatCount="indefinite"/></polyline></g>';
  var body='<g filter="url(#hsoft)">'+bodyFigure(o,eld)+hair+'</g>';
  var svg='<svg viewBox="0 0 200 300" style="height:100%;display:block;margin:auto" preserveAspectRatio="xMidYMid meet">'+defs+grid+proj+reticle+body+acc+sweep+hud+'</svg>';
- return '<div class="scan-panel" style="padding:16px 14px 18px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> ĐANG PHÂN TÍCH DINH DƯỠNG</div><div class="scan-stage" style="position:relative;height:242px;margin:8px 0 10px">'+svg+'</div><div style="text-align:center"><div id="scanpct" style="font-size:30px;font-weight:800;font-family:var(--fh);color:#5BE0C4;line-height:1">0%</div><div id="scanmsg" style="font-size:12px;margin-top:4px;color:#bfe9df">Tổng hợp khuyến nghị sản phẩm…</div></div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
+ return '<div class="scan-panel" style="padding:16px 14px 18px"><div class="scan-head"><span class="si">'+ic("scaneye",18)+'</span> ĐANG PHÂN TÍCH DINH DƯỠNG</div><div class="scan-stage" style="position:relative;height:242px;margin:8px 0 10px">'+svg+'</div><div style="text-align:center"><div id="scanpct" style="font-size:30px;font-weight:800;font-family:var(--fh);color:#5BE0C4;line-height:1;font-variant-numeric:tabular-nums">0%</div><div class="scan-prog"><i id="scanbar"></i></div><div id="scanmsg" role="status" aria-live="polite" style="font-size:12px;margin-top:6px;color:#bfe9df">Đọc số đo của khách…</div></div><div class="scan-note">Hình ảnh mô phỏng minh hoạ — không thay thế chẩn đoán y khoa.</div></div>';
 }
 function sh(icon,text,col,bg){ col=col||"var(--pri)"; bg=bg||"var(--pri-soft)"; return '<div class="rhead"><span class="rh-ic" style="background:'+bg+';color:'+col+'">'+ic(icon,16)+'</span>'+text+'</div>'; }
 function summaryCard(){ var o=S.user.obj; var objL=objLabel(o); var age=ageText(); var it=[];
@@ -2323,9 +2339,44 @@ function bodyScan(){
  var list=z.map(function(zz,i){return '<div class="zrow" style="border-left-color:'+zz.col+'"><span class="zn" style="background:'+zz.col+'">'+(i+1)+'</span><div style="flex:1"><div class="zt">'+esc(zz.name)+'</div><div class="zd">'+esc(zz.need)+'</div><div class="zp">→ '+esc(zz.prod)+'</div></div></div>';}).join("");
  return panel+'<div class="sec-title" style="margin-top:0"><span class="ico" style="background:var(--health-soft);color:var(--health)">'+ic("spark",16)+'</span>Vùng cần tối ưu</div>'+list;
 }
-function startScan(){ S.rec=buildRec(); S.step=4; S.scanState="scanning"; window.scrollTo(0,0); render();
- var pct=0; clearInterval(S._si);
- S._si=setInterval(function(){ pct+=Math.random()*7+3; if(pct>=100){ pct=100; clearInterval(S._si); var e=el("scanpct"); if(e)e.textContent="100%"; setTimeout(function(){ S.scanState="done"; render(); finishConsult(); },350); } var e2=el("scanpct"); if(e2)e2.textContent=Math.round(pct)+"%"; var m=el("scanmsg"); if(m)m.textContent=pct<40?"Đang quét các nhóm vi chất...":pct<75?"Đối chiếu chuẩn WHO / IDI&WPRO...":"Tổng hợp khuyến nghị sản phẩm..."; }, 220);
+/* BIO-SCAN chạy theo TIẾN ĐỘ (10/10/2026). Cũ: % cộng ngẫu nhiên mỗi 220ms, vạch quét lặp vòng không liên quan %, chữ đổi cái rụp, bấm đúp là chạy lại.
+   Nay: một đồng hồ rAF + easing điều khiển cả số %, thanh tiến độ, vạch quét (1 lượt từ đầu tới chân, vùng đã quét ngả teal) và chữ 4 chặng;
+   hoàn tất = khung / 4 góc xanh + loé sáng + giữ ~0,7 giây rồi mới sang kết quả. Chỉ dùng transform / opacity. */
+var SCAN_MSG=[[0,"Đọc số đo của khách…"],[.18,"Quét các nhóm vi chất…"],[.5,"Đối chiếu chuẩn WHO / IDI&WPRO…"],[.8,"Tổng hợp khuyến nghị sản phẩm…"]];
+function scanEase(x){ return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2; }
+/* Khoá chống bấm đúp là cờ RIÊNG (S._scanRun), không dùng S.scanState: nếu PG thoát màn giữa chừng thì scanState có thể còn "scanning" — khoá theo nó sẽ kẹt vĩnh viễn. */
+function startScan(){
+ if(S._scanRun) return;   /* bấm đúp: không chạy hai lần */
+ S._scanRun=true; S.rec=buildRec(); S.step=4; S.scanState="scanning"; window.scrollTo(0,0); render();
+ if(S._raf) cancelAnimationFrame(S._raf);
+ var reduce=false; try{ reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){}
+ var T=reduce?1400:3600, t0=null, ended=false, cur=-1, N={};
+ /* Màn có thể được vẽ lại giữa chừng (PG bấm sang tab khác rồi quay lại) -> lấy lại các phần tử mỗi khung nếu bản cũ đã bị gỡ. */
+ function grab(){ if(N.pc&&N.pc.isConnected) return; N.pc=el("scanpct"); N.bar=el("scanbar"); N.mg=el("scanmsg"); N.panel=N.pc&&N.pc.closest(".scan-panel"); N.fr=N.panel&&N.panel.querySelector(".scan-frame");
+  N.fill=N.panel&&N.panel.querySelector(".scan-fill"); N.band=N.panel&&N.panel.querySelector(".scan-band.drv"); N.line=N.panel&&N.panel.querySelector(".scan-line.drv"); }
+ function say(msg){ grab(); var mg=N.mg; if(!mg) return; if(reduce){ mg.textContent=msg; return; } mg.classList.add("sw"); setTimeout(function(){ mg.textContent=msg; mg.classList.remove("sw"); },140); }
+ function paint(p){ /* p: 0..1 */
+  grab(); if(N.pc) N.pc.textContent=Math.min(99,Math.floor(p*100))+"%";
+  if(N.bar) N.bar.style.transform="scaleX("+p.toFixed(4)+")";
+  if(N.fr){ var H=N.fr.offsetHeight||334;
+   if(N.line) N.line.style.transform="translateY("+(p*H).toFixed(1)+"px)";
+   if(N.band) N.band.style.transform="translateY("+(p*H-72).toFixed(1)+"px)";
+   if(N.fill) N.fill.style.transform="scaleY("+p.toFixed(4)+")"; } }
+ function finish(){
+  if(ended) return; ended=true; if(S._raf) cancelAnimationFrame(S._raf);
+  paint(1); if(N.pc) N.pc.textContent="100%"; say("Hoàn tất — sẵn sàng tư vấn");
+  if(N.panel){ N.panel.classList.add("done"); var tag=N.panel.querySelector(".scan-tag"); if(tag) tag.textContent="✓ BIO-SCAN hoàn tất"; }
+  try{ if(navigator.vibrate) navigator.vibrate(14); }catch(e){}
+  setTimeout(function(){ S._scanRun=false; S.scanState="done"; render(); finishConsult(); }, reduce?250:750); }
+ function frame(ts){
+  if(ended) return;
+  if(t0===null) t0=ts; var x=Math.min(1,(ts-t0)/T), p=scanEase(x);
+  paint(p);
+  var s=0; for(var j=0;j<SCAN_MSG.length;j++) if(p>=SCAN_MSG[j][0]) s=j;
+  if(s!==cur){ if(cur>=0) say(SCAN_MSG[s][1]); cur=s; }
+  if(x<1) S._raf=requestAnimationFrame(frame); else finish(); }
+ S._raf=requestAnimationFrame(frame);
+ setTimeout(finish, T+1800);   /* rAF bị tạm dừng (tab nền / khoá màn hình) thì vẫn kết thúc, không kẹt màn quét */
 }
 
 
