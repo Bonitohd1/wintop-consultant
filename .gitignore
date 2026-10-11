@@ -12,3 +12,6 @@ _*.tmp
 
 # Vercel
 .vercel
+
+# ảnh chụp do phép thử sinh ra
+tests/_anh/

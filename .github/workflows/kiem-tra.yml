@@ -1,0 +1,28 @@
+# KIỂM TRA MỖI LẦN ĐẨY: cú pháp JS, trần cỡ index.html, và phép thử trình duyệt thật (Playwright, chặn mọi lời gọi ra ngoài).
+# Vercel/Netlify vẫn dựng như cũ; đây chỉ để thấy ĐỎ trước khi khách mở app. Chạy tay cùng lệnh: python tests/chay_het.py
+name: Kiểm tra app
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: kiem-tra-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Chạy hết (cỡ file + cú pháp + phép thử trình duyệt)
+        run: python tests/chay_het.py
