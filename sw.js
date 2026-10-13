@@ -1,5 +1,5 @@
 /* Wintop Consultant — Service Worker (online-first + cache offline) */
-var CACHE = "wintop-v48";
+var CACHE = "wintop-v49";
 var CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", function(e){ self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(CORE).catch(function(){}); })); });
 self.addEventListener("activate", function(e){ e.waitUntil(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ if(k!==CACHE) return caches.delete(k); })); })); self.clients.claim(); });
@@ -9,10 +9,18 @@ self.addEventListener("fetch", function(e){
   // phát lỗi khi SW trả lời thay; và file vài MB không nên nhét vào bộ nhớ đệm của máy PG.
   var d=e.request.destination;
   if(d==="audio"||d==="video"||e.request.headers.has("range")) return;
-  e.respondWith(
+  /* network-first CÓ TIMEOUT 4 giây: mạng treo thì dùng bản đã lưu (trước: chờ tới khi mạng báo lỗi). Chỉ lưu phản hồi 200. */
+  e.respondWith(new Promise(function(resolve){
+    var done=false;
+    var fromCache=function(){ return caches.match(e.request).then(function(m){ return m || caches.match("./index.html"); }); };
+    var timer=setTimeout(function(){ fromCache().then(function(m){ if(m&&!done){ done=true; resolve(m); } }); }, 4000);
     fetch(e.request).then(function(res){
-      var cp=res.clone(); caches.open(CACHE).then(function(c){ c.put(e.request, cp).catch(function(){}); });
-      return res;
-    }).catch(function(){ return caches.match(e.request).then(function(m){ return m || caches.match("./index.html"); }); })
-  );
+      clearTimeout(timer);
+      if(res&&res.ok){ var cp=res.clone(); caches.open(CACHE).then(function(c){ c.put(e.request, cp).catch(function(){}); }); }
+      if(!done){ done=true; resolve(res); }
+    }).catch(function(){
+      clearTimeout(timer);
+      fromCache().then(function(m){ if(!done){ done=true; resolve(m||Response.error()); } });
+    });
+  }));
 });
