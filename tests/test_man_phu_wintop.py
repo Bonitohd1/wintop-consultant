@@ -122,7 +122,7 @@ with sync_playwright() as p:
         pg.wait_for_timeout(500)
         L = pg.evaluate("(()=>{var r=document.getElementById('fabhi').getBoundingClientRect();return [Math.round(r.left),Math.round(r.right),innerWidth]})()")
         check(T('bóng thoại mascot (câu dài) nằm trọn trong màn 320px'), L[0] >= 4 and L[1] <= L[2], L)
-        errs[:] = [e for e in errs if 'Returned response is null' not in e]
+        errs[:] = [e for e in errs if 'Returned response is null' not in e and 'Response served by service worker is an error' not in e]   # catalog bị harness chặn -> SW trả lỗi mạng (đã bắt .catch); trước 13/10 SW trả index.html che lỗi
         check(T('không lỗi JS'), not errs, errs)
         pg.close(); b.close()
 

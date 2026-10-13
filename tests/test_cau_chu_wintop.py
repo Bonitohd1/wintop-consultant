@@ -48,7 +48,7 @@ for bad in ('an toàn để dùng cho người tiểu đường', 'ngăn ngừa 
             'Sữa mẹ là tốt nhất cho sức khỏe trẻ sơ sinh'):
     check(f'mã nguồn không còn câu: “{bad[:55]}”', bad not in src)
 sw = open(os.path.join(REPO, 'sw.js'), encoding='utf-8').read() if len(sys.argv) < 2 else open(os.path.join(SRCDIR, 'sw.js'), encoding='utf-8').read()
-check('service worker: bản mới (wintop-v49), network-first CÓ TIMEOUT, chỉ lưu phản hồi ok', 'wintop-v49' in sw and '4000' in sw and 'res.ok' in sw, sw[:120])
+check('service worker: bản mới (wintop-v50), network-first CÓ TIMEOUT, chỉ lưu phản hồi ok', 'wintop-v50' in sw and '4000' in sw and 'res.ok' in sw, sw[:120])
 check('shine / pshine animate bằng transform (không còn "left" → ép layout liên tục)', 'left:135%' not in src and 'left:130%' not in src and 'translateX(364%)' in src)
 if len(sys.argv) < 2:   # đo ảnh thật trong kho (không đo khi chạy trên bản sao cũ)
     sz = lambda f: os.path.getsize(os.path.join(REPO, f)) // 1024
@@ -115,7 +115,7 @@ with sync_playwright() as p:
         pg.wait_for_timeout(400)
         v = pg.evaluate("document.getElementById('view').innerText")
         check(T('kết quả tư vấn: "SẢN PHẨM PHÙ HỢP VỚI BẠN" (bỏ "nhất"), liều/ngày hiện theo nhãn'), 'PHÙ HỢP NHẤT' not in v and 'PHÙ HỢP VỚI BẠN' in v, v[:80])
-        errs[:] = [e for e in errs if 'Returned response is null' not in e and 'wintop/catalog' not in e]
+        errs[:] = [e for e in errs if 'Returned response is null' not in e and 'wintop/catalog' not in e and 'Response served by service worker is an error' not in e]   # catalog bị harness chặn -> SW trả lỗi mạng (đã bắt .catch); trước 13/10 SW trả index.html che lỗi
         check(T('không lỗi JS'), not errs, errs)
         pg.close(); b.close()
 

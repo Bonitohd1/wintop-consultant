@@ -190,7 +190,7 @@ with sync_playwright() as p:
           return [Array.isArray(lsGet('wt_notifs',[])),Array.isArray(lsGet('nt_babies',[])),lsGet('wt_x',{}).a===undefined&&typeof lsGet('wt_x',{})==='object',lsGet('wt_y',{}).a===1]})()""")
         check(T('lsGet: dữ liệu sai kiểu (null / số / chuỗi) trả về mặc định; đúng kiểu giữ nguyên'), all(bad), bad)
         # WebKit của Playwright báo 'Returned response is null' khi giả máy chủ cho fetch có preflight (lỗi của công cụ test, Chromium sạch)
-        errs[:] = [e for e in errs if 'Returned response is null' not in e and 'wintop/catalog' not in e]
+        errs[:] = [e for e in errs if 'Returned response is null' not in e and 'wintop/catalog' not in e and 'Response served by service worker is an error' not in e]   # catalog bị harness chặn -> SW trả lỗi mạng (đã bắt .catch); trước 13/10 SW trả index.html che lỗi
         check(T('không lỗi JS'), not errs, errs)
         pg.close()
         b.close()
