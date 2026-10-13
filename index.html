@@ -834,7 +834,9 @@ function tourStep(){ tourClear(); var s=TOUR[_tourI]; if(!s){ endTour(); return;
 function openGuide(){ var o=el('ovl'); if(!o)return; var steps=[['stetho','Bắt đầu tư vấn','Bấm "Bắt đầu tư vấn khách" → nhập thông tin, đo chỉ số (BMI/Z-score) → app gợi ý sản phẩm phù hợp trong ~3 phút.'],['cart','Lên đơn','Vào "Lên đơn": chọn sản phẩm + số lượng (app kiểm tồn tại điểm bán) → Tạo đơn. Theo dõi ở "Đơn của tôi".'],['cup','Tra cứu sản phẩm','Tab "Sản phẩm": xem công dụng, thành phần, HSCB, phiếu kiểm nghiệm, hướng dẫn chốt sale từng SKU.'],['school','Ôn nghiệp vụ','Làm "Quiz" 5 cấp để lên hạng; xem "Tài liệu" có video dinh dưỡng.'],['spark','Trợ lý AI','Chạm linh vật (góc phải dưới) để hỏi nhanh về sản phẩm, đơn hàng, tồn kho, dinh dưỡng.']]; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="font-weight:700;font-family:var(--fh);font-size:16px;flex:1">Hướng dẫn sử dụng</div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeOvl()">'+ic('x',18)+'</button></div>'+steps.map(function(s,i){return '<div style="display:flex;gap:12px;margin-bottom:13px"><span style="width:36px;height:36px;border-radius:11px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0">'+ic(s[0],18)+'</span><div><div style="font-weight:700;font-size:13.5px">'+(i+1)+'. '+s[1]+'</div><div class="muted" style="font-size:12.5px;line-height:1.5;margin-top:2px">'+s[2]+'</div></div></div>';}).join('')+'<button class="btn" style="margin-top:6px" onclick="startTour()">'+ic('spark',17)+'Xem hướng dẫn tương tác từng bước</button></div></div>'; }
 function showLoader(msg){ var l=el("loader"); if(!l)return; l.innerHTML='<div class="ldbox"><div class="ld-spin"><div class="ld-ring"></div><div class="ld-mas">'+curMascot()+'</div></div><div class="ld-txt">'+(msg||"Đang tải…")+'</div></div>'; l.classList.add("show"); }
 function hideLoader(){ var l=el("loader"); if(l) l.classList.remove("show"); }
-function setTab(t){ S.tab=t; if(t==="quiz")S.quiz=null; window.scrollTo(0,0); showLoader(); render(); pageFade(); setTimeout(hideLoader,280); }
+/* Lịch sử trình duyệt: không có thì nút Back / vuốt lại của Zalo-iPhone THOÁT hẳn app (chị Thúy 13/10/2026: bấm Xem PDF rồi "ko back lại dc"; đo thật: Back -> about:blank). */
+var _navPop=false,_lastTab="home";
+function setTab(t){ if(!_navPop&&t!==_lastTab){ try{ history.pushState({tab:t},""); }catch(e){} } _lastTab=t; S.tab=t; if(t==="quiz")S.quiz=null; window.scrollTo(0,0); showLoader(); render(); pageFade(); setTimeout(hideLoader,280); }
 function newConsult(){ S.step=1;S.buyer={name:"",phone:"",addr:"",rel:""};S.user={name:"",obj:"",gender:"Nam",birth:"",deliv:"",hist:[],cur:""};S.m={};S.cls=null;S.needs=[];S.rec=null;S.consent=null;S.curSessionId=null;S._saved=false;S.tab="tuvan";window.scrollTo(0,0);render(); }
 var NAV=[{k:"home",ic:"home",l:"Trang chủ"},{k:"tuvan",ic:"stetho",l:"Tư vấn"},{c:1},{k:"sanpham",ic:"cup",l:"Sản phẩm"},{k:"hoidap",ic:"search",l:"Hỏi-Đáp"}];
 function renderTabbar(){ el("tabbar").innerHTML=NAV.map(function(t){ if(t.c) return '<div class="navc"><button onclick="newConsult()">'+ic("plus",24)+'</button></div>'; return '<button class="'+(S.tab===t.k?"on":"")+'" onclick="setTab(\''+t.k+'\')">'+ic(t.ic,22)+'<span>'+t.l+'</span></button>'; }).join(""); }
@@ -1844,12 +1846,13 @@ var YTVIDS=["r0f_CzHH4Iw","0oYnWltNSg8","8stL61F6ZEM","ug-xYlY4IRg","Zj9E_Rgx8fg
 function loadPdfJs(cb){ if(window.pdfjsLib){ cb(); return; } var s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"; s.onload=function(){ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; }catch(e){} cb(); }; s.onerror=function(){ cb("err"); }; document.head.appendChild(s); }
 function openDoc(id){ var url="assets/docs/"+id+".pdf", name=(typeof TDOC!=="undefined"&&TDOC[id]?TDOC[id].n:"Tài liệu đào tạo"), o=el("ovl"); if(!o){ window.open(url,"_blank"); return; }
  o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:#2b2f36;display:flex;flex-direction:column">'
-  +'<div style="display:flex;align-items:center;gap:8px;padding:12px;background:#111827;flex-shrink:0">'
+  +'<div style="display:flex;align-items:center;gap:8px;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 12px;background:#111827;flex-shrink:0">'
     +'<button onclick="closeOvl()" style="border:none;background:#2563EB;color:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:14px;cursor:pointer">‹ Quay lại</button>'
     +'<div style="flex:1;color:#fff;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(name)+'</div>'
     +'<a href="'+url+'" download style="color:#fff;text-decoration:none;background:rgba(255,255,255,.16);border-radius:10px;padding:10px 12px;font-size:12px">⬇</a>'
   +'</div>'
   +'<div id="pdfbox" style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 8px 30px;display:flex;flex-direction:column;align-items:center;gap:10px"><div id="pdfmsg" style="color:#cfd6e0;padding:34px 20px;text-align:center;font-size:13px">Đang tải tài liệu…</div></div>'
+  +'<button onclick="closeOvl()" aria-label="Đóng tài liệu" style="position:absolute;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));border:none;background:#2563EB;color:#fff;border-radius:999px;padding:12px 18px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.45);cursor:pointer">✕ Đóng</button>'
   +'</div>';
  loadPdfJs(function(err){ var msg=el("pdfmsg"); if(err){ if(msg)msg.innerHTML='Cần kết nối mạng để xem tài liệu.<br><a href="'+url+'" download style="color:#8ec5ff;font-weight:700">⬇ Tải về máy</a>'; return; }
   try{ window.pdfjsLib.getDocument(url).promise.then(function(pdf){ if(!el("pdfbox"))return; var m=el("pdfmsg"); if(m)m.remove(); var bx0=el("pdfbox"), w=Math.min((bx0?bx0.clientWidth:360)-16,820);
@@ -3047,6 +3050,16 @@ function doSubmitOrder(){
 /* ---------- TRIGGER ẨN: #qtri hoặc gõ 7 lần dòng phiên bản ---------- */
 var _adminTap=0,_adminTapT=0;
 function adminTap(){ var now=Date.now(); if(now-_adminTapT>1500)_adminTap=0; _adminTapT=now; _adminTap++; if(_adminTap>=7){ _adminTap=0; if(typeof closeDrawer==="function")closeDrawer(); setTimeout(openAdmin,200); } }
+/* Lớp phủ (#ovl: trình đọc PDF, ảnh phóng to, so sánh SP...) = 1 mục lịch sử. Back / vuốt lại đóng lớp phủ, không thoát app. */
+(function(){ var o=document.getElementById("ovl"); if(!o||!window.MutationObserver) return; var open=false;
+ new MutationObserver(function(){ var has=o.innerHTML.length>0;
+  if(has&&!open){ open=true; try{ history.pushState({ovl:1},""); }catch(e){} }
+  else if(!has&&open){ open=false; try{ if(history.state&&history.state.ovl) history.back(); }catch(e){} } }).observe(o,{childList:true});
+ window.addEventListener("popstate",function(ev){
+  if(open){ open=false; S.notiOpen=false; S.accOpen=false; o.innerHTML=""; return; }
+  var st=ev.state, want=(st&&st.tab)?st.tab:"home";
+  if(want!==S.tab){ _navPop=true; try{ setTab(want); }finally{ _navPop=false; } } });
+})();
 function checkAdminHash(){ if(location.hash==="#qtri"||location.hash==="#admin"||location.hash==="#quantri"){ try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} openAdmin(); } }
 function checkDeepLink(){ var h=location.hash||""; if(h.indexOf("#sp=")===0){ var id=h.slice(4); if(typeof P==="function"&&P(id)){ S.openProd=id; S.tab="sanpham"; try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} render(); window.scrollTo(0,0); } } }
 
