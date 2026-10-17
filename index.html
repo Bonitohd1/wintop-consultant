@@ -3320,27 +3320,48 @@ function renderAdmin(){
 })();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}</script>
-<!-- Loi chuc 20/10 (Ngay Phu nu Viet Nam) — CANH toan man hien 1 lan/ngay trong 17-20/10, sau splash roi TU TROI vao app (cham de bo qua). Chan khi chay tu dong (navigator.webdriver). -->
+<!-- LOP 20/10 (Ngay Phu nu Viet Nam): loi chuc tren splash + canh hoa roi XUYEN APP + canh chao mung (thiep). Hien 17-20/10. Chan navigator.webdriver (khong pha phep thu). -->
 <style>
-#occ2010{position:fixed;inset:0;z-index:9998;display:none;opacity:0;transition:opacity .6s ease;background:#0c3327 center/cover no-repeat;overflow:hidden;cursor:pointer}
+/* Canh hoa roi toan app */
+#o2010petals{position:fixed;inset:0;z-index:34;pointer-events:none;overflow:hidden}
+.o2010-petal,.o2010-fp{background:radial-gradient(circle at 32% 28%,#fff,#f6b4c6 48%,#dd7792);border-radius:62% 38% 60% 40%/62% 58% 42% 38%;will-change:transform,opacity}
+.o2010-petal{position:fixed;top:-7vh;left:var(--l,10vw);width:var(--s,16px);height:var(--s,16px);opacity:0;filter:drop-shadow(0 2px 3px rgba(170,70,100,.28));animation:o2010fall var(--d,12s) linear var(--dl,0s) infinite}
+#o2010petals.pause .o2010-petal{animation-play-state:paused}
+@keyframes o2010fall{0%{transform:translate3d(0,-7vh,0) rotate(0);opacity:0}8%{opacity:.78}92%{opacity:.78}100%{transform:translate3d(var(--x,24px),112vh,0) rotate(600deg);opacity:0}}
+/* Loi chuc tren man chao hoi (splash) */
+.o2010-sg{text-align:center;margin:8px auto 2px;animation:o2010up .9s ease-out both}
+.o2010-sg .l1{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:21px;color:#C2691A;line-height:1}
+.o2010-sg .l2{font-size:11.5px;letter-spacing:2px;color:#1D4ED8;font-weight:800;margin-top:3px}
+/* Canh chao mung (thiep) */
+#occ2010{position:fixed;inset:0;z-index:9998;display:none;opacity:0;transition:opacity .7s ease;background:#0c3327 center/cover no-repeat;overflow:hidden;cursor:pointer}
 #occ2010.on{display:block;opacity:1}
-.o2010-img{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.07);animation:o2010zoom 6s ease-out forwards}
+.o2010-img{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.12);animation:o2010zoom 9s ease-out forwards}
 @keyframes o2010zoom{to{transform:scale(1)}}
-.o2010-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,0) 32%,rgba(0,0,0,0) 54%,rgba(0,0,0,.45))}
+.o2010-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,0) 32%,rgba(0,0,0,0) 54%,rgba(0,0,0,.45))}
+.o2010-fp{position:absolute;top:-8%;width:var(--s,14px);height:var(--s,14px);opacity:.75;animation:o2010fall var(--d,9s) linear var(--dl,0s) infinite}
 .o2010-txt{position:absolute;left:0;right:0;top:15%;text-align:center;padding:0 18px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
-.o2010-hi{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:42px;color:#fbe9cf;line-height:1}
-.o2010-nm{font-family:Georgia,serif;font-size:21px;letter-spacing:2px;margin-top:11px}
-.o2010-dt{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:11px;color:#ecd79a;font-size:14px;letter-spacing:3px}
+.o2010-txt>div{opacity:0;animation:o2010up .9s ease-out forwards}
+.o2010-hi{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:44px;color:#fbe9cf;line-height:1;animation-delay:.35s}
+.o2010-nm{font-family:Georgia,serif;font-size:22px;letter-spacing:2px;margin-top:12px;animation-delay:.75s}
+.o2010-dt{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:12px;color:#ecd79a;font-size:14px;letter-spacing:3px;animation-delay:1.15s}
 .o2010-dt i{width:26px;height:1px;background:currentColor;opacity:.6;display:inline-block}
-.o2010-wish{position:absolute;left:22px;right:22px;top:40%;text-align:center;color:#fff;font-size:14px;line-height:1.6;text-shadow:0 2px 8px rgba(0,0,0,.6)}
-.o2010-hint{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.72);font-size:12px;letter-spacing:1px}
+.o2010-wish{position:absolute;left:22px;right:22px;top:41%;text-align:center;color:#fff;font-size:14px;line-height:1.65;text-shadow:0 2px 8px rgba(0,0,0,.6);opacity:0;animation:o2010up 1s ease-out 1.7s forwards}
+.o2010-hint{position:absolute;left:0;right:0;bottom:32px;text-align:center;color:rgba(255,255,255,.75);font-size:12px;letter-spacing:1px;opacity:0;animation:o2010fade 1.2s ease-out 2.6s forwards}
 .o2010-sp{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,#f3d992 45%,rgba(243,217,146,0) 72%);box-shadow:0 0 6px 1px rgba(243,217,146,.8);animation:o2010tw 2.6s ease-in-out infinite alternate}
+@keyframes o2010up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes o2010fade{to{opacity:1}}
 @keyframes o2010tw{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.2)}}
-@media (prefers-reduced-motion:reduce){.o2010-sp,.o2010-img{animation:none}#occ2010{transition:none}}
+@media (prefers-reduced-motion:reduce){.o2010-petal,.o2010-fp{display:none}.o2010-sp,.o2010-img{animation:none}#occ2010{transition:none}.o2010-txt>div,.o2010-wish,.o2010-hint,.o2010-sg{animation:none;opacity:1}}
 </style>
+<div id="o2010petals"></div>
 <div id="occ2010" aria-label="Chuc mung Ngay Phu nu Viet Nam 20/10">
   <div class="o2010-img" style="background-image:url('assets/occ-2010.webp')"></div>
   <div class="o2010-scrim"></div>
+  <span class="o2010-fp" style="left:12%;--d:8s;--dl:0s;--x:30px;--s:15px"></span>
+  <span class="o2010-fp" style="left:30%;--d:10s;--dl:-3s;--x:-20px;--s:12px"></span>
+  <span class="o2010-fp" style="left:55%;--d:9s;--dl:-6s;--x:26px;--s:16px"></span>
+  <span class="o2010-fp" style="left:74%;--d:11s;--dl:-1.5s;--x:-30px;--s:13px"></span>
+  <span class="o2010-fp" style="left:88%;--d:8.5s;--dl:-4.5s;--x:18px;--s:14px"></span>
   <span class="o2010-sp" style="left:16%;top:9%;width:4px;height:4px"></span>
   <span class="o2010-sp" style="left:78%;top:7%;width:3px;height:3px;animation-delay:1s"></span>
   <span class="o2010-sp" style="left:60%;top:13%;width:3px;height:3px;animation-delay:.5s"></span>
@@ -3356,18 +3377,23 @@ function renderAdmin(){
 <script>(function(){try{
   if(navigator.webdriver)return;
   var d=new Date();
-  if(d.getMonth()===9 && d.getDate()>=17 && d.getDate()<=20){
-    var seen=null;try{seen=localStorage.getItem('occ2010_seen')}catch(e){}
-    if(seen!==d.toDateString()){
-      setTimeout(function(){
-        var o=document.getElementById('occ2010');if(!o)return;
-        o.classList.add('on');
-        try{localStorage.setItem('occ2010_seen',d.toDateString())}catch(e){}
-        var hide=function(){o.classList.remove('on');setTimeout(function(){o.style.display='none'},700)};
-        var t=setTimeout(hide,3200);
-        o.addEventListener('click',function(){clearTimeout(t);hide()},{once:true});
-      },4200);
-    }
+  if(!(d.getMonth()===9 && d.getDate()>=17 && d.getDate()<=20))return;
+  var R=function(a,b){return a+Math.random()*(b-a);};
+  function splashGreet(){ var sp=document.getElementById('splash'); if(!sp||sp.querySelector('.o2010-sg'))return; var g=document.createElement('div'); g.className='o2010-sg'; g.innerHTML='<div class="l1">Chúc mừng</div><div class="l2">NGÀY PHỤ NỮ VIỆT NAM · 20.10</div>'; var b=sp.querySelector('.sp-brand'); if(b&&b.parentNode){ b.parentNode.insertBefore(g,b.nextSibling); } else { sp.insertBefore(g,sp.firstChild); } }
+  splashGreet();
+  function petals(){ var h=document.getElementById('o2010petals'); if(!h||h.childNodes.length)return; for(var i=0;i<13;i++){ var p=document.createElement('span'); p.className='o2010-petal'; p.style.setProperty('--s',Math.round(R(12,22))+'px'); p.style.setProperty('--l',Math.round(R(0,96))+'vw'); p.style.setProperty('--d',R(9,16).toFixed(1)+'s'); p.style.setProperty('--dl',(-R(0,14)).toFixed(1)+'s'); p.style.setProperty('--x',Math.round(R(-45,45))+'px'); h.appendChild(p); } }
+  petals();
+  document.addEventListener('visibilitychange',function(){ var h=document.getElementById('o2010petals'); if(h)h.classList.toggle('pause',document.hidden); });
+  var seen=null;try{seen=localStorage.getItem('occ2010_seen')}catch(e){}
+  if(seen!==d.toDateString()){
+    setTimeout(function(){
+      var o=document.getElementById('occ2010');if(!o)return;
+      o.classList.add('on');
+      try{localStorage.setItem('occ2010_seen',d.toDateString())}catch(e){}
+      var hide=function(){o.classList.remove('on');setTimeout(function(){o.style.display='none'},700)};
+      var t=setTimeout(hide,6000);
+      o.addEventListener('click',function(){clearTimeout(t);hide()},{once:true});
+    },4200);
   }
 }catch(e){}})();</script>
 </body>
