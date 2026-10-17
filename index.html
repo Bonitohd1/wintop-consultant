@@ -3328,6 +3328,9 @@ function renderAdmin(){
 .o2010-petal{position:fixed;top:-7vh;left:var(--l,10vw);width:var(--s,16px);height:var(--s,16px);opacity:0;filter:drop-shadow(0 2px 3px rgba(170,70,100,.28));animation:o2010fall var(--d,12s) linear var(--dl,0s) infinite}
 #o2010petals.pause .o2010-petal{animation-play-state:paused}
 @keyframes o2010fall{0%{transform:translate3d(0,-7vh,0) rotate(0);opacity:0}8%{opacity:.78}92%{opacity:.78}100%{transform:translate3d(var(--x,24px),112vh,0) rotate(600deg);opacity:0}}
+/* Nen hoa 20/10 (nam SAU noi dung): lop co dinh z:-1 + body trong suot -> the trang van doc ro. Lop mo nhe cho chac. */
+#o2010bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,247,250,.30),rgba(255,247,250,.30) 42%,rgba(255,247,250,.48)),url('assets/bg-2010.webp') center/cover no-repeat}
+body.has2010bg{background:transparent}
 /* Loi chuc tren man chao hoi (splash) */
 .o2010-sg{text-align:center;margin:8px auto 2px;animation:o2010up .9s ease-out both}
 .o2010-sg .l1{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:21px;color:#C2691A;line-height:1}
@@ -3383,6 +3386,8 @@ function renderAdmin(){
   splashGreet();
   function petals(){ var h=document.getElementById('o2010petals'); if(!h||h.childNodes.length)return; for(var i=0;i<13;i++){ var p=document.createElement('span'); p.className='o2010-petal'; p.style.setProperty('--s',Math.round(R(12,22))+'px'); p.style.setProperty('--l',Math.round(R(0,96))+'vw'); p.style.setProperty('--d',R(9,16).toFixed(1)+'s'); p.style.setProperty('--dl',(-R(0,14)).toFixed(1)+'s'); p.style.setProperty('--x',Math.round(R(-45,45))+'px'); h.appendChild(p); } }
   petals();
+  if(!document.getElementById('o2010bg')){ var bg=document.createElement('div'); bg.id='o2010bg'; document.body.appendChild(bg); }
+  document.body.classList.add('has2010bg');
   document.addEventListener('visibilitychange',function(){ var h=document.getElementById('o2010petals'); if(h)h.classList.toggle('pause',document.hidden); });
   var seen=null;try{seen=localStorage.getItem('occ2010_seen')}catch(e){}
   if(seen!==d.toDateString()){
