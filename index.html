@@ -2316,8 +2316,31 @@ function presRender(){ var o=el('ovl'); if(!o)return;
  if(presSec==='uudai'){ body=ttl('Khách hàng trúng thưởng 🎉')+WINP.map(function(w){return '<div style="background:#fff;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 8px 20px rgba(0,0,0,.18)"><img src="assets/photos/'+w.f+'.jpg" loading="lazy" style="width:100%;display:block"><div style="padding:12px"><div style="font-weight:800;font-size:15px">'+esc(w.n)+'</div><div style="color:#C2691A;font-weight:700">'+esc(w.g)+'</div></div></div>';}).join(''); }
  else if(presSec==='camnhan'){ body=ttl('Khách hàng nói về Wintop 💬'); for(var i=1;i<=10;i++){ if(i===1||i===3) continue; /* fb1 "gần như sữa mẹ" + fb3 bé 11 tháng dùng Baby: gỡ khỏi Trình khách (NĐ 100) */ body+='<img src="assets/feedback/fb'+i+'.jpg" loading="lazy" style="width:100%;border-radius:16px;margin-bottom:12px;display:block;box-shadow:0 8px 20px rgba(0,0,0,.18)" onerror="this.style.display=\'none\'">'; } }
  else if(presSec==='congdong'){ body=ttl('Wintop vì cộng đồng ❤️')+CSRP.map(function(c){return '<div style="background:#fff;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 8px 20px rgba(0,0,0,.18)"><img src="assets/photos/'+c.f+'.jpg" loading="lazy" style="width:100%;display:block"><div style="padding:12px"><div style="font-weight:800;font-size:15px">'+esc(c.t)+'</div><div class="muted">'+esc(c.d)+'</div></div></div>';}).join(''); }
- else { body=ttl('Sản phẩm Wintop 🥛')+PRODUCTS.filter(function(p){return GUEST_HIDE.indexOf(p.id)<0;}).map(function(p){return '<div style="background:#fff;border-radius:16px;padding:13px;margin-bottom:11px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 20px rgba(0,0,0,.14)"><div style="width:68px;height:68px;border-radius:12px;background:#fff url('+pimg(p.id)+') center/contain no-repeat;flex-shrink:0;border:1px solid #eef2f7"></div><div><div style="font-weight:800;font-size:15px">'+esc(p.name)+'</div><div class="muted" style="font-size:12.5px">'+esc(p.tag||'')+'</div></div></div>';}).join(''); }
- o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:linear-gradient(160deg,#10357A,#1D4ED8);display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;padding:14px 14px 8px"><div style="flex:1;color:#fff;font-weight:800;font-family:var(--fh);font-size:16px">Wintop · Dinh dưỡng cho cả nhà</div><button onclick="closeOvl()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:17px;cursor:pointer">✕</button></div><div style="display:flex;gap:4px;background:rgba(255,255,255,.15);margin:0 12px;border-radius:12px;padding:4px">'+nav+'</div><div style="flex:1;overflow:auto;padding:14px">'+body+'</div></div>';
+ else { body=ttl('Sản phẩm Wintop 🥛')+'<div style="text-align:center;color:rgba(255,255,255,.8);font-size:12px;margin:-6px 0 12px">Chạm vào sản phẩm để xem chi tiết</div>'+PRODUCTS.filter(function(p){return GUEST_HIDE.indexOf(p.id)<0;}).map(function(p){return '<div onclick="presProd(\''+p.id+'\')" style="background:#fff;border-radius:16px;padding:13px;margin-bottom:11px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 20px rgba(0,0,0,.14);cursor:pointer"><div style="width:68px;height:68px;border-radius:12px;background:#fff url('+pimg(p.id)+') center/contain no-repeat;flex-shrink:0;border:1px solid #eef2f7"></div><div style="flex:1;min-width:0"><div style="font-weight:800;font-size:15px">'+esc(p.name)+'</div><div class="muted" style="font-size:12.5px">'+esc(p.tag||'')+'</div></div><span style="color:#94a3b8;font-size:22px;flex-shrink:0">›</span></div>';}).join(''); }
+ o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:linear-gradient(160deg,#10357A,#1D4ED8);display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;padding:14px 14px 8px"><div style="flex:1;color:#fff;font-weight:800;font-family:var(--fh);font-size:16px">Wintop · Dinh dưỡng cho cả nhà</div><button onclick="closeOvl()" style="background:rgba(255,255,255,.95);border:none;color:#10357A;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.2)">✕ Thoát</button></div><div style="display:flex;gap:4px;background:rgba(255,255,255,.15);margin:0 12px;border-radius:12px;padding:4px">'+nav+'</div><div style="flex:1;overflow:auto;padding:14px">'+body+'</div></div>';
+}
+/* Phong to anh trong Trinh khach: lop phu RIENG (khong dung chung #ovl voi present -> khong pha man present). */
+function presImgZoom(src){ var d=document.createElement('div'); d.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:18px;cursor:zoom-out'; d.innerHTML='<img src="'+src+'" alt="" style="max-width:96vw;max-height:92vh;border-radius:12px;display:block">'; d.onclick=function(){ d.parentNode&&d.parentNode.removeChild(d); }; document.body.appendChild(d); }
+/* Chi tiet 1 san pham trong Trinh khach (khach xem) — guest-safe: cong dung/thanh phan/cach dung; KHONG hien phan noi bo (chot sale/QR/so sanh). SP duoi 24 thang (GUEST_HIDE) khong vao day. */
+function presProd(id){ var p=PRODUCTS.filter(function(x){return x.id===id;})[0]; var o=el('ovl'); if(!p||!o||GUEST_HIDE.indexOf(id)>=0){ presGo('sanpham'); return; }
+  var sec=function(t,b){ return '<div style="background:#fff;border-radius:14px;padding:12px 13px;margin-bottom:10px"><div style="font-weight:800;font-size:13.5px;color:#10357A;margin-bottom:6px">'+t+'</div>'+b+'</div>'; };
+  var claims=(p.claims||[]).map(function(c){ return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;font-size:13.5px;color:#334155"><span style="color:#0F9A6A;flex-shrink:0">✓</span><span>'+esc(c)+'</span></div>'; }).join('');
+  var tp=(p.tpImgs||[]).map(function(im){ var s='assets/products/'+p.id+'/'+im; return '<img src="'+s+'" loading="lazy" onclick="presImgZoom(\''+s+'\')" style="width:100%;border-radius:10px;margin-top:8px;display:block;cursor:zoom-in" onerror="this.style.display=\'none\'">'; }).join('');
+  var hero='assets/products/'+p.id+'.png';
+  var sme=(typeof SME_VI!=='undefined')?SME_VI:'Sữa mẹ là thức ăn tốt nhất cho sức khỏe và sự phát triển toàn diện của trẻ nhỏ.';
+  var body='<button onclick="presGo(\'sanpham\')" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">‹ Danh sách sản phẩm</button>'
+    +'<div onclick="presImgZoom(\''+hero+'\')" style="background:#fff;border-radius:16px;padding:14px;text-align:center;margin-bottom:12px;cursor:zoom-in"><img src="'+hero+'" alt="'+esc(p.name)+'" style="max-width:62%;max-height:220px;display:block;margin:0 auto" onerror="this.onerror=null;this.src=\''+pimg(p.id)+'\'"><div style="font-size:11px;color:#94a3b8;margin-top:6px">Chạm để phóng to ảnh</div></div>'
+    +'<div style="color:#fff;font-size:20px;font-weight:800;font-family:var(--fh);text-align:center">'+esc(p.name)+'</div>'
+    +'<div style="color:rgba(255,255,255,.85);font-size:13px;text-align:center;margin:4px 0 14px">'+esc(p.tag||'')+'</div>'
+    +(claims?sec('Công dụng nổi bật',claims):'')
+    +(p.audience?sec('Đối tượng sử dụng','<div style="font-size:13.5px;color:#334155;white-space:pre-line">'+esc(p.audience)+'</div>'):'')
+    +(tp?sec('Bảng thành phần dinh dưỡng',tp):'')
+    +(p.ingr?sec('Thành phần nguyên liệu','<div style="font-size:12.5px;color:#475569;line-height:1.6">'+esc(p.ingr)+'</div>'):'')
+    +(p.usage?sec('Cách dùng','<div style="font-size:13px;color:#334155;white-space:pre-line">'+esc(p.usage)+'</div>'):'')
+    +(p.gold?'<div style="background:linear-gradient(135deg,#FFF6E0,#FFE9BF);border-radius:14px;padding:12px 13px;margin-bottom:10px;font-size:13px;color:#7a5a16"><b>★ Điểm vàng:</b> '+esc(p.gold)+'</div>':'')
+    +'<div style="display:flex;gap:8px;margin:14px 0 6px"><button onclick="closeOvl();newConsult()" style="flex:1;background:#0F9A6A;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Tư vấn cho khách</button><button onclick="closeOvl();cartAdd(\''+p.id+'\',1);setTab(\'makeorder\')" style="flex:1;background:#fff;color:#C2691A;border:2px solid #F3D9B0;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer">Lên đơn</button></div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.5;text-align:center;margin-top:10px">'+esc(sme)+'</div>';
+  o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:linear-gradient(160deg,#10357A,#1D4ED8);display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;padding:14px 14px 8px"><div style="flex:1;color:#fff;font-weight:800;font-family:var(--fh);font-size:16px">Wintop · Sản phẩm</div><button onclick="closeOvl()" style="background:rgba(255,255,255,.95);border:none;color:#10357A;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.2)">✕ Thoát</button></div><div style="flex:1;overflow:auto;padding:14px">'+body+'</div></div>';
 }
 function renderHome(){ var hr=new Date().getHours(); var greet=hr<11?'Chào buổi sáng':hr<14?'Chào buổi trưa':hr<18?'Chào buổi chiều':'Chào buổi tối';
  var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'trending_up',l:'Tăng trưởng',t:'growth',bg:'#DCFCE7',c:'#16A34A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'cart',l:'Lên đơn',t:'makeorder',bg:'#FFF1DC',c:'#C2691A'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
@@ -3297,5 +3320,55 @@ function renderAdmin(){
 })();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}</script>
+<!-- Loi chuc 20/10 (Ngay Phu nu Viet Nam) — CANH toan man hien 1 lan/ngay trong 17-20/10, sau splash roi TU TROI vao app (cham de bo qua). Chan khi chay tu dong (navigator.webdriver). -->
+<style>
+#occ2010{position:fixed;inset:0;z-index:9998;display:none;opacity:0;transition:opacity .6s ease;background:#0c3327 center/cover no-repeat;overflow:hidden;cursor:pointer}
+#occ2010.on{display:block;opacity:1}
+.o2010-img{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.07);animation:o2010zoom 6s ease-out forwards}
+@keyframes o2010zoom{to{transform:scale(1)}}
+.o2010-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,0) 32%,rgba(0,0,0,0) 54%,rgba(0,0,0,.45))}
+.o2010-txt{position:absolute;left:0;right:0;top:15%;text-align:center;padding:0 18px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.o2010-hi{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:42px;color:#fbe9cf;line-height:1}
+.o2010-nm{font-family:Georgia,serif;font-size:21px;letter-spacing:2px;margin-top:11px}
+.o2010-dt{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:11px;color:#ecd79a;font-size:14px;letter-spacing:3px}
+.o2010-dt i{width:26px;height:1px;background:currentColor;opacity:.6;display:inline-block}
+.o2010-wish{position:absolute;left:22px;right:22px;top:40%;text-align:center;color:#fff;font-size:14px;line-height:1.6;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.o2010-hint{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:rgba(255,255,255,.72);font-size:12px;letter-spacing:1px}
+.o2010-sp{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,#f3d992 45%,rgba(243,217,146,0) 72%);box-shadow:0 0 6px 1px rgba(243,217,146,.8);animation:o2010tw 2.6s ease-in-out infinite alternate}
+@keyframes o2010tw{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.2)}}
+@media (prefers-reduced-motion:reduce){.o2010-sp,.o2010-img{animation:none}#occ2010{transition:none}}
+</style>
+<div id="occ2010" aria-label="Chuc mung Ngay Phu nu Viet Nam 20/10">
+  <div class="o2010-img" style="background-image:url('assets/occ-2010.webp')"></div>
+  <div class="o2010-scrim"></div>
+  <span class="o2010-sp" style="left:16%;top:9%;width:4px;height:4px"></span>
+  <span class="o2010-sp" style="left:78%;top:7%;width:3px;height:3px;animation-delay:1s"></span>
+  <span class="o2010-sp" style="left:60%;top:13%;width:3px;height:3px;animation-delay:.5s"></span>
+  <span class="o2010-sp" style="left:30%;top:17%;width:3px;height:3px;animation-delay:1.6s"></span>
+  <div class="o2010-txt">
+    <div class="o2010-hi">Chúc mừng</div>
+    <div class="o2010-nm">NGÀY PHỤ NỮ VIỆT NAM</div>
+    <div class="o2010-dt"><i></i>20.10<i></i></div>
+  </div>
+  <div class="o2010-wish">Kính chúc các bà, các mẹ và chị em<br>luôn mạnh khoẻ, xinh đẹp và hạnh phúc.</div>
+  <div class="o2010-hint">Chạm để tiếp tục</div>
+</div>
+<script>(function(){try{
+  if(navigator.webdriver)return;
+  var d=new Date();
+  if(d.getMonth()===9 && d.getDate()>=17 && d.getDate()<=20){
+    var seen=null;try{seen=localStorage.getItem('occ2010_seen')}catch(e){}
+    if(seen!==d.toDateString()){
+      setTimeout(function(){
+        var o=document.getElementById('occ2010');if(!o)return;
+        o.classList.add('on');
+        try{localStorage.setItem('occ2010_seen',d.toDateString())}catch(e){}
+        var hide=function(){o.classList.remove('on');setTimeout(function(){o.style.display='none'},700)};
+        var t=setTimeout(hide,3200);
+        o.addEventListener('click',function(){clearTimeout(t);hide()},{once:true});
+      },4200);
+    }
+  }
+}catch(e){}})();</script>
 </body>
 </html>
