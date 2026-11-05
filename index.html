@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Wintop"/>
 <style>
- :root{ --pri:#1D4ED8; --pri-dark:#10357A; --pri-soft:#E8F0FE; --health:#0F9A6A; --health-soft:#DCF3E8; --warm:#E0533D; --warm-soft:#FDECEA; --gold:#C2691A; --gold-soft:#FFF3E6; --ink:#0F1B2D; --muted:#5B6B80; --faint:#94A3B8; --bg:#F6F8FC; --card:#fff; --line:#EEF2F7; --line2:#E2E8F0; --ok:#0F9A6A; --warn:#C2691A; --bad:#B4302A; --rc:20px; --rk:12px; --sh:0 2px 10px rgba(20,40,80,.05); --she:0 6px 20px rgba(37,99,235,.14); --fh:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --fb:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+ :root{ --pri:#1D4ED8; --pri-dark:#10357A; --pri-soft:#E8F0FE; --health:#0F9A6A; --health-soft:#DCF3E8; --warm:#E0533D; --warm-soft:#FDECEA; --gold:#C2691A; --gold-soft:#FFF3E6; --ink:#0F1B2D; --muted:#5B6B80; --faint:#64748B; --bg:#F6F8FC; --card:#fff; --line:#EEF2F7; --line2:#E2E8F0; --ok:#0F9A6A; --warn:#C2691A; --bad:#B4302A; --rc:20px; --rk:12px; --sh:0 2px 10px rgba(20,40,80,.05); --she:0 6px 20px rgba(37,99,235,.14); --fh:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --fb:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
  /* UX: bo tre tap 300ms tren nut/link (van cho pinch-zoom) */
  button,a,.btn,.press,.pcard,.chip,.backbtn,.sz,[onclick]{ touch-action:manipulation; }
@@ -35,7 +35,7 @@
  input:focus,select:focus,textarea:focus{ outline:none; border-color:var(--pri); box-shadow:0 0 0 3px rgba(29,78,216,.13); }
  .row{ display:flex; gap:10px; } .row>*{ flex:1; }
  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
- .chip{ padding:9px 14px; border:1.5px solid var(--line2); border-radius:999px; font-size:13px; background:#fff; cursor:pointer; user-select:none; color:#334155; transition:.12s; }
+ .chip{ padding:9px 14px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; border:1.5px solid var(--line2); border-radius:999px; font-size:13px; background:#fff; cursor:pointer; user-select:none; color:#334155; transition:.12s; }
  .chip.on{ background:var(--pri); border-color:var(--pri); color:#fff; }
  .chk{ display:flex; align-items:center; gap:10px; padding:11px 13px; border:1.5px solid var(--line2); border-radius:var(--rk); margin-bottom:8px; font-size:14px; cursor:pointer; transition:.12s; }
  .chk.on{ border-color:var(--pri); background:var(--pri-soft); }
@@ -220,7 +220,7 @@
  .mood-row,.pick-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
  .mini{ width:46px; height:46px; border-radius:14px; border:2px solid var(--line2); display:flex; align-items:center; justify-content:center; padding:3px; cursor:pointer; background:#fff; } .mini.on{ border-color:var(--pri); box-shadow:0 0 0 3px rgba(29,78,216,.12); } .mini svg{ width:38px; height:38px; }
 
- .hbtn{ width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; position:relative; }
+ .hbtn{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; position:relative; }
  .hbadge{ position:absolute; top:2px; right:2px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#E0533D; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
  .av-ini{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:#fff; background:linear-gradient(135deg,#FBD08A,#E68A2E); }
  .noti{ display:flex; gap:11px; padding:12px; border-radius:14px; background:#F6F8FC; margin-bottom:8px; }
@@ -489,7 +489,7 @@
 </head>
 <body>
  <div id="splash"><div class="sp-brand"><div class="sp-w">WINTOP</div><div class="sp-sub">TƯ VẤN DINH DƯỠNG</div><div class="sp-tag">Đồng hành cùng bé · Kiến tạo tương lai</div></div><div class="sp-stage"><div class="sp-ring"></div><img class="sp-mascot" id="spmascot" src="assets/mascot_pair.png" alt="" onerror="this.style.display='none';var f=document.getElementById('spfallback');if(f)f.style.display='flex'"><div id="spfallback" class="sp-logo" style="display:none"></div><div class="orb" style="left:-2%;top:28%"><img class="ob" src="assets/icons/nz_miendich.png" alt="Miễn dịch"></div><div class="orb" style="left:-4%;top:62%"><img class="ob" src="assets/icons/nz_naobo.png" alt="Não bộ"></div><div class="orb" style="right:-2%;top:24%"><img class="ob" src="assets/icons/nz_tieuhoa.png" alt="Tiêu hóa"></div><div class="orb" style="right:-5%;top:54%"><img class="ob" src="assets/icons/nz_chieucao.png" alt="Chiều cao"></div><div class="orb" style="left:50%;bottom:-12%;transform:translateX(-50%)"><img class="ob" src="assets/icons/nz_cannang.png" alt="Cân nặng"></div></div><div class="sp-clock" id="spclock"></div><div class="sp-date" id="spdate"></div></div>
- <div class="top" id="topbar"><button class="hbtn" style="background:rgba(255,255,255,.16);color:#fff;margin-right:4px" onclick="openDrawer()"></button><div class="av" id="topmascot"></div><div style="flex:1"><h1>Chuyên gia Dinh dưỡng WINTOP</h1><p>Vẫn là bạn nhưng mạnh hơn gấp trăm lần</p></div><div id="topactions" style="display:flex;gap:8px"></div></div>
+ <div class="top" id="topbar"><button class="hbtn" aria-label="Mở menu" style="background:rgba(255,255,255,.16);color:#fff;margin-right:4px" onclick="openDrawer()"></button><div class="av" id="topmascot"></div><div style="flex:1;min-width:0"><h1 style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Chuyên gia Dinh dưỡng WINTOP</h1><p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Vẫn là bạn nhưng mạnh hơn gấp trăm lần</p></div><div id="topactions" style="display:flex;gap:8px"></div></div>
  <div class="wrap"><div id="view"></div></div>
  <div class="tabbar" id="tabbar"></div>
  <div id="fab" onclick="openAsst()"></div>
@@ -2172,8 +2172,8 @@ function allNotifs(){ var dyn=dynNotifs(); var sta=NOTIFS.map(function(n){return
 function unread(){ return allNotifs().filter(function(n){return !n.read;}).length; }
 function topActions(onDark){ var col=onDark?"#fff":"#0F1B2D"; var bg=onDark?"rgba(255,255,255,.16)":"#fff"; var sh=onDark?"none":"0 3px 10px rgba(20,40,80,.08)"; var u=unread();
  var ini=(S.acc.name||"T").trim().charAt(0).toUpperCase();
- return '<button class="hbtn" style="background:linear-gradient(135deg,#A78BFA,#7C3AED);color:#fff;box-shadow:0 5px 13px rgba(124,58,237,.42);position:relative" onclick="openGame()">'+ic("gift",20)+'<span style="position:absolute;top:-3px;right:-4px;background:#E11D48;color:#fff;font-size:7.5px;font-weight:800;line-height:1;padding:2px 5px;border-radius:999px;box-shadow:0 2px 5px rgba(0,0,0,.2)">MỚI</span></button>'+'<button class="hbtn'+(u>0?' ring':'')+'" style="background:'+bg+';color:'+col+';box-shadow:'+sh+'" onclick="openNoti()">'+ic("bell",20)+(u>0?'<span class="hbadge">'+u+'</span>':"")+'</button>'+
-  '<button class="hbtn" style="background:'+bg+';box-shadow:'+sh+';padding:0" onclick="setTab(\'profile\')"><span class="av-ini">'+ini+'</span></button>'; }
+ return '<button class="hbtn" style="background:linear-gradient(135deg,#A78BFA,#7C3AED);color:#fff;box-shadow:0 5px 13px rgba(124,58,237,.42);position:relative" aria-label="Trò chơi tích điểm" onclick="openGame()">'+ic("gift",20)+'<span style="position:absolute;top:-3px;right:-4px;background:#E11D48;color:#fff;font-size:7.5px;font-weight:800;line-height:1;padding:2px 5px;border-radius:999px;box-shadow:0 2px 5px rgba(0,0,0,.2)">MỚI</span></button>'+'<button class="hbtn'+(u>0?' ring':'')+'" style="background:'+bg+';color:'+col+';box-shadow:'+sh+'" aria-label="Thông báo" onclick="openNoti()">'+ic("bell",20)+(u>0?'<span class="hbadge">'+u+'</span>':"")+'</button>'+
+  '<button class="hbtn" aria-label="Hồ sơ cá nhân" style="background:'+bg+';box-shadow:'+sh+';padding:0" onclick="setTab(\'profile\')"><span class="av-ini">'+ini+'</span></button>'; }
 function closeOvl(){ S.notiOpen=false; S.accOpen=false; el("ovl").innerHTML=""; }
 function activateNpp(){ var tn=(el("ac_tenant")?el("ac_tenant").value.trim():""), tk=(el("ac_token")?el("ac_token").value.trim():""); if(!tn){ toast("Nhập Mã NPP để kết nối."); return; } try{ localStorage.setItem("wt_tenant",JSON.stringify(tn)); if(tk)localStorage.setItem("wt_npp_token",JSON.stringify(tk)); }catch(e){} toast("✅ Đã kết nối NPP "+tn+" — bắt đầu đồng bộ dữ liệu.","ok"); try{ if(typeof pullStockAuto==="function")pullStockAuto(); if(typeof flushOrders==="function"&&navigator.onLine)flushOrders(true); }catch(e){} openAcc(); }
 function openNoti(){ S.notiOpen=true; S.accOpen=false; renderOvl(); var a=dynNotifs(); a.forEach(function(n){n.read=true;}); try{localStorage.setItem(NOTIF_KEY,JSON.stringify(a));}catch(e){} NOTIFS.forEach(function(n){n.read=true;}); render(); }
