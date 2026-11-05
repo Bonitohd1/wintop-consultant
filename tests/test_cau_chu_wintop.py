@@ -48,7 +48,7 @@ for bad in ('an toàn để dùng cho người tiểu đường', 'ngăn ngừa 
             'Sữa mẹ là tốt nhất cho sức khỏe trẻ sơ sinh'):
     check(f'mã nguồn không còn câu: “{bad[:55]}”', bad not in src)
 sw = open(os.path.join(REPO, 'sw.js'), encoding='utf-8').read() if len(sys.argv) < 2 else open(os.path.join(SRCDIR, 'sw.js'), encoding='utf-8').read()
-check('service worker: bản mới (wintop-v50), network-first CÓ TIMEOUT, chỉ lưu phản hồi ok', 'wintop-v50' in sw and '4000' in sw and 'res.ok' in sw, sw[:120])
+check('service worker: bản mới (wintop-v51), network-first CÓ TIMEOUT, chỉ lưu phản hồi ok', 'wintop-v51' in sw and '4000' in sw and 'res.ok' in sw, sw[:120])
 check('shine / pshine animate bằng transform (không còn "left" → ép layout liên tục)', 'left:135%' not in src and 'left:130%' not in src and 'translateX(364%)' in src)
 if len(sys.argv) < 2:   # đo ảnh thật trong kho (không đo khi chạy trên bản sao cũ)
     sz = lambda f: os.path.getsize(os.path.join(REPO, f)) // 1024
