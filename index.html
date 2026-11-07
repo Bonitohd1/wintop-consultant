@@ -1397,7 +1397,7 @@ function growthOnEditBaby(id,oldKey){ var bs=babies(),ms=measures(),hit=false; b
  if(hit){ saveBabies(bs); saveMeasures(ms); } }
 
 function render(){ el("topmascot").innerHTML=curMascot(); var tb=el("topbar"); if(tb) tb.style.display=(S.tab==="home"?"none":"flex"); var ta=el("topactions"); if(ta) ta.innerHTML=topActions(true); var hb=document.querySelector(".top .hbtn"); if(hb&&!hb.innerHTML) hb.innerHTML=ic("menu",20); renderTabbar(); var v=el("view");
- v.innerHTML = S.tab==="home"?renderHome(): S.tab==="profile"?renderProfile(): S.tab==="stats"?renderStats(): S.tab==="orders"?renderOrders(): S.tab==="makeorder"?renderMakeOrder(): S.tab==="rank"?renderRank(): S.tab==="tuvan"?renderTuVan(): S.tab==="sanpham"?renderProducts(): S.tab==="hoidap"?renderQA(): S.tab==="quiz"?renderQuiz(): S.tab==="km"?renderPromo(): S.tab==="feedback"?renderFeedback(): S.tab==="docs"?renderDocs(): S.tab==="growth"?renderGrowth():renderCSR(); v.style.animation='none';void v.offsetHeight;v.style.animation=''; }
+ v.innerHTML = S.tab==="home"?renderHome(): S.tab==="profile"?renderProfile(): S.tab==="stats"?renderStats(): S.tab==="orders"?renderOrders(): S.tab==="makeorder"?renderMakeOrder(): S.tab==="rank"?renderRank(): S.tab==="tuvan"?renderTuVan(): S.tab==="sanpham"?renderProducts(): S.tab==="hoidap"?renderQA(): S.tab==="quiz"?renderQuiz(): S.tab==="km"?renderPromo(): S.tab==="feedback"?renderFeedback(): S.tab==="docs"?renderDocs(): S.tab==="growth"?renderGrowth():renderCSR(); v.style.animation='none';void v.offsetHeight;v.style.animation=''; if(S.tab==="tuvan"){try{saveDraft();}catch(e){}} }
 
 /* ===== TAB 1: WIZARD ===== */
 var RELS=["Ông","Bà","Cha","Mẹ","Con","Cháu","Em","Người quen","Bản thân"];
@@ -2348,11 +2348,33 @@ function presProd(id){ var p=PRODUCTS.filter(function(x){return x.id===id;})[0];
     +'<div style="font-size:11px;color:rgba(255,255,255,.72);line-height:1.5;text-align:center;margin-top:10px">'+esc(sme)+'</div>';
   o.innerHTML='<div style="position:fixed;inset:0;z-index:9998;background:linear-gradient(160deg,var(--pri-dark),var(--pri));display:flex;flex-direction:column"><div style="display:flex;align-items:center;gap:10px;padding:14px 14px 8px"><div style="flex:1;color:#fff;font-weight:800;font-family:var(--fh);font-size:16px">Wintop · Sản phẩm</div><button onclick="closeOvl()" style="background:rgba(255,255,255,.95);border:none;color:#10357A;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.2)">✕ Thoát</button></div><div style="flex:1;overflow:auto;padding:14px">'+body+'</div></div>';
 }
+/* ---------- NHÁP PHIÊN TƯ VẤN ĐANG DỞ (cứu khi Back / Zalo reload) ----------
+ * Zalo webview reload / nút Back làm mất sạch phiên đang tư vấn. Lưu nháp 1 slot vào máy, tự ghi mỗi lần
+ * vẽ bước tư vấn; mở lại app có banner "Tiếp tục / Bỏ". Xoá khi chốt xong (và KHÔNG ghi lại sau khi _saved=true,
+ * nếu không lượt render step 4 sau finishConsult sẽ tạo lại nháp của phiên đã xong). Chưa đồng ý (consent!==true)
+ * thì KHÔNG giữ tên/SĐT/địa chỉ trong nháp — giống lúc gửi phiên (CLAUDE.md: không lưu thông tin khi chưa hỏi).
+ * ĐẶT TRONG KHỐI <script> NÀY (cùng khối với render/renderHome): draftBanner được gọi ngay lần render trang chủ
+ * đầu tiên; đặt ở khối sau thì hàm chưa khai báo -> 'draftBanner is not defined' (test bắt được, 03->09/9). */
+var DRAFT_KEY="wt_draft_v1";
+function saveDraft(){ if(S._saved) return; if(!(S.user&&S.user.obj)) return;
+ var u=S.user, b=S.buyer;
+ if(S.consent!==true){ u=JSON.parse(JSON.stringify(u)); u.name=""; b={name:"",phone:"",addr:"",rel:(S.buyer&&S.buyer.rel)||""}; }
+ lsSet(DRAFT_KEY,{step:S.step,buyer:b,user:u,m:S.m,needs:S.needs,cls:S.cls,rec:S.rec,consent:S.consent,t:Date.now()}); }
+function getDraft(){ return lsGet(DRAFT_KEY,null); }
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function resumeDraft(){ var s=getDraft(); if(!s)return;
+ S.buyer=s.buyer||{name:"",phone:"",addr:"",rel:""}; S.user=s.user||S.user; S.m=s.m||{};
+ S.needs=s.needs||[]; S.cls=s.cls||null; S.rec=s.rec||null;
+ S.consent=(s.consent===undefined?null:s.consent); S.step=s.step||1; S._saved=false;
+ tabTo("tuvan"); window.scrollTo(0,0); render(); }
+function dropDraft(){ clearDraft(); render(); }
+function draftBanner(){ var s=getDraft(); if(!s||!(s.step>1)) return '';
+ return '<div class="card" style="border-left:4px solid var(--pri)"><div style="display:flex;align-items:center;gap:10px"><span style="color:var(--pri)">'+ic('stetho',22)+'</span><div style="flex:1;min-width:0"><b style="font-size:13.5px">Có phiên tư vấn đang dở</b><div class="faint" style="font-size:12px">Đang ở bước '+s.step+'/4 — tiếp tục để không mất</div></div></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn sec" style="flex:1" onclick="dropDraft()">Bỏ</button><button class="btn" style="flex:1" onclick="resumeDraft()">Tiếp tục</button></div></div>'; }
 function renderHome(){ var hr=new Date().getHours(); var greet=hr<11?'Chào buổi sáng':hr<14?'Chào buổi trưa':hr<18?'Chào buổi chiều':'Chào buổi tối';
  var qg=[{ic:'stetho',l:'Tư vấn',t:'tuvan',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'trending_up',l:'Tăng trưởng',t:'growth',bg:'#DCFCE7',c:'#16A34A'},{ic:'cup',l:'Sản phẩm',t:'sanpham',bg:'#E3EEFF',c:'#1D4ED8'},{ic:'cart',l:'Lên đơn',t:'makeorder',bg:'#FFF1DC',c:'#C2691A'},{ic:'search',l:'Hỏi-Đáp',t:'hoidap',bg:'#E6F4FF',c:'#2E86C1'},{ic:'school',l:'Quiz',t:'quiz',bg:'#F1ECFF',c:'#7C5CE0'},{ic:'gift',l:'Ưu đãi',t:'km',bg:'#FFF1DC',c:'#C2691A'},{ic:'star',l:'Cảm nhận',t:'feedback',bg:'#FFE9EE',c:'#E0533D'},{ic:'heart',l:'Thiện nguyện',t:'tn',bg:'#DCF3E8',c:'#0F9A6A'},{ic:'info',l:'Tài liệu',t:'docs',bg:'#E6F4FF',c:'#2E86C1'},{ic:'user',l:'Cá nhân',t:'profile',bg:'#EDE9FE',c:'#7C5CE0'}];
  return '<div class="home-greet"><div class="home-av">'+curMascot()+'</div><div style="flex:1"><div class="muted">'+greet+' 👋</div><div style="font-size:16px;font-weight:600;font-family:var(--fh)">Tư vấn viên Wintop</div></div>'+topActions(false)+'</div>'+
  '<div class="start-cta" onclick="newConsult()"><span style="width:40px;height:40px;border-radius:13px;color:#fff;background:linear-gradient(145deg,#34D0B4,#0F9A6A);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 12px rgba(15,154,106,.3)">'+ic('stetho',21)+'</span><div style="flex:1"><div style="font-weight:600;font-size:15px">Bắt đầu tư vấn khách</div><div class="faint">Đo chỉ số · gợi ý sản phẩm trong 3 phút</div></div>'+ic('arrow',20)+'</div>'+
- dailyCardHTML()+weeklyCardHTML()+
+ draftBanner()+dailyCardHTML()+weeklyCardHTML()+
  '<div class="qg-grid">'+qg.map(function(x){return '<div class="qg'+(x.t==='makeorder'?' qg-hot':'')+'" onclick="setTab(\''+x.t+'\')"><div class="qg-ic" style="background:'+x.bg+';color:'+x.c+'">'+ic(x.ic,22)+'</div><div class="qg-l">'+x.l+'</div></div>';}).join('')+'</div>'+
  '<button class="btn sec" style="margin:2px 0 12px;border-color:#CBD9F5" onclick="openPresent()">'+ic('star',17)+'Chế độ trình khách 🖥️ — giới thiệu Wintop</button>'+
  '<div class="row-head"><span>Sản phẩm nổi bật</span><span style="font-size:12px;color:var(--pri);cursor:pointer" onclick="setTab(\'sanpham\')">Xem tất cả</span></div>'+hProducts()+
@@ -2677,7 +2699,7 @@ function finishConsult(){
  var _ss=buildSession(); S.curSessionId=_ss.sid;
  /* Bản có tên/SĐT chỉ lưu trên máy khi khách ĐỒNG Ý. Khách không đồng ý: chỉ gửi bản không định danh (xem buildSession). */
  if(_ss.consent){ saveSessionEnc(_ss).catch(function(e){ console.warn("Lưu phiên lỗi:",e); toast("Không lưu được phiên trên máy này: "+((e&&e.message)||"lỗi")+"."); }); }
- queueSession(_ss); flushSessions(true);
+ queueSession(_ss); flushSessions(true); clearDraft();   /* phiên đã chốt -> bỏ nháp đang dở (saveDraft đã chặn bởi _saved) */
  /* Số đo của phiên này thành 1 điểm trên biểu đồ của bé (chỉ khi khách đồng ý + có ngày sinh). Màn kết quả đã vẽ TRƯỚC
     khi hàm này chạy (xem startScan) nên phải vẽ lại thì thẻ biểu đồ mới có điểm hôm nay. */
  if(_ss.consent){ var _kid=null; try{ _kid=consultToGrowth(_ss); }catch(e){ console.warn("Gắn số đo vào biểu đồ lỗi:",e); toast("Chưa gắn được số đo vào biểu đồ của bé."); }
