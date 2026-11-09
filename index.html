@@ -2210,7 +2210,55 @@ function renderOvl(){ var o=el("ovl");
 var TIPS=["Nhớ đo Z-score/BMI trước khi gợi ý sản phẩm nhé!","Giai đoạn 'Nhận biết' đừng bán vội — kể chuyện, khơi gợi trước.","Khách hay ốm vặt → ưu tiên Colostrum Gain (Lactoferrin).","Mẹ bầu nghi tiểu đường → ngưng tư vấn, mời đi khám bác sĩ.","Chốt nhanh: cho khách xem số lon/tháng + thành tiền.","Trẻ nhẹ cân là ưu tiên số 1 — dùng dòng đậm độ cao Wintop BA."];
 var asstOpen=false, asstLog=(function(){ try{ var a=lsGet('wt_asst_v1',[]); return Array.isArray(a)?a.slice(-40):[]; }catch(e){ return []; } })();
 function saveAsst(){ try{ lsSet('wt_asst_v1', asstLog.slice(-40)); }catch(e){} }
-function clearAsst(){ asstLog=[]; saveAsst(); asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
+/* ===== HỒ SƠ KHÁCH ĐANG TƯ VẤN (bộ nhớ BỀN qua cả phiên) =====
+   VÌ SAO: cửa sổ 8 lượt chỉ giữ ngữ cảnh gần đây — khách hỏi rồi MỘT LÚC SAU mới hỏi tiếp thì thông tin
+   (tuổi/cân/nhu cầu) trôi mất -> trợ lý "như quên" (phản hồi khách 10/11). Hồ sơ này lưu BỀN, TIÊM LẠI mỗi
+   lượt, KHÔNG hết hạn theo thời gian; chỉ xoá khi bấm "Khách mới". Đồng bộ với trợ lý Nutritie. */
+var asstHo=(function(){ try{ var h=lsGet('wt_asst_ho',null); return (h&&typeof h==='object')?h:{needs:[],prods:[]}; }catch(e){ return {needs:[],prods:[]}; } })();
+if(!asstHo.needs)asstHo.needs=[]; if(!asstHo.prods)asstHo.prods=[];
+function saveHo(){ try{ lsSet('wt_asst_ho', asstHo); }catch(e){} }
+function hoAgeLabel(m){ if(m==null)return ''; if(m<24)return m+' tháng'; var y=Math.floor(m/12),r=m%12; return y+' tuổi'+(r?(' '+r+' tháng'):''); }
+function hoAge(d){ var dm=d.match(/duoi\s*(\d+)\s*thang/); if(dm){var dn=parseInt(dm[1],10); if(dn>=1&&dn<=36)return Math.max(0,dn-1);} var m=d.match(/(\d+)\s*thang/); if(m){var n=parseInt(m[1],10); if(n>=0&&n<=36)return n;} var y=d.match(/(\d+)\s*tuoi/); if(y){var yy=parseInt(y[1],10); if(yy>=0&&yy<=120){var mo=yy*12; if(/tuoi ruoi/.test(d))mo+=6; return mo;}} return null; }
+/* Rút thông tin bền từ CÂU KHÁCH VỪA GÕ (deburr + asstProd của app Wintop). */
+function asstExtract(raw){ var d=deburr(raw), ch=false;
+ var age=hoAge(d); if(age!=null){ asstHo.ageMo=age; ch=true; }
+ var mw=d.match(/(\d{1,2}(?:[.,]\d)?)\s*(?:kg|ky|ki|kilo|kilogam)\b/); if(mw){ var kg=parseFloat(mw[1].replace(',','.')); if(kg>=1&&kg<=150){ asstHo.kg=kg; ch=true; } }
+ var mh=d.match(/(?:cao|chieu cao|dai)\s*(\d{2,3})(?:\s*cm)?|(\d{2,3})\s*cm\b/); if(mh){ var cm=parseInt(mh[1]||mh[2],10); if(cm>=30&&cm<=220){ asstHo.cm=cm; ch=true; } }
+ if(/\b(be trai|con trai|chau trai|thang be|boy)\b/.test(d)){ asstHo.sex='trai'; ch=true; }
+ else if(/\b(be gai|con gai|chau gai|girl)\b/.test(d)){ asstHo.sex='gái'; ch=true; }
+ var NEED=[[/(bieng an|luoi an|nhe can|suy dinh duong|cham tang can|cham lon|thap coi|coi coc|tang can)/,'biếng ăn / nhẹ cân'],
+           [/(tao bon|tieu hoa|day hoi|doi sua|chuyen sua|di ngoai|hap thu kem)/,'tiêu hoá / táo bón'],
+           [/(chieu cao|tang chieu cao|cao lon|cao them)/,'tăng chiều cao'],
+           [/(tri nao|thong minh|dha|hoc tap|ghi nho|tap trung)/,'trí não'],
+           [/(mien dich|hay om|de khang|om vat|hay benh)/,'đề kháng'],
+           [/(loang xuong|xuong khop|nguoi gia|cao tuoi)/,'xương khớp'],
+           [/(tieu duong|duong huyet|gi thap)/,'tiểu đường'],
+           [/(me bau|mang thai|thai ky|sau sinh|cho con bu)/,'mẹ bầu / sau sinh']];
+ for(var i=0;i<NEED.length;i++){ if(NEED[i][0].test(d)&&asstHo.needs.indexOf(NEED[i][1])<0){ asstHo.needs.push(NEED[i][1]); ch=true; } }
+ if(asstHo.needs.length>4)asstHo.needs=asstHo.needs.slice(-4);
+ var p=(typeof asstProd==='function')?asstProd(d):null; if(p&&asstHo.prods.indexOf(p.name)<0){ asstHo.prods.push(p.name); ch=true; if(asstHo.prods.length>3)asstHo.prods=asstHo.prods.slice(-3); }
+ if(ch){ asstHo.updatedAt=Date.now(); saveHo(); }
+ return ch;
+}
+function hoSoText(){ var p=[];
+ if(asstHo.ageMo!=null){ var head; if(asstHo.ageMo<192){ head='bé'; if(asstHo.sex)head+=' '+asstHo.sex; head+=' '+hoAgeLabel(asstHo.ageMo); } else { head=hoAgeLabel(asstHo.ageMo); } p.push(head); }
+ else if(asstHo.sex)p.push('bé '+asstHo.sex);
+ if(asstHo.kg!=null)p.push(String(asstHo.kg).replace('.',',')+' kg');
+ if(asstHo.cm!=null)p.push(asstHo.cm+' cm');
+ if(asstHo.needs&&asstHo.needs.length)p.push('nhu cầu: '+asstHo.needs.join(', '));
+ if(asstHo.prods&&asstHo.prods.length)p.push('quan tâm: '+asstHo.prods.join(', '));
+ return p.join(' · ');
+}
+function asstNew(){ if((hoSoText()||asstLog.length>1)&&!confirm('Bắt đầu tư vấn KHÁCH MỚI?\nHội thoại và hồ sơ khách hiện tại sẽ được xoá.'))return;
+ asstHo={needs:[],prods:[]}; try{localStorage.removeItem('wt_asst_ho');}catch(e){}
+ asstLog=[]; saveAsst(); asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
+var HOBAR_STY='display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;margin:4px 0 2px;background:var(--pri-soft,#eef3ff);border-radius:10px;font-size:12.5px;color:var(--pri,#10357A);line-height:1.35';
+function hoBarInner(hs){ return '<span>📋 <b>Đang tư vấn:</b> '+esc(hs)+'</span><button onclick="asstNew()" aria-label="Bắt đầu khách mới" style="margin-left:auto;border:1px solid var(--pri,#10357A);background:#fff;color:var(--pri,#10357A);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;min-height:36px;cursor:pointer">🔄 Khách mới</button>'; }
+function renderHoBar(){ var p=el('asst'); var sc=p?p.querySelector('.sheet-c'):null; if(!sc)return; var bar=el('wtho'); var hs=hoSoText();
+ if(!hs){ if(bar&&bar.parentNode)bar.parentNode.removeChild(bar); return; }
+ if(bar){ bar.innerHTML=hoBarInner(hs); return; }
+ var log=el('asstlog'); if(!log)return; bar=document.createElement('div'); bar.id='wtho'; bar.setAttribute('style',HOBAR_STY); bar.innerHTML=hoBarInner(hs); log.parentNode.insertBefore(bar, log); }
+function clearAsst(){ asstNew(); }  /* nút làm mới = Khách mới (xoá cả hồ sơ, có hỏi lại) */
 function curMascot(){ return MASCOTS[S.mascotId]||MASCOTS.lion; }
 var FAB_HELLOS=['Hi 👋','Chào bạn!','Cần giúp gì?','Hỏi mình nhé!','Chốt đơn thôi! 💪'];
 /* Lời chào SỐNG ĐỘNG: theo thời điểm trong ngày + hỏi han + nhắc nhở nhẹ */
@@ -2223,7 +2271,10 @@ function greetNotif(){ try{ if(typeof document!=='undefined'&&document.visibilit
 function renderFab(){ var f=el('fab'); if(f) f.innerHTML=curMascot()+'<span class="dot"></span><span class="fab-hi" id="fabhi"></span>'; var g=el('gamefab'); if(g) g.innerHTML=ic('gift',27)+'<span class="gbadge">MỚI</span>'; }
 function openGame(){ var o=el('ovl'); if(!o)return; o.innerHTML='<div class="modal" onclick="if(event.target===this)closeOvl()"><div class="modal-c" style="text-align:center;padding:26px 20px"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#C9A0FF,#7C5CE0);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;box-shadow:0 10px 22px rgba(124,92,224,.4)">'+ic("gift",38)+'</div><div style="font-weight:800;font-family:var(--fh);font-size:19px;color:#10357A">Vòng quay may mắn</div><div style="display:inline-block;background:#F1ECFF;color:#7C5CE0;font-weight:800;font-size:11px;letter-spacing:.5px;padding:5px 14px;border-radius:999px;margin-top:9px">SẮP RA MẮT</div><div class="muted" style="margin-top:13px;line-height:1.65;font-size:13.5px">Tích điểm mỗi đơn · quay thưởng · đổi quà cho khách hàng thân thiết. Tính năng đang được phát triển — hãy đón chờ! 🎁</div><button class="btn" style="margin-top:18px" onclick="closeOvl()">Đã hiểu</button></div></div>'; }
 function setMascot(id){ S.mascotId=id; MASCOT=MASCOTS[id]||MASCOTS.lion; renderFab(); render(); var av=el('asstav'); if(av) av.innerHTML=curMascot(); }
-function openAsst(){ asstOpen=true; if(!asstLog.length) asstLog.push({r:'a',t:asstGreet()}); renderAsst(); }
+function openAsst(){ asstOpen=true;
+  if(!asstLog.length){ asstLog.push({r:'a',t:asstGreet()}); }
+  else { var hs=hoSoText(); if(hs && asstHo.updatedAt && (Date.now()-asstHo.updatedAt>3*3600*1000)){ var nudge='↩️ Bạn đang tư vấn cho **'+hs+'**. Vẫn khách này thì cứ hỏi tiếp — nếu là **khách mới**, bấm 🔄 "Khách mới" ở trên.'; var last=asstLog[asstLog.length-1]; if(!last||last.t!==nudge){ asstLog.push({r:'a',t:nudge}); } } }
+  saveAsst(); renderAsst(); }
 function closeAsst(){ asstOpen=false; el('asst').innerHTML=''; }
 function asstGreet(){ var hr=new Date().getHours(), g=hr<11?'Chào buổi sáng':hr<18?'Chào buổi chiều':'Chào buổi tối'; return g+'! Mình là trợ lý Wintop. Mình giúp bạn tra cứu nhanh, gợi ý sản phẩm và tiếp thêm tinh thần bán hàng. Bạn cần gì nào?'; }
 function mdToHtml(t){ var h=esc(t);
@@ -2239,11 +2290,13 @@ function asstAppend(r,t,fade,sp){ var l=el('asstlog'); if(!l) return null; var d
 function asstTyping(){ var l=el('asstlog'); if(!l) return null; var d=document.createElement('div'); d.className='bub a'; d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>'; l.appendChild(d); l.scrollTop=l.scrollHeight; return d; }
 function asstReply(ans){ var typ=asstTyping(); var delay=550+Math.min(1100,(ans.length||0)*7); setTimeout(function(){ if(typ&&typ.parentNode) typ.parentNode.removeChild(typ); asstAppend('a',ans,true); },delay); }
 function buildAsstContext(){ var ctx={ pg:(S.acc&&S.acc.name)||'', tab:S.tab, npp:(typeof wtTenant==='function'?wtTenant():'') };
+  try{ var hs=hoSoText(); if(hs) ctx.ho_so_be=hs; }catch(e){}
+  try{ ctx.lich_su=asstLog.slice(0,-1).slice(-8).map(function(m){return (m.r==='u'?'PG: ':'Trợ lý: ')+String(m.t||'').replace(/\n/g,' ').slice(0,300);}); }catch(e){}
   try{ var st=(typeof stockData==='function')?stockData():null; if(st&&st.items) ctx.stock=st.items; }catch(e){}
   try{ var oq=(typeof orderQueue==='function')?orderQueue():[]; if(oq.length) ctx.orders=oq.slice(-6).map(function(o){return {name:o.name,qty:o.qty,sent:!!o.sent};}); }catch(e){}
   try{ if(S.rec&&S.rec.prods) ctx.consult={obj:S.user&&S.user.obj, needs:S.needs, goiy:(S.rec.prods||[]).map(function(id){return (typeof P==='function'?P(id).name:id);})}; }catch(e){}
   return ctx; }
-function asstSend(t){ t=(t||'').trim(); if(!t)return; asstLog.push({r:'u',t:t}); asstAppend('u',t);
+function asstSend(t){ t=(t||'').trim(); if(!t)return; asstLog.push({r:'u',t:t}); asstExtract(t); asstAppend('u',t); renderHoBar();
   var inp=el('asstin'); if(inp) inp.value='';
   var canAI = navigator.onLine && typeof WINTOP_API!=='undefined' && typeof wtHeaders==='function';
   if(canAI){
@@ -2274,7 +2327,8 @@ function asstChip(c){ if(c==='qa'){ closeAsst(); setTab('hoidap'); return; } if(
 function toggleMascot(){ var ks=Object.keys(MASCOTS),i=ks.indexOf(S.mascotId); setMascot(ks[(i+1)%ks.length]); }
 function renderAsst(){ if(!asstOpen) return; var sugg=[{t:'💡 Mẹo',c:'tip'},{t:'📦 Đơn hàng',c:'orders'},{t:'📊 Tồn kho',c:'stock'},{t:'❓ Hỏi-Đáp',c:'qa'},{t:'✂️ Chia sẻ',c:'share'}];
  el('asst').innerHTML='<div class="sheet" onclick="if(event.target===this)closeAsst()"><div class="sheet-c" style="display:flex;flex-direction:column;max-height:84vh">'
-  +'<div style="display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:6px"><div class="asst-av" id="asstav" onclick="toggleMascot()" style="cursor:pointer" title="Chạm để đổi linh vật">'+curMascot()+'</div><div style="flex:1"><div style="font-weight:700;font-family:var(--fh)">Trợ lý Wintop</div><div class="faint" style="font-size:11.5px">Hỏi về sản phẩm · đơn hàng · tồn kho · dinh dưỡng</div></div><button class="btn ghost" style="width:auto;padding:8px" onclick="closeAsst()">'+ic("x",18)+'</button></div>'
+  +'<div style="display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:6px"><div class="asst-av" id="asstav" onclick="toggleMascot()" style="cursor:pointer" title="Chạm để đổi linh vật">'+curMascot()+'</div><div style="flex:1"><div style="font-weight:700;font-family:var(--fh)">Trợ lý Wintop</div><div class="faint" style="font-size:11.5px">Hỏi về sản phẩm · đơn hàng · tồn kho · dinh dưỡng</div></div><button class="btn ghost" style="width:auto;padding:8px" onclick="asstNew()" aria-label="Khách mới" title="Khách mới — xoá hội thoại &amp; hồ sơ">'+ic("refresh",18)+'</button><button class="btn ghost" style="width:auto;padding:8px" onclick="closeAsst()">'+ic("x",18)+'</button></div>'
+  +(hoSoText()?('<div id="wtho" style="'+HOBAR_STY+'">'+hoBarInner(hoSoText())+'</div>'):'')
   +'<div class="asst-log" id="asstlog" style="flex:1;min-height:200px;overflow-y:auto;padding:4px 2px 8px">'+asstLog.map(function(m){return '<div class="bub '+m.r+'">'+((m.r==='a')?(mdToHtml(m.t)+((m.sp!==undefined&&m.sp!==null)?asstProdCardsById(m.sp):asstProdCards(m.t))):esc(m.t).replace(/\n/g,'<br>'))+'</div>';}).join('')+'</div>'
   +'<div style="display:flex;gap:7px;overflow-x:auto;padding:8px 0">'+sugg.map(function(s){return '<button class="chip" style="white-space:nowrap;flex:0 0 auto" onclick="asstChip(\''+s.c+'\')">'+s.t+'</button>';}).join('')+'</div>'
   +'<div style="display:flex;gap:7px;overflow-x:auto;padding:0 0 8px">'+['Trẻ biếng ăn dùng gì?','Mẹ bầu nên uống gì?','So sánh BA và Colostrum','Người tiểu đường dùng gì?','Trẻ táo bón xử lý sao?'].map(function(q){return '<button class="chip" style="white-space:nowrap;flex:0 0 auto;background:var(--pri-soft);color:var(--pri);border-color:transparent" onclick="asstSend(\''+q+'\')">'+q+'</button>';}).join('')+'</div>'
