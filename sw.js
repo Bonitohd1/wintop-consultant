@@ -1,5 +1,5 @@
 /* Wintop Consultant — Service Worker (online-first + cache offline) */
-var CACHE = "wintop-v51";
+var CACHE = "wintop-v52";
 var CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png",
   "./fonts/bvp-400.woff2", "./fonts/bvp-500.woff2", "./fonts/bvp-600.woff2", "./fonts/bvp-700.woff2", "./fonts/bvp-800.woff2"];
 self.addEventListener("install", function(e){ self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(CORE).catch(function(){}); })); });
