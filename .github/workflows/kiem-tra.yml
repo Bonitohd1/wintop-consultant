@@ -1,4 +1,5 @@
 # KIỂM TRA MỖI LẦN ĐẨY: cú pháp JS, trần cỡ index.html, và phép thử trình duyệt thật (Playwright, chặn mọi lời gọi ra ngoài).
+# 27/11/2026: checkout/setup-python/setup-node len v7 (chay Node 24) + Node 20 -> 24. Node 20 het ho tro: GitHub canh bao + tu ep Node 24.
 # Vercel/Netlify vẫn dựng như cũ; đây chỉ để thấy ĐỎ trước khi khách mở app. Chạy tay cùng lệnh: python tests/chay_het.py
 name: Kiểm tra app
 on:
@@ -15,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: '20'
-      - uses: actions/setup-python@v5
+          node-version: '24'
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - run: pip install playwright
